@@ -1,0 +1,40 @@
+@page "/{vanityUrl}"
+@inject HttpClient Http
+@using BlazorApp.Shared
+@using System.Collections.Generic
+
+<div class="container main content">
+    @* <new-link @onAddNewLink="addLink"></new-link> *@
+    <div id="linkHeader" class="columns is-mobile is-vcentered is-gapless">
+      <div class="column">
+        <h3 class="has-text-primary is-size-3 has-text-weight-medium">
+          Links
+        </h3>
+      </div>
+      <div class="column">
+        <span class="is-pulled-right">Drag links to re-order</span>
+      </div>
+    </div>
+    @foreach (var link in linkBundle.Links) {
+      <BundleItem link="link"></BundleItem>
+    }
+    <button
+      id="deleteButton"
+      v-if="currentList.links.length > 0 && listIsPublished"
+      class="button is-large is-danger has-text-white is-fullwidth"
+      @click="deleteList"
+    >
+      Delete This List
+    </button>
+  </div>
+
+@code {
+    [Parameter]
+    public string vanityUrl { get; set; } = "";
+
+    private LinkBundle linkBundle { get; set; } = new LinkBundle();
+    protected override async Task OnInitializedAsync()
+    {
+      linkBundle = await Http.GetFromJsonAsync<LinkBundle>($"api/links/{vanityUrl}") ?? new LinkBundle();
+    }
+  }
