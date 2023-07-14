@@ -21,7 +21,9 @@ namespace ApiIsolated
         }
 
         [Function("GetLinks")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "links/{vanityUrl}")] HttpRequestData req, [CosmosDBInput(databaseName: "linkylinkdb",
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "links/{vanityUrl}")] 
+                    HttpRequestData req, 
+                    [CosmosDBInput(databaseName: "linkylinkdb",
                            collectionName: "linkbundles",
                            ConnectionStringSetting = "CosmosDBConnectionString",
                            SqlQuery = "SELECT TOP 1 * FROM c WHERE c.vanityUrl={vanityUrl}")] IEnumerable<LinkBundle> documents)
