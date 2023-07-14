@@ -1,4 +1,16 @@
 POST http://localhost:7071/api/links
 
-{"links":[{"id":"https://google.com","url":"https://google.com","title":"Google","description":"Search the world's information, including webpages, images, videos and more. Google has many special features to help you find exactly what you're looking for.","image":""}],
-"vanityUrl":"test4","description":"","userId":""}
+{
+  "links":[
+    {
+      "id":"https://google.com",
+      "url":"https://google.com",
+      "title":"Google",
+      "description":"Search the world's information, including webpages, images, videos and more. Google has many special features to help you find exactly what you're looking for.",
+      "image":""
+    }
+  ],
+  "vanityUrl":"test4",
+  "description":"",
+  "userId":""
+}
