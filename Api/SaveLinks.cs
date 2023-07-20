@@ -1,10 +1,13 @@
-using System.Net;
 using Api.Models;
+using BlazorApp.Shared;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using BlazorApp.Shared;
-using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Api
 {
@@ -18,7 +21,7 @@ namespace Api
         }
 
         [Function("SaveLinks")]
-        public SaveLinkResponse Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "links")] HttpRequestData req,
+        public async Task<SaveLinkResponse> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "links")] HttpRequestData req,
             FunctionContext executionContext)
         {
             var logger = executionContext.GetLogger("HttpExample");
@@ -27,7 +30,17 @@ namespace Api
             var message = "Welcome to Azure Functions!";
 
             // Deserialize JSON from request body into a LinkBundle object.
-            var linkBundle = req.ReadFromJsonAsync<LinkBundle>();
+            var linkBundle = await req.ReadFromJsonAsync<LinkBundle>();
+
+            if (!ValidatePayLoad(linkBundle, req))
+            {
+                _logger.LogError("Link validation failed");
+                return new SaveLinkResponse()
+                {
+                    NewLinkBundle = null,
+                    HttpResponse = req.CreateResponse(HttpStatusCode.BadRequest)
+                };
+            }
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
@@ -36,9 +49,16 @@ namespace Api
             // Return a response to both HTTP trigger and Azure Cosmos DB output binding.
             return new SaveLinkResponse()
             {
-                NewLinkBundle = linkBundle.Result,
+                NewLinkBundle = linkBundle,
                 HttpResponse = response
             };
+        }
+
+        private static bool ValidatePayLoad(LinkBundle linkDocument, HttpRequestData req)
+        {
+            bool isValid = (linkDocument != null) && linkDocument.Links.Count() > 0;
+
+            return isValid;
         }
     }
 }
