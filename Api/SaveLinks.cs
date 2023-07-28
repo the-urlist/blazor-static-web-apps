@@ -33,8 +33,6 @@ namespace Api
             var logger = executionContext.GetLogger("SaveLinks");
             logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            var message = "Welcome to Azure Functions!";
-
             // Deserialize JSON from request body into a LinkBundle object.
             var linkBundle = await req.ReadFromJsonAsync<LinkBundle>();
 
@@ -64,8 +62,7 @@ namespace Api
             }
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-            response.WriteString(message);
+            await response.WriteAsJsonAsync<LinkBundle>(linkBundle);
 
             // Return a response to both HTTP trigger and Azure Cosmos DB output binding.
             return new SaveLinkResponse()
