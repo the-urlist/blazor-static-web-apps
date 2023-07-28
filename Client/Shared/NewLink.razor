@@ -1,0 +1,55 @@
+@using System.Text.RegularExpressions;
+
+<div>
+  <p>Enter a link and press enter</p>
+  <input
+    class="input is-large is-size-2 @(isInvalid ? "is-invalid" : "")"
+    ref="newLink"
+    type="text"
+    id="newLink"
+  @bind="newLink"
+    placeholder="http://example.com"
+  @bind:event="oninput"
+  @onkeyup="AddNewLink"
+  />
+  <div class="errorMessage @(isInvalid ? "" : "is-hidden")">
+    <p class="has-text-danger is-font-weight-medium">
+      That doesn't look like a valid URL
+    </p>
+  </div>
+</div>
+
+@code {
+  private string newLink = ""; 
+  private bool isInvalid = false; 
+  
+  void AddNewLink(KeyboardEventArgs e) { 
+    if (string.IsNullOrEmpty(newLink)) { 
+      isInvalid = false; 
+      return; 
+    }
+    
+    if (e.Key == "Enter") { 
+
+      if (string.IsNullOrEmpty(newLink)) { 
+        isInvalid = true; 
+        return; 
+      }
+      
+      var urlRegex = new Regex(@"^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$", RegexOptions.IgnoreCase);
+
+      if (urlRegex.IsMatch(newLink))
+      {
+        isInvalid = false; 
+
+        // TODO: add the link to the link bundle list
+
+        newLink = "";
+      }
+      else
+      {
+        isInvalid = true;
+      }
+    }
+  }
+} 

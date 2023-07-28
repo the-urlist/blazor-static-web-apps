@@ -1,0 +1,32 @@
+.banner-image {
+  max-width: 500px;
+  height: 100%;
+  width: 100%;
+}
+
+#getStarted {
+  overflow: hidden;
+  position: relative;
+  flex: 1;
+}
+
+#bannerText {
+  padding-top: 20px;
+}
+
+#homeBottom {
+  padding-top: 50px;
+}
+
+#homeBottomBackground {
+  position: absolute;
+  left: 0;
+  right: -50%;
+  margin-left: -25%;
+  height: 100%;
+  max-width: 150%;
+  width: 150%;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  background-color: #f9fafc;
+}

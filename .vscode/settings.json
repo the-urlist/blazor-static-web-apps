@@ -4,5 +4,9 @@
   "azureFunctions.projectRuntime": "~4",
   "debug.internalConsoleOptions": "neverOpen",
   "azureFunctions.preDeployTask": "publish",
-  "dotnet.defaultSolution": "BlazorStaticWebApps.sln"
+  "dotnet.defaultSolution": "BlazorStaticWebApps.sln",
+  "editor.tabSize": 2,
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  }
 }

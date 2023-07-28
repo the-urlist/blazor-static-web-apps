@@ -1,0 +1,11 @@
+{
+  "plugins": ["prettier-plugin-cshtml"],
+  "overrides": [
+    {
+      "files": "*.razor",
+      "options": {
+        "parser": "cshtml"
+      }
+    }
+  ]
+}
