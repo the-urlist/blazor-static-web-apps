@@ -1,14 +1,16 @@
 @using BlazorApp.Shared
-@inject IJSRuntime JSRuntime
 
 <div class="link-outer">
-  <div class="link-wrapper" :class="{ 'link-editable': editable }">
+  <div class="link-wrapper @(editable ? "link-editable" : "")">
     <div class="columns is-vcentered is-mobile">
-      <div class="column is-narrow" v-if="editable">
-        <span class="icon is-medium has-text-grey link-drag-handle">
-          <i class="fas fa-lg fa-grip-vertical"></i>
-        </span>
-      </div>
+      @if (editable)
+      {
+        <div class="column is-narrow">
+          <span class="icon is-medium has-text-grey link-drag-handle">
+            <i class="fas fa-lg fa-grip-vertical"></i>
+          </span>
+        </div>
+      }
       <div class="card link">
         <div class="column">
           <div class="columns is-vcentered">
@@ -61,24 +63,30 @@
             </div>
           </div>
         </div>
-        <a href="@link.Url">
-          <div class="is-overlay" v-if="!editable"></div>
-        </a>
+        @if (!editable)
+        {
+          <a href="@link.Url">
+            <div class="is-overlay" v-if="!editable"></div>
+          </a>
+        }
       </div>
-      <div class="column is-narrow" v-if="editable">
-        <div class="columns is-vcentered">
-          <div class="column">
-            <a
-              class="has-text-bold link-delete has-text-grey"
-              @click.prevent="deleteLink(link.id)"
-            >
-              <span class="icon is-medium">
-                <i class="fas fa-lg fa-times"></i>
-              </span>
-            </a>
+      @if (editable)
+      {
+        <div class="column is-narrow" v-if="editable">
+          <div class="columns is-vcentered">
+            <div class="column">
+              <a
+                class="has-text-bold link-delete has-text-grey"
+                @click.prevent="deleteLink(link.id)"
+              >
+                <span class="icon is-medium">
+                  <i class="fas fa-lg fa-times"></i>
+                </span>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
   </div>
 </div>
@@ -87,11 +95,7 @@
     [Parameter]
     public Link link { get; set; } = new Link();
 
-    public async void OpenLink() {
-      if (!string.IsNullOrEmpty(link.Url))
-      {
-          await JSRuntime.InvokeAsync<object>("open", link.Url, "_blank");
-      }
-    }
+    [Parameter]
+    public bool editable { get; set; } = false;
 }
 

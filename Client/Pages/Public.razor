@@ -3,38 +3,116 @@
 @using BlazorApp.Shared
 @using System.Collections.Generic
 
-<div class="container main content">
-    @* <new-link @onAddNewLink="addLink"></new-link> *@
-    <div id="linkHeader" class="columns is-mobile is-vcentered is-gapless">
-      <div class="column">
-        <h3 class="has-text-primary is-size-3 has-text-weight-medium">
-          Links
-        </h3>
+
+<div class="container">
+  <div class="section">
+    <div>
+      <h2
+        class="is-size-3 is-heading has-text-weight-medium has-text-primary"
+      >
+        @linkBundle.Description
+      </h2>
+      <div class="columns is-mobile">
+        <div class="column is-half">
+          <div id="share" class="buttons has-addons">
+            <a
+              class="button"
+              target="_blank"
+              :href="
+            `https://twitter.com/intent/tweet?text=${
+              currentList.description
+            } theurlist.com/${currentList.vanityUrl}`
+          "
+            >
+              <span class="icon"><i class="fab fa-twitter"></i></span>
+            </a>
+            <a
+              class="button"
+              target="_blank"
+              :href="
+            `https://www.facebook.com/sharer/sharer.php?u=theurlist.com/${
+              currentList.vanityUrl
+            }`
+          "
+            >
+              <span class="icon"><i class="fab fa-facebook-f"></i></span>
+            </a>
+            <a
+              class="button"
+              target="_blank"
+              :href="
+            `https://www.linkedin.com/shareArticle?mini=true?summary=${
+              currentList.description
+            }&url=https://theurlist.com?${currentList.vanityUrl}`
+          "
+            >
+              <span class="icon"><i class="fab fa-linkedin-in"></i></span>
+            </a>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div
+            id="view"
+            class="buttons has-addons is-pulled-right"
+          >
+          @* <button
+            title="View as List"
+            class="button"
+            :class="{ 'is-active': !qr }"
+            click="toggleQr(false)"
+          
+            <span class="icon"><i class="fas fa-list-ul"></i></span>
+          </button>
+          > *@
+
+          @* <button
+            title="View as QR Code"
+            class="button"
+            :class="{ 'is-active': qr }"
+            click="toggleQr(true)"
+          
+            <span class="icon"><i class="fas fa-qrcode"></i></span>
+          </button>
+          > *@
+          </div>
+        </div>
       </div>
-      <div class="column">
-        <span class="is-pulled-right">Drag links to re-order</span>
+      <br />
+      @foreach (var link in linkBundle.Links)
+      {
+        <BundleItem link="link"></BundleItem>
+      }
+      <button
+        id="deleteButton"
+        v-if="currentList.links.length > 0 && listIsPublished"
+        class="button is-large is-danger has-text-white is-fullwidth"
+        @click="deleteList"
+      >
+        Delete This List
+      </button>
+      <div class="has-text-centered" v-else>
+        <qr-code :value="`https://theurlist.com/${this.vanityUrl}`"></qr-code>
       </div>
     </div>
-    @foreach (var link in linkBundle.Links) {
-      <BundleItem link="link"></BundleItem>
+    @if (linkBundle.Links.Count > 0)
+    {
+          <h1>Not Found</h1>
+      @* <not-found
+          id="notFound"
+          v-if="notFound"
+          :vanityUrl="vanityUrl"
+        ></not-found> *@
     }
-    <button
-      id="deleteButton"
-      v-if="currentList.links.length > 0 && listIsPublished"
-      class="button is-large is-danger has-text-white is-fullwidth"
-      @click="deleteList"
-    >
-      Delete This List
-    </button>
   </div>
+</div>
 
 @code {
-    [Parameter]
-    public string vanityUrl { get; set; } = "";
+  [Parameter]
+  public string vanityUrl { get; set; } = "";
 
-    private LinkBundle linkBundle { get; set; } = new LinkBundle();
-    protected override async Task OnInitializedAsync()
-    {
-      linkBundle = await Http.GetFromJsonAsync<LinkBundle>($"api/links/{vanityUrl}") ?? new LinkBundle();
-    }
+  private LinkBundle linkBundle { get; set; } = new LinkBundle();
+  protected override async Task OnInitializedAsync()
+  {
+    linkBundle = await Http.GetFromJsonAsync<LinkBundle>($"api/links/{vanityUrl}") ?? new LinkBundle();
   }
+}
