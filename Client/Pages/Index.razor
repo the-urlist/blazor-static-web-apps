@@ -37,10 +37,15 @@
         >
           Get Started
         </h2>
-        <NewLink></NewLink>
+        <NewLink OnNewLinkAdded="NewLinkAdded"></NewLink>
       </div>
     </div>
   </div>
 </div>
 
+@code {
+  private void NewLinkAdded(string url) { 
+    Console.WriteLine(url);
+  }
+} 
 
