@@ -38,11 +38,13 @@ namespace Api
 
             if (!ValidatePayLoad(linkBundle, req))
             {
-                _logger.LogError("Link validation failed");
+                var res = req.CreateResponse(HttpStatusCode.BadRequest);
+                await res.WriteAsJsonAsync(new { error = "Invalid payload" });
+
                 return new SaveLinkResponse()
                 {
                     NewLinkBundle = null,
-                    HttpResponse = req.CreateResponse(HttpStatusCode.BadRequest)
+                    HttpResponse = res
                 };
             }
 
@@ -52,12 +54,13 @@ namespace Api
 
             if (!match.Success)
             {
-                // does not match
-                _logger.LogError("Invalid vanity url");
+                var res = req.CreateResponse(HttpStatusCode.BadRequest);
+                await res.WriteAsJsonAsync(new { error = "Invalid vanity url" });
+
                 return new SaveLinkResponse()
                 {
                     NewLinkBundle = null,
-                    HttpResponse = req.CreateResponse(HttpStatusCode.BadRequest)
+                    HttpResponse = res
                 };
             }
 
