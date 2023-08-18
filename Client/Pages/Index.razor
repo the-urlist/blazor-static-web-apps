@@ -32,20 +32,19 @@
     <div id="homeBottomBackground"></div>
     <div id="homeBottom" class="container">
       <div class="section">
-        <h2
-          class="is-size-3 has-text-weight-bold has-text-primary has-text-centered"
-        >
+        <h2 class="is-size-3 has-text-weight-bold has-text-primary has-text-centered">
           Get Started
         </h2>
-        <NewLink OnNewLinkAdded="NewLinkAdded"></NewLink>
+        <NewLink></NewLink>
       </div>
     </div>
   </div>
 </div>
 
 @code {
-  private void NewLinkAdded(string url) { 
+  private void NewLinkAdded(string url)
+  {
     Console.WriteLine(url);
   }
-} 
+}
 

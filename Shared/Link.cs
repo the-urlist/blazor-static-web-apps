@@ -6,7 +6,7 @@ namespace BlazorApp.Shared
     {
         public string Id { get; set; }
 
-        [Url]
+        [RegularExpression(@"^(https?://)?([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?$", ErrorMessage = "That doesn't look like a valid URL"), Required]
         public string Url { get; set; }
 
         public string Title { get; set; }

@@ -1,32 +1,26 @@
-<EditForm @OnValidSubmit="AddNewLink">
+@using BlazorApp.Shared
+
+<EditForm Model="@Model" OnValidSumit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit">
+  <DataAnnotationsValidator />
   <p>Enter a link and press enter</p>
-  <InputText
-    class="input is-large is-size-2"
-    ref="newLink"
-    type="url"
-    id="newLink"
-    required
-    @bind="newLink"
-    placeholder="http://example.com"
-  />
-  <div class="errorMessage @(isInvalid ? "" : "is-hidden")">
-    <p class="has-text-danger is-font-weight-medium">
-      That doesn't look like a valid URL
-    </p>
-  </div>
+  <InputText class="input is-large is-size-2" @bind-Value="Model!.Url" id="newLink" placeholder="http://example.com"
+    ParsingErrorMessage="That doesn't look like a valid URL" />
+  <ValidationMessage class="has-text-danger is-font-weight-medium mt-2" For="() => Model.Url" />
 </EditForm>
 
 @code {
-  private string newLink = ""; 
-  private bool isInvalid = false; 
+  public Link? Model { get; set; }
+  private bool isInvalid = false;
 
-  [Parameter]
-  public EventCallback<string> OnLinkAdded { get; set; }
-  
-  void AddNewLink(KeyboardEventArgs e) { 
-    if (e.Key == "Enter") { 
-        
-        @* OnLinkAdded.InvokeAsync(newLink); *@
-    }
+  protected override void OnInitialized() => Model ??= new();
+
+  private void OnValidSubmit()
+  {
+    Console.WriteLine("Submit");
   }
-} 
+
+  private void OnInvalidSubmit()
+  {
+    isInvalid = true;
+  }
+}
