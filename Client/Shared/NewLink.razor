@@ -1,6 +1,6 @@
 @using BlazorApp.Shared
 
-<EditForm Model="@Model" OnValidSumit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit">
+<EditForm Model="@Model" OnValidSumit="@OnValidSubmit">
   <DataAnnotationsValidator />
   <p>Enter a link and press enter</p>
   <InputText class="input is-large is-size-2" @bind-Value="Model!.Url" id="newLink" placeholder="http://example.com"
@@ -10,17 +10,11 @@
 
 @code {
   public Link? Model { get; set; }
-  private bool isInvalid = false;
 
   protected override void OnInitialized() => Model ??= new();
 
   private void OnValidSubmit()
   {
     Console.WriteLine("Submit");
-  }
-
-  private void OnInvalidSubmit()
-  {
-    isInvalid = true;
   }
 }
