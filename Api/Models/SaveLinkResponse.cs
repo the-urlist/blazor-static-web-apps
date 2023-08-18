@@ -7,7 +7,7 @@ namespace Api.Models
     public class SaveLinkResponse
     {
         [CosmosDBOutput(
-            databaseName: "linkylinkdb",
+            databaseName: "TheUrlist",
             collectionName: "linkbundles",
             ConnectionStringSetting = "CosmosDBConnectionString")]
         public LinkBundle? NewLinkBundle { get; set; }

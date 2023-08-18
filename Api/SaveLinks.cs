@@ -68,11 +68,13 @@ namespace Api
             await response.WriteAsJsonAsync<LinkBundle>(linkBundle);
 
             // Return a response to both HTTP trigger and Azure Cosmos DB output binding.
-            return new SaveLinkResponse()
+            var saveResponse = new SaveLinkResponse()
             {
                 NewLinkBundle = linkBundle,
                 HttpResponse = response
             };
+
+            return saveResponse;
         }
 
         private void EnsureVanityUrl(LinkBundle linkDocument)
