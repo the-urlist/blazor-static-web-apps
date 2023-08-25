@@ -5,7 +5,7 @@ namespace BlazorApp.Shared
 {
     public class LinkBundle {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string Id { get; init; }
         [JsonPropertyName("vanityUrl")]
         public string VanityUrl { get; set; }
         [JsonPropertyName("description")]

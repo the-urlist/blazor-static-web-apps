@@ -1,7 +1,7 @@
-using Api.Models;
 using BlazorApp.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -20,14 +20,16 @@ namespace Api
         protected const string VANITY_REGEX = @"^([\w\d-])+(/([\w\d-])+)*$";
 
         private readonly ILogger _logger;
+        private readonly CosmosClient _cosmosClient;
 
-        public SaveLinks(ILoggerFactory loggerFactory)
+        public SaveLinks(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
         {
             _logger = loggerFactory.CreateLogger<SaveLinks>();
+            _cosmosClient = cosmosClient;
         }
 
         [Function("SaveLinks")]
-        public async Task<SaveLinkResponse> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "links")] HttpRequestData req,
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "links")] HttpRequestData req,
             FunctionContext executionContext)
         {
             var logger = executionContext.GetLogger("SaveLinks");
@@ -41,11 +43,8 @@ namespace Api
                 var res = req.CreateResponse(HttpStatusCode.BadRequest);
                 await res.WriteAsJsonAsync(new { error = "Invalid payload" });
 
-                return new SaveLinkResponse()
-                {
-                    NewLinkBundle = null,
-                    HttpResponse = res
-                };
+                // Return the response
+                return res;
             }
 
             EnsureVanityUrl(linkBundle);
@@ -53,28 +52,51 @@ namespace Api
             Match match = Regex.Match(linkBundle.VanityUrl, VANITY_REGEX, RegexOptions.IgnoreCase);
 
             if (!match.Success)
-            {
+            {   
                 var res = req.CreateResponse(HttpStatusCode.BadRequest);
                 await res.WriteAsJsonAsync(new { error = "Invalid vanity url" });
 
-                return new SaveLinkResponse()
-                {
-                    NewLinkBundle = null,
-                    HttpResponse = res
-                };
+                return res;
             }
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync<LinkBundle>(linkBundle);
-
-            // Return a response to both HTTP trigger and Azure Cosmos DB output binding.
-            var saveResponse = new SaveLinkResponse()
+            try
             {
-                NewLinkBundle = linkBundle,
-                HttpResponse = response
-            };
+                // Get the cosmos container
+                var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
 
-            return saveResponse;
+                // Create the document
+                var response = await container.CreateItemAsync(linkBundle);
+
+                // Return the response
+                var responseMessage = req.CreateResponse(HttpStatusCode.Created);
+
+                // Add the location header
+                responseMessage.Headers.Add("Location", $"/{linkBundle.VanityUrl}");
+
+                // Get the document from response
+                var linkDocument = response.Resource;
+
+                // Write the document to the response
+                await responseMessage.WriteAsJsonAsync(linkDocument);
+
+                return responseMessage;
+            }
+            // catch specific exception for document conflict
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
+            {
+                var res = req.CreateResponse(HttpStatusCode.Conflict);
+                await res.WriteAsJsonAsync(new { error = "Vanity url already exists" });
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+                var res = req.CreateResponse(HttpStatusCode.InternalServerError);
+                await res.WriteAsJsonAsync(new { error = ex.Message });
+
+                return res;
+            }
+
         }
 
         private void EnsureVanityUrl(LinkBundle linkDocument)
