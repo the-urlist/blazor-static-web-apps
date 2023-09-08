@@ -50,7 +50,7 @@ namespace Api
             Match match = Regex.Match(linkBundle.VanityUrl, VANITY_REGEX, RegexOptions.IgnoreCase);
 
             if (!match.Success)
-            {   
+            {
                 var res = req.CreateResponse(HttpStatusCode.BadRequest);
                 await res.WriteAsJsonAsync(new { error = "Invalid vanity url" });
 
@@ -82,15 +82,15 @@ namespace Api
             // catch specific exception for document conflict
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
             {
-                var res = req.CreateResponse(HttpStatusCode.Conflict);
-                await res.WriteAsJsonAsync(new { error = "Vanity url already exists" });
+                var res = req.CreateResponse();
+                await res.WriteAsJsonAsync(new { error = "Vanity url already exists" }, HttpStatusCode.Conflict);
 
                 return res;
             }
             catch (Exception ex)
             {
-                var res = req.CreateResponse(HttpStatusCode.InternalServerError);
-                await res.WriteAsJsonAsync(new { error = ex.Message });
+                var res = req.CreateResponse();
+                await res.WriteAsJsonAsync(new { error = ex.Message }, HttpStatusCode.InternalServerError);
 
                 return res;
             }
