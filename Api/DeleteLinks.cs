@@ -44,7 +44,7 @@ namespace Api
             {
                 var response = req.CreateResponse(System.Net.HttpStatusCode.OK);
 
-                await container.DeleteItemAsync<LinkBundle>(link.Id, new PartitionKey(link.VanityUrl));
+                await container.DeleteItemAsync<LinkBundle>(link.id, new PartitionKey(link.VanityUrl));
 
                 await response.WriteStringAsync("Link deleted");
                 return response;
