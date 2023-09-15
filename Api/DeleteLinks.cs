@@ -36,8 +36,9 @@ namespace Api
 
             if (link == null)
             {
-                var response = req.CreateResponse(System.Net.HttpStatusCode.NotFound);
+                var response = req.CreateResponse();
                 await response.WriteStringAsync("Link not found");
+                response.StatusCode = System.Net.HttpStatusCode.NotFound;
                 return response;
             }
             else
