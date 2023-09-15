@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
 <PageTitle>The Urlist</PageTitle>
 
@@ -35,7 +36,7 @@
         <h2 class="is-size-3 has-text-weight-bold has-text-primary has-text-centered">
           Get Started
         </h2>
-        <NewLink></NewLink>
+        <NewLink OnNewLinkAdded="@NewLinkAdded"></NewLink>
       </div>
     </div>
   </div>
@@ -44,7 +45,7 @@
 @code {
   private void NewLinkAdded(string url)
   {
-    Console.WriteLine(url);
+    // navigate to the /s/edit route
+    NavigationManager.NavigateTo($"/s/edit/{url}");
   }
 }
-
