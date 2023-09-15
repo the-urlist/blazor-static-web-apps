@@ -1,5 +1,49 @@
 ﻿@page "/s/edit"
+@using BlazorApp.Shared
 
-<h3>Pages</h3>
+@inject StateContainer StateContainer
 
-@code { } 
+<div class="container main content">
+  <NewLink OnNewLinkAdded="@NewLinkAdded"></NewLink>
+  <div id="linkHeader" class="columns is-mobile is-vcentered is-gapless">
+    <div class="column">
+      <h3 class="has-text-primary is-size-3 has-text-weight-medium">
+        Links
+      </h3>
+    </div>
+    <div class="column">
+      <span class="is-pulled-right">Drag links to re-order</span>
+    </div>
+  </div>
+  @foreach (var link in StateContainer.LinkBundle.Links)
+  {
+    @* <LinkItem @key="link.Url" @link="link" @editable="true"></LinkItem> *@
+    <p>@link.Url</p>
+  }
+  @* <link-list :links="currentList.links" :editable="true"></link-list> *@
+  <button id="deleteButton" v-if="currentList.links.length > 0 && listIsPublished"
+    class="button is-large is-danger has-text-white is-fullwidth" @click="showDelete = true">
+    Delete This List
+  </button>
+</div>
+
+@code {
+  /*
+  [Parameter]
+  public string newUrl { get; set; } = "";
+
+  private LinkBundle linkBundle = new();
+
+  protected override void OnInitialized()
+  {
+
+  linkBundle.Links.Add(new Link() { Url = newUrl });
+  }
+  */
+
+  private void NewLinkAdded(string url)
+  {
+    StateContainer.LinkBundle.Links.Add(new Link() { Url = url });
+    // linkBundle.Links.Add(new Link() { Url = url });
+  }
+}
