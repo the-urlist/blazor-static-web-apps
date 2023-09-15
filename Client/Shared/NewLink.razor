@@ -1,7 +1,7 @@
 @using BlazorApp.Shared
 
-<EditForm Model="@Model" OnValidSumit="@OnValidSubmit">
-  <DataAnnotationsValidator />
+<EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
+   <DataAnnotationsValidator />
   <p>Enter a link and press enter</p>
   <InputText class="input is-large is-size-2" @bind-Value="Model!.Url" id="newLink" placeholder="http://example.com"
     ParsingErrorMessage="That doesn't look like a valid URL" />
@@ -13,8 +13,17 @@
 
   protected override void OnInitialized() => Model ??= new();
 
-  private void OnValidSubmit()
+  [Parameter]
+  public EventCallback<string> OnNewLinkAdded { get; set; }
+
+  private async Task AddLink()
   {
-    Console.WriteLine("Submit");
+    await OnNewLinkAdded.InvokeAsync(Model!.Url);
+  }
+
+  private async void OnValidSubmit()
+  {
+    await AddLink();
+    Model = new();
   }
 }

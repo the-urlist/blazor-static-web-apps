@@ -17,8 +17,7 @@
   </div>
   @foreach (var link in StateContainer.LinkBundle.Links)
   {
-    @* <LinkItem @key="link.Url" @link="link" @editable="true"></LinkItem> *@
-    <p>@link.Url</p>
+    <BundleItem link="link"></BundleItem>
   }
   @* <link-list :links="currentList.links" :editable="true"></link-list> *@
   <button id="deleteButton" v-if="currentList.links.length > 0 && listIsPublished"
