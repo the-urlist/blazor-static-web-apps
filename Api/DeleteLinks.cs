@@ -3,10 +3,7 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Api
@@ -27,29 +24,28 @@ namespace Api
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "links/{vanityUrl}")] HttpRequestData req,
             string vanityUrl)
         {
+            var response = req.CreateResponse();
             var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
 
-            var link = container.GetItemLinqQueryable<LinkBundle>(true)
-                                 .Where(l => l.VanityUrl == vanityUrl)
-                                 .ToList()
-                                 .FirstOrDefault();
+            // get the document id where vanityUrl == vanityUrl
+            var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.vanityUrl = @vanityUrl")
+                .WithParameter("@vanityUrl", vanityUrl);
 
-            if (link == null)
-            {
-                var response = req.CreateResponse();
-                await response.WriteStringAsync("Link not found");
-                response.StatusCode = System.Net.HttpStatusCode.NotFound;
-                return response;
-            }
-            else
-            {
-                var response = req.CreateResponse(System.Net.HttpStatusCode.OK);
+            var result = await container.GetItemQueryIterator<LinkBundle>(query).ReadNextAsync();
 
-                await container.DeleteItemAsync<LinkBundle>(link.id, new PartitionKey(link.VanityUrl));
+            if (result.Any())
+            {
+                var partitionKey = new PartitionKey(vanityUrl);
+                await container.DeleteItemAsync<LinkBundle>(result.First().Id, partitionKey);
 
                 await response.WriteStringAsync("Link deleted");
                 return response;
             }
+
+
+            await response.WriteStringAsync("Link not found");
+            response.StatusCode = System.Net.HttpStatusCode.NotFound;
+            return response;
         }
     }
 }

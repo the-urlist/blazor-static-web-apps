@@ -63,6 +63,7 @@ namespace Api
                 var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
 
                 // Create the document
+                var partitionKey = new PartitionKey(linkBundle.VanityUrl);
                 var response = await container.CreateItemAsync(linkBundle);
 
                 // Return the response
