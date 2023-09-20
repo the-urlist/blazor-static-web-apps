@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -5,7 +6,7 @@ namespace BlazorApp.Shared
 {
     public class LinkBundle {
         [JsonPropertyName("id")]
-        public string id { get; init; }
+        public string Id { get; init; } = Guid.NewGuid().ToString();
         [JsonPropertyName("vanityUrl")]
         public string VanityUrl { get; set; }
         [JsonPropertyName("description")]
