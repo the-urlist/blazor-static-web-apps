@@ -6,7 +6,7 @@ namespace BlazorApp.Shared
 {
     public class LinkBundle {
         [JsonPropertyName("id")]
-        public string Id { get; init; } = Guid.NewGuid().ToString();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         [JsonPropertyName("vanityUrl")]
         public string VanityUrl { get; set; }
         [JsonPropertyName("description")]
