@@ -33,12 +33,13 @@ POST http://localhost:7071/api/links
   ],
   "vanityUrl":"test",
   "description":"",
-  "userId":""
+  "userId":"",
+  "id":"ffffffff-ffff-ffff-ffff-ffffffffffff"
 }
 ###
 GET http://localhost:7071/api/links/test
 ###
-PATCH http://localhost:7071/api/links/test
+PUT http://localhost:7071/api/links/test
 
 {
   "links":[
@@ -73,7 +74,8 @@ PATCH http://localhost:7071/api/links/test
   ],
   "vanityUrl":"test",
   "description":"",
-  "userId":""
+  "userId":"",
+"id":"ffffffff-ffff-ffff-ffff-ffffffffffff"
 }
 ###
 DELETE http://localhost:7071/api/links/test
