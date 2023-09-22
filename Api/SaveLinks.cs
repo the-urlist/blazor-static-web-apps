@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -63,6 +62,7 @@ namespace Api
                 var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
 
                 // Create the document
+                var partitionKey = new PartitionKey(linkBundle.VanityUrl);
                 var response = await container.CreateItemAsync(linkBundle);
 
                 // Return the response
@@ -97,22 +97,72 @@ namespace Api
 
         }
 
+        [Function("UpdateLinks")]
+        public async Task<HttpResponseData> Update([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "links/{vanityUrl}")] HttpRequestData req,
+                       string vanityUrl, FunctionContext executionContext)
+        {
+            var logger = executionContext.GetLogger("UpdateLinks");
+            logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            // Deserialize JSON from request body into a LinkBundle object.
+            var linkBundle = await req.ReadFromJsonAsync<LinkBundle>();
+
+            if (!ValidatePayLoad(linkBundle, req))
+            {
+                var res = req.CreateResponse(HttpStatusCode.BadRequest);
+                await res.WriteAsJsonAsync(new { error = "Invalid payload" });
+
+                // Return the response
+                return res;
+            }
+
+            if (string.IsNullOrEmpty(vanityUrl))
+            {
+                var res = req.CreateResponse(HttpStatusCode.BadRequest);
+                await res.WriteAsJsonAsync(new { error = "Invalid vanity url" });
+
+                return res;
+            }
+
+            try
+            {
+                // Get the cosmos container
+                var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
+
+                // Create the document
+                var partitionKey = new PartitionKey(vanityUrl);
+                var response = await container.UpsertItemAsync(linkBundle, partitionKey);
+
+                // Return the response
+                var responseMessage = req.CreateResponse(HttpStatusCode.OK);
+
+                // Get the document from response
+                var linkDocument = response.Resource;
+
+                // Write the document to the response
+                await responseMessage.WriteAsJsonAsync(linkDocument);
+
+                return responseMessage;
+            }
+            catch (Exception ex)
+            {
+                var res = req.CreateResponse();
+                await res.WriteAsJsonAsync(new { error = ex.Message }, HttpStatusCode.InternalServerError);
+
+                return res;
+            }
+
+        }   
+
         private void EnsureVanityUrl(LinkBundle linkDocument)
         {
             if (string.IsNullOrWhiteSpace(linkDocument.VanityUrl))
             {
-                var code = new char[7];
-                var rng = new RNGCryptoServiceProvider();
+                var random = new Random();
+                var code = new string(Enumerable.Repeat(CHARACTERS, 7)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
 
-                var bytes = new byte[sizeof(uint)];
-                for (int i = 0; i < code.Length; i++)
-                {
-                    rng.GetBytes(bytes);
-                    uint num = BitConverter.ToUInt32(bytes, 0) % (uint)CHARACTERS.Length;
-                    code[i] = CHARACTERS[(int)num];
-                }
-
-                linkDocument.VanityUrl = new String(code);
+                linkDocument.VanityUrl = code;
             }
 
             // force lowercase
