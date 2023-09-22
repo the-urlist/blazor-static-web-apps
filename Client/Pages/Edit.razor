@@ -1,5 +1,7 @@
-﻿@page "/s/edit/{newUrl}"
+﻿@page "/s/edit"
 @using BlazorApp.Shared
+
+@inject StateContainer StateContainer
 
 <div class="container main content">
   <NewLink OnNewLinkAdded="@NewLinkAdded"></NewLink>
@@ -13,10 +15,9 @@
       <span class="is-pulled-right">Drag links to re-order</span>
     </div>
   </div>
-  @foreach (var link in linkBundle.Links)
+  @foreach (var link in StateContainer.LinkBundle.Links)
   {
-    @* <LinkItem @key="link.Url" @link="link" @editable="true"></LinkItem> *@
-    <p>@link.Url</p>
+    <BundleItem link="link"></BundleItem>
   }
   @* <link-list :links="currentList.links" :editable="true"></link-list> *@
   <button id="deleteButton" v-if="currentList.links.length > 0 && listIsPublished"
@@ -26,6 +27,7 @@
 </div>
 
 @code {
+  /*
   [Parameter]
   public string newUrl { get; set; } = "";
 
@@ -33,14 +35,14 @@
 
   protected override void OnInitialized()
   {
-    if (newUrl != "")
-    {
-      linkBundle.Links.Add(new Link() { Url = newUrl });
-    }
+
+  linkBundle.Links.Add(new Link() { Url = newUrl });
   }
+  */
 
   private void NewLinkAdded(string url)
   {
-    linkBundle.Links.Add(new Link() { Url = url });
+    StateContainer.LinkBundle.Links.Add(new Link() { Url = url });
+    // linkBundle.Links.Add(new Link() { Url = url });
   }
 }
