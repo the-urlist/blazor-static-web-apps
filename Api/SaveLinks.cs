@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -159,18 +158,11 @@ namespace Api
         {
             if (string.IsNullOrWhiteSpace(linkDocument.VanityUrl))
             {
-                var code = new char[7];
-                var rng = new RNGCryptoServiceProvider();
+                var random = new Random();
+                var code = new string(Enumerable.Repeat(CHARACTERS, 7)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
 
-                var bytes = new byte[sizeof(uint)];
-                for (int i = 0; i < code.Length; i++)
-                {
-                    rng.GetBytes(bytes);
-                    uint num = BitConverter.ToUInt32(bytes, 0) % (uint)CHARACTERS.Length;
-                    code[i] = CHARACTERS[(int)num];
-                }
-
-                linkDocument.VanityUrl = new String(code);
+                linkDocument.VanityUrl = code;
             }
 
             // force lowercase
