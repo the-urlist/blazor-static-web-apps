@@ -3,61 +3,32 @@
 <div class="link-outer">
   <div class="link-wrapper @(editable ? "link-editable" : "")">
     <div class="columns is-vcentered is-mobile">
-      @if (editable)
-      {
-        <div class="column is-narrow">
-          <span class="icon is-medium has-text-grey link-drag-handle">
-            <i class="fas fa-lg fa-grip-vertical"></i>
-          </span>
-        </div>
-      }
       <div class="card link">
         <div class="column">
           <div class="columns is-vcentered">
             <div class="column is-narrow is-hidden-mobile">
               <figure class="link-image">
-                <img
-                  width="64"
-                  height="64"
-                  class="is-64x64"
-                  src="@(string.IsNullOrEmpty(link.Image) ? "/images/no-image.png" : link.Image)"
-                  alt="@(link.Title)"
-                />
+                <img width="64" height="64" class="is-64x64"
+                  src="@(string.IsNullOrEmpty(link.Image) ? "/images/no-image.png" : link.Image)" alt="@(link.Title)" />
               </figure>
             </div>
             <div class="column link-details">
               <div class="columns is-mobile is-multiline is-gapless">
                 <div class="column is-narrow is-hidden-tablet">
                   <figure class="link-image link-image-little">
-                    <img
-                      width="24"
-                      height="24"
-                      class="is-24x24"
+                    <img width="24" height="24" class="is-24x24"
                       src="@(string.IsNullOrEmpty(link.Image) ? "/images/no-image.png" : link.Image)"
-                      alt="@link.Title"
-                    />
+                      alt="@link.Title" />
                   </figure>
                 </div>
                 <div class="column">
-                  <input
-                    type="text"
-                    :placeholder="editable ? 'Enter a title' : ''"
-                    class="has-text-weight-bold link-title input has-text-weight-medium"
-                    value="@link.Title"
-                  />
+                  <p class="has-text-weight-bold link-title input has-text-weight-medium">@link.Title</p>
                 </div>
                 <div class="column is-full">
-                  <textarea
-                    :placeholder="editable ? 'Enter a description' : ''"
-                    class="link-description textarea has-fixed-size is-size-7"
-                  >
+                  <p class="link-description textarea has-fixed-size is-size-7">
                     @link.Description
-                  </textarea>
-                  <input
-                    disabled="disabled"
-                    value="@link.Url"
-                    class="link-url"
-                  />
+                  </p>
+                  <input disabled="disabled" value="@link.Url" class="link-url" />
                 </div>
               </div>
             </div>
@@ -75,10 +46,7 @@
         <div class="column is-narrow" v-if="editable">
           <div class="columns is-vcentered">
             <div class="column">
-              <a
-                class="has-text-bold link-delete has-text-grey"
-                @click.prevent="deleteLink(link.id)"
-              >
+              <a class="has-text-bold link-delete has-text-grey" @click.prevent="deleteLink(link.id)">
                 <span class="icon is-medium">
                   <i class="fas fa-lg fa-times"></i>
                 </span>
@@ -92,10 +60,9 @@
 </div>
 
 @code {
-    [Parameter]
-    public Link link { get; set; } = new Link();
+  [Parameter]
+  public Link link { get; set; } = new Link();
 
-    [Parameter]
-    public bool editable { get; set; } = false;
+  [Parameter]
+  public bool editable { get; set; } = false;
 }
-
