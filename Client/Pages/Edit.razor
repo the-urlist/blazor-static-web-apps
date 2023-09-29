@@ -17,9 +17,8 @@
   </div>
   @foreach (var link in StateContainer.LinkBundle.Links)
   {
-    <BundleItem link="link"></BundleItem>
+    <BundleItemEditable newLink="link" OnDeleteLink="@DeleteLink"></BundleItemEditable>
   }
-  @* <link-list :links="currentList.links" :editable="true"></link-list> *@
   <button id="deleteButton" v-if="currentList.links.length > 0 && listIsPublished"
     class="button is-large is-danger has-text-white is-fullwidth" @click="showDelete = true">
     Delete This List
@@ -39,6 +38,11 @@
   linkBundle.Links.Add(new Link() { Url = newUrl });
   }
   */
+
+  private void DeleteLink(Link link)
+  {
+    StateContainer.DeleteLinkFromBundle(link);
+  }
 
   private void NewLinkAdded(string url)
   {

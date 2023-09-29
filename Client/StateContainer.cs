@@ -14,6 +14,12 @@ public class StateContainer
     }
   }
 
+  public void DeleteLinkFromBundle(Link link)
+  {
+    LinkBundle.Links.Remove(link);
+    NotifyStateChanged();
+  }
+
   public event Action? OnChange;
 
   private void NotifyStateChanged() => OnChange?.Invoke();
