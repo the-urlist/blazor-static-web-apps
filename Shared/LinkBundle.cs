@@ -4,9 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace BlazorApp.Shared
 {
-    public class LinkBundle {
+    public class LinkBundle
+    {
         [JsonPropertyName("id")]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; }
         [JsonPropertyName("vanityUrl")]
         public string VanityUrl { get; set; }
         [JsonPropertyName("description")]

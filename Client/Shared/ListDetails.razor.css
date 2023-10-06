@@ -1,0 +1,28 @@
+  #listDetails {
+    padding-top: 40px;
+    background-color: white;
+    top: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 50px 40px -40px #e8e8e8;
+    padding-bottom: 20px;
+  }
+
+  #description {
+    font-size: 0.8em;
+    line-height: 1.5em;
+  }
+
+  #vanityUrl {
+    font-size: 2.25em;
+    font-weight: 500;
+  }
+
+  #publishButton {
+    margin-top: 1.2em;
+  }
+
+  #liveLink {
+    margin-top: 10px;
+    font-size: 12px;
+  }
