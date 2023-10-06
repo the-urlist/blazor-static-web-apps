@@ -1,3 +1,4 @@
+using Api.Services;
 using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
@@ -9,7 +10,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Api
+namespace Api.Functions
 {
     public class SaveLinks
     {
@@ -17,30 +18,27 @@ namespace Api
         protected const string VANITY_REGEX = @"^([\w\d-])+(/([\w\d-])+)*$";
 
         private readonly ILogger _logger;
-        private readonly CosmosClient _cosmosClient;
+        private readonly IDataService _dataService;
 
-        public SaveLinks(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
+        public SaveLinks(ILoggerFactory loggerFactory, IDataService dataService)
         {
             _logger = loggerFactory.CreateLogger<SaveLinks>();
-            _cosmosClient = cosmosClient;
+            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
         }
 
         [Function("SaveLinks")]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "links")] HttpRequestData req,
             FunctionContext executionContext)
         {
-            var logger = executionContext.GetLogger("SaveLinks");
-            logger.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            // Deserialize JSON from request body into a LinkBundle object.
-            var linkBundle = await req.ReadFromJsonAsync<LinkBundle>();
+            var body = await req.ReadAsStringAsync();
+            var linkBundle = System.Text.Json.JsonSerializer.Deserialize<LinkBundle>(body);
 
             if (!ValidatePayLoad(linkBundle, req))
             {
                 var res = req.CreateResponse(HttpStatusCode.BadRequest);
                 await res.WriteAsJsonAsync(new { error = "Invalid payload" });
-
-                // Return the response
                 return res;
             }
 
@@ -52,34 +50,17 @@ namespace Api
             {
                 var res = req.CreateResponse(HttpStatusCode.BadRequest);
                 await res.WriteAsJsonAsync(new { error = "Invalid vanity url" });
-
                 return res;
             }
 
             try
             {
-                // Get the cosmos container
-                var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
-
-                // Create the document
-                var partitionKey = new PartitionKey(linkBundle.VanityUrl);
-                var response = await container.CreateItemAsync(linkBundle);
-
-                // Return the response
+                await _dataService.SaveLinkBundle(linkBundle);
                 var responseMessage = req.CreateResponse(HttpStatusCode.Created);
-
-                // Add the location header
                 responseMessage.Headers.Add("Location", $"/{linkBundle.VanityUrl}");
-
-                // Get the document from response
-                var linkDocument = response.Resource;
-
-                // Write the document to the response
-                await responseMessage.WriteAsJsonAsync(linkDocument);
-
+                await responseMessage.WriteAsJsonAsync(linkBundle);
                 return responseMessage;
             }
-            // catch specific exception for document conflict
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
             {
                 var res = req.CreateResponse();
@@ -94,7 +75,6 @@ namespace Api
 
                 return res;
             }
-
         }
 
         [Function("UpdateLinks")]
@@ -104,15 +84,12 @@ namespace Api
             var logger = executionContext.GetLogger("UpdateLinks");
             logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            // Deserialize JSON from request body into a LinkBundle object.
             var linkBundle = await req.ReadFromJsonAsync<LinkBundle>();
 
             if (!ValidatePayLoad(linkBundle, req))
             {
                 var res = req.CreateResponse(HttpStatusCode.BadRequest);
                 await res.WriteAsJsonAsync(new { error = "Invalid payload" });
-
-                // Return the response
                 return res;
             }
 
@@ -126,33 +103,18 @@ namespace Api
 
             try
             {
-                // Get the cosmos container
-                var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
-
-                // Create the document
-                var partitionKey = new PartitionKey(vanityUrl);
-                var response = await container.UpsertItemAsync(linkBundle, partitionKey);
-
-                // Return the response
+                await _dataService.UpdateLinkBundle(linkBundle);
                 var responseMessage = req.CreateResponse(HttpStatusCode.OK);
-
-                // Get the document from response
-                var linkDocument = response.Resource;
-
-                // Write the document to the response
-                await responseMessage.WriteAsJsonAsync(linkDocument);
-
+                await responseMessage.WriteAsJsonAsync(linkBundle);
                 return responseMessage;
             }
             catch (Exception ex)
             {
                 var res = req.CreateResponse();
                 await res.WriteAsJsonAsync(new { error = ex.Message }, HttpStatusCode.InternalServerError);
-
                 return res;
             }
-
-        }   
+        }
 
         private void EnsureVanityUrl(LinkBundle linkDocument)
         {
@@ -165,14 +127,12 @@ namespace Api
                 linkDocument.VanityUrl = code;
             }
 
-            // force lowercase
             linkDocument.VanityUrl = linkDocument.VanityUrl.ToLower();
         }
 
         private static bool ValidatePayLoad(LinkBundle linkDocument, HttpRequestData req)
         {
-            bool isValid = (linkDocument != null) && linkDocument.Links.Count() > 0;
-
+            bool isValid = linkDocument != null && linkDocument.Links.Count() > 0;
             return isValid;
         }
     }

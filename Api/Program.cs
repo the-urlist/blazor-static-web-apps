@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Azure.Cosmos;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Api.Services;
 
 namespace ApiIsolated
 {
@@ -28,6 +29,7 @@ namespace ApiIsolated
             var host = new HostBuilder()
                 .ConfigureServices((context, services) =>
                 {
+                    services.AddSingleton<IDataService, CosmosDataService>();
                     services.AddSingleton<CosmosClient>(sp => new CosmosClient(
                         context.Configuration["CosmosDb:Endpoint"], 
                         context.Configuration["CosmosDb:Key"],
