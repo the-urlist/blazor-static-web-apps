@@ -1,29 +1,25 @@
+@using BlazorApp.Client.Utils
 @inject StateContainer StateContainer
 
 <div>
   <div id="listDetails" class="addbar flex is-horizontally-centered">
     <div class="container main">
-      <EditForm Model="@StateContainer.LinkBundle">
+      <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
+        <CustomValidation @ref="customValidation" />
         <div class="columns">
           <div class="column">
             <label class="control-label" for="vanityUrl">Link Title</label>
             @if (String.IsNullOrEmpty(StateContainer.LinkBundle.Id))
             {
-              <InputText @bind-Value="StateContainer.LinkBundle.VanityUrl" class="input is-large has-tooltip"
-                id="vanityUrl" type="text" @oninput="eventArgs => CheckVanityUrl(eventArgs.Value.ToString())"
-                title="Optional: Enter a name for this list. The name will become the URL (i.e. my-list becomes theurlist.com/my-list). If you leave this box blank, we'll generate a random name for you." />
+              <InputText @bind-Value="Model" Class=@($"input is-large has-tooltip {ValidClass}") title=" Optional: Enter a name for this list. The name will become the URL (i.e. my-list becomes
+                theurlist.com/my-list). If you leave this box blank, we'll generate a random name for you."
+                @oninput="OnInput" @onblur="OnBlur" />
+              <ValidationSummary class="has-text-danger is-font-weight-medium mt-2" />
+              @* <ValidationMessage class="has-text-danger is-font-weight-medium"
+            ParsingErrorMessage="The vanity is not valie" For="() => Model" /> *@
             }
-            else
-            {
-              <InputText @bind-Value="StateContainer.LinkBundle.VanityUrl" disabled class="input is-large" />
-            }
-            <div id="errorMessage">
-              <ValidationMessage class="has-text-danger is-font-weight-medium"
-                ParsingErrorMessage="@vanityValidationErrorMessage" For="() => StateContainer.LinkBundle.VanityUrl" />
-            </div>
             <p id="liveLink" v-if="listIsPublished">
               <a :href="liveLink" target="_new">
-                {{ liveLink }}
               </a>
             </p>
           </div>
@@ -34,8 +30,8 @@
           </div>
           <div class="column is-narrow">
             <label class="control-label is-hidden-mobile" for>&nbsp;</label>
-            <button id="publishButton" :disabled="!canSave"
-              class="button is-primary is-large has-text-white has-text-weight-bold" @click="saveList">
+            <button type="submit" id="publishButton" :disabled="!canSave"
+              class="button is-primary is-large has-text-white has-text-weight-bold">
               Publish
             </button>
           </div>
@@ -46,26 +42,48 @@
 </div>
 
 @code {
-  EditContext editContext;
+  private CustomValidation? customValidation;
 
-  protected override void OnInitialized()
+  public string Model { get; set; } = "";
+
+  private string ValidClass { get; set; } = "valid";
+
+  private Debouncer debouncer = new Debouncer(300);
+
+  private void OnValidSubmit()
   {
-    base.OnInitialized();
-    editContext = new EditContext(StateContainer.LinkBundle);
+    Console.WriteLine("OnValidSubmit");
   }
 
-  private string vanityValidationErrorMessage = "";
-
-  private void CheckVanityUrl(string vanityUrl)
+  private void OnBlur()
   {
+    ValidateVanityUrl();
+  }
+
+  private void OnInput(ChangeEventArgs e)
+  {
+    @* Model = e.Value.ToString(); *@
+    ValidateVanityUrl();
+  }
+  private void ValidateVanityUrl()
+  {
+    customValidation?.ClearErrors();
+    ValidClass = "valid";
+
+    var errors = new Dictionary<string, List<string>>();
+
     var regex = new System.Text.RegularExpressions.Regex(@"^(^$|[a-zA-Z0-9_\-])+$");
-    if (!regex.IsMatch(vanityUrl))
+    if (!regex.IsMatch(Model))
     {
-      vanityValidationErrorMessage = "The vanity URL can only contain letters and numbers.";
+      errors.Add(nameof(Model), new() { "Only letters, numbers and dashes please" });
     }
-    else
+
+    if (errors.Any())
     {
-      vanityValidationErrorMessage = "";
+      customValidation?.DisplayErrors(errors);
+      ValidClass = "invalid";
     }
+
+    StateHasChanged();
   }
 }
