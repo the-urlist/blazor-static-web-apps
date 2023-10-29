@@ -1,89 +1,82 @@
 @using BlazorApp.Client.Utils
+@using BlazorApp.Shared
 @inject StateContainer StateContainer
 
 <div>
   <div id="listDetails" class="addbar flex is-horizontally-centered">
     <div class="container main">
-      <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit">
-        <CustomValidation @ref="customValidation" />
-        <div class="columns">
-          <div class="column">
-            <label class="control-label" for="vanityUrl">Link Title</label>
-            @if (String.IsNullOrEmpty(StateContainer.LinkBundle.Id))
-            {
-              <InputText @bind-Value="Model" Class=@($"input is-large has-tooltip {ValidClass}") title=" Optional: Enter a name for this list. The name will become the URL (i.e. my-list becomes
+      <div class="columns">
+        <div class="column">
+          <label class="control-label" for="vanityUrl">Link Title</label>
+          <input @bind="StateContainer.LinkBundle.VanityUrl" Class=@($"input is-large has-tooltip { customValidator.validationErrorClass }")
+            title=" Optional: Enter a name for this list. The name will become the URL (i.e. my-list becomes
                 theurlist.com/my-list). If you leave this box blank, we'll generate a random name for you."
-                @oninput="OnInput" @onblur="OnBlur" />
-              <ValidationSummary class="has-text-danger is-font-weight-medium mt-2" />
-              @* <ValidationMessage class="has-text-danger is-font-weight-medium"
-            ParsingErrorMessage="The vanity is not valie" For="() => Model" /> *@
-            }
-            <p id="liveLink" v-if="listIsPublished">
-              <a :href="liveLink" target="_new">
-              </a>
-            </p>
-          </div>
-          <div class="column">
-            <label class="control-label" for="description">Description</label>
-            <textarea rows="2" title="Optional: The description will show up as the title on your public list page."
-              class="textarea has-fixed-size" id="description" v-model="currentList.description"></textarea>
-          </div>
-          <div class="column is-narrow">
-            <label class="control-label is-hidden-mobile" for>&nbsp;</label>
-            <button type="submit" id="publishButton" :disabled="!canSave"
-              class="button is-primary is-large has-text-white has-text-weight-bold">
-              Publish
-            </button>
-          </div>
+            @oninput="ValidateVanityUrl" />
+          <CustomValidationMessage customValidator="customValidator" />
+          <p id="liveLink" v-if="listIsPublished">
+            <a :href="liveLink" target="_new">
+            </a>
+          </p>
         </div>
-      </EditForm>
+        <div class="column">
+          <label class="control-label" for="description">Description</label>
+          <textarea rows="2" title="Optional: The description will show up as the title on your public list page."
+            class="textarea has-fixed-size" id="description" v-model="currentList.description"></textarea>
+        </div>
+        <div class="column is-narrow">
+          <label class="control-label is-hidden-mobile" for>&nbsp;</label>
+          <button type="submit" id="publishButton" disabled="@PublishDisabled(customValidator.Invalid)"
+            class="button is-primary is-large has-text-white has-text-weight-bold" @onclick="PublishLinkBundle">
+            Publish
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 @code {
-  private CustomValidation? customValidation;
-
-  public string Model { get; set; } = "";
-
-  private string ValidClass { get; set; } = "valid";
 
   private Debouncer debouncer = new Debouncer(300);
+  private CustomValidator customValidator = new CustomValidator();
 
-  private void OnValidSubmit()
-  {
-    Console.WriteLine("OnValidSubmit");
+  bool PublishDisabled(bool invalid) {
+    if (invalid) return true;
+    if (String.IsNullOrEmpty(StateContainer.LinkBundle.VanityUrl)) return true;
+
+    return false;
   }
-
-  private void OnBlur()
+  
+  private void ValidateVanityUrl(ChangeEventArgs e)
   {
-    ValidateVanityUrl();
-  }
+    var vanityUrl = e.Value?.ToString();
+    StateContainer.LinkBundle.VanityUrl = vanityUrl;
 
-  private void OnInput(ChangeEventArgs e)
-  {
-    @* Model = e.Value.ToString(); *@
-    ValidateVanityUrl();
-  }
-  private void ValidateVanityUrl()
-  {
-    customValidation?.ClearErrors();
-    ValidClass = "valid";
+    // reset the validator
+    customValidator.Reset();
 
-    var errors = new Dictionary<string, List<string>>();
+    // check to see if the vanity url contains invalid characters
+    customValidator.ValidateVanityURLChars(vanityUrl);
+    if (customValidator.Invalid) return;
 
-    var regex = new System.Text.RegularExpressions.Regex(@"^(^$|[a-zA-Z0-9_\-])+$");
-    if (!regex.IsMatch(Model))
+    debouncer.Debounce(() =>
     {
-      errors.Add(nameof(Model), new() { "Only letters, numbers and dashes please" });
-    }
+      // the characters are valid, so now check to see if the vanity url is already in use
+      //if (await VanityUrlIsTaken(vanityUrl)) return;
+    });
+  }
 
-    if (errors.Any())
+  // calls the API to see if the vanity is stil available for use
+  /* private async Task<bool> VanityUrlIsTaken(string vanityUrl) {
+    Console.WriteLine("Checking availability...");
+    return false;
+  } */
+
+  private void PublishLinkBundle()
+  {
+    if (customValidator.Valid)
     {
-      customValidation?.DisplayErrors(errors);
-      ValidClass = "invalid";
+      Console.WriteLine("Publishing...");
     }
-
-    StateHasChanged();
   }
 }

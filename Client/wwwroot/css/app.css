@@ -41,6 +41,7 @@ body {
 
 .input.invalid,
 .textarea.invalid {
+    visibility: visible;
     border-width: 4px;
     border-color: var(--danger);
     -webkit-animation-name: shakeError;

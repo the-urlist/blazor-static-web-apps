@@ -6,6 +6,7 @@
     background: #fff;
     box-shadow: 0 50px 40px -40px #e8e8e8;
     padding-bottom: 20px;
+    min-height: 180px;
   }
 
   #description {
