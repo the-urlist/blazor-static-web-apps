@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Components;
+
 namespace BlazorApp.Client.Utils;
 
 public class Debouncer

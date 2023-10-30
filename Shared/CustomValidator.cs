@@ -1,4 +1,4 @@
-using System;
+using System.Threading.Tasks;
 
 namespace BlazorApp.Shared;
 
@@ -39,25 +39,5 @@ public class CustomValidator
   {
     Valid = true;
     Message = "";
-  }
-
-  public void ValidateVanityURLChars(string vanityUrl)
-  {
-    var regex = new System.Text.RegularExpressions.Regex(@"^(^$|[a-zA-Z0-9_\-])+$");
-
-    if (!regex.IsMatch(vanityUrl))
-    {
-      Set(false, "Only letters, numbers, underscores, and dashes are allowed.");
-    }
-  }
-
-  public void ValidateURL(string url)
-  {
-    var regex = new System.Text.RegularExpressions.Regex(@"^(https?://)?([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?$");
-
-    if (!regex.IsMatch(url))
-    {
-      Set(false, "That doesn't look like a valid URL");
-    }
   }
 }

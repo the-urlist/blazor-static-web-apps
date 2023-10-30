@@ -1,8 +1,0 @@
-@using BlazorApp.Shared
-
-<span class=@($"has-text-danger is-font-weight-medium mt-2 { customValidator?.ValidationMessageClass }")>
-  @customValidator?.Message</span>
-
-@code {
-  [Parameter] public CustomValidator? customValidator { get; set; }
-}
