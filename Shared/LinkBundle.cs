@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlazorApp.Shared
 {
@@ -8,7 +8,7 @@ namespace BlazorApp.Shared
     {
         [JsonPropertyName("id")]
         public string Id { get; set; }
-        [JsonPropertyName("vanityUrl")]
+        [JsonPropertyName("vanityUrl"), RegularExpression(@"^(^$|[a-zA-Z0-9_\-])+$", ErrorMessage = "Only letters, numbers and dashes")]
         public string VanityUrl { get; set; }
         [JsonPropertyName("description")]
         public string Description { get; set; }
