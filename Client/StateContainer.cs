@@ -14,10 +14,29 @@ public class StateContainer
     }
   }
 
+  private bool appIsBusy { get; set; }
+
+  public bool AppIsBusy
+  {
+    get => appIsBusy;
+    set
+    {
+      appIsBusy = value;
+      NotifyStateChanged();
+    }
+  }
+
   public void DeleteLinkFromBundle(Link link)
   {
     LinkBundle.Links.Remove(link);
     NotifyStateChanged();
+  }
+
+  public async Task<HttpResponseMessage> GetLinkBundle(string vanityUrl)
+  {
+    var client = new HttpClient();
+    var response = await client.GetAsync($"links/{vanityUrl}");
+    return response;
   }
 
   public event Action? OnChange;
