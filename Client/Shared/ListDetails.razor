@@ -15,7 +15,7 @@
             title=" Optional: Enter a name for this list. The name will become the URL (i.e. my-list becomes
                 theurlist.com/my-list). If you leave this box blank, we'll generate a random name for you."
             @oninput="ValidateVanityUrl" />
-          <span class=@($"has-text-danger is-font-weight-medium mt-2 { validationMessageClass }")>
+          <span class=@($"has-text-danger is-font-weight-medium mt-2 is-size-7 { validationMessageClass }")>
   @validationErrorMessage</span>
           <p id="liveLink" v-if="listIsPublished">
             <a :href="liveLink" target="_new">
@@ -29,7 +29,7 @@
         </div>
         <div class="column is-narrow">
           <label class="control-label is-hidden-mobile" for>&nbsp;</label>
-          <button type="submit" id="publishButton" disabled="@PublishDisabled(customValidator.Invalid)"
+          <button type="submit" id="publishButton" disabled="@(!PublishEnabled(listIsValid))"
             class="button is-primary is-large has-text-white has-text-weight-bold" @onclick="PublishLinkBundle">
             Publish
           </button>
@@ -42,30 +42,12 @@
 @code {
 
   private Debouncer debouncer = new Debouncer(300);
-  private CustomValidator customValidator = new CustomValidator();
-
   private bool listIsValid = true;
   private string validationErrorMessage = "";
-  private string validationErrorClass
-  {
-    get
-    {
-      return listIsValid ? "" : "invalid";
-    }
-  }
-
-  private string validationMessageClass
-  {
-    get
-    {
-      return listIsValid ? "is-invisible" : "false";
-    }
-  }
-
-  bool PublishDisabled(bool invalid) {
-    if (invalid) return true;
-    if (String.IsNullOrEmpty(StateContainer.LinkBundle.VanityUrl)) return true;
-
+  private string validationErrorClass => listIsValid ? "" : "is-danger";
+  private string validationMessageClass => listIsValid ? "is-invisible" : "is-visible";
+  bool PublishEnabled(bool valid) {
+    if (valid) return true;
     return false;
   }
 
@@ -74,7 +56,9 @@
     var vanityUrl = e.Value?.ToString();
     StateContainer.LinkBundle.VanityUrl = vanityUrl;
     listIsValid = true;
-    
+
+    if (String.IsNullOrEmpty(vanityUrl)) return;
+
     // Create a ValidationContext based on the LinkBundle object
     var context = new ValidationContext(StateContainer.LinkBundle, null, null);
     // This list will hold the results of the validation
@@ -88,18 +72,26 @@
       return;
     }
 
-    debouncer.Debounce(() =>
+    debouncer.Debounce(async () =>
     {
       // the characters are valid, so now check to see if the vanity url is already in use
-      //if (await VanityUrlIsTaken(vanityUrl)) return;
+      await VanityUrlIsTaken(vanityUrl);
+      StateHasChanged();
     });
   }
 
   // calls the API to see if the vanity is stil available for use
-  /* private async Task<bool> VanityUrlIsTaken(string vanityUrl) {
-    Console.WriteLine("Checking availability...");
+  private async Task<bool> VanityUrlIsTaken(string vanityUrl) {
+    var response = await Http.GetAsync($"api/links/{vanityUrl}");
+    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+    {
+      listIsValid = false;
+      validationErrorMessage = "This vanity URL is already in use. Please choose another.";
+      return true;
+    }
+
     return false;
-  } */
+  }
 
   private async Task PublishLinkBundle()
   {
