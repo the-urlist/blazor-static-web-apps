@@ -1,44 +1,33 @@
+@inject StateContainer StateContainer
+
 <header id="navbar" class="header">
   <nav class="navbar container" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="/">
-        <img
-          width="100"
-          height="60"
-          src="/images/logo-beta.svg"
-          alt="urlist logo"
-        />
+        <img width="100" height="60" src="/images/logo-beta.svg" alt="urlist logo" />
       </a>
-      <a
-        id="hamburger"
-        role="button"
-        class="beta-bump navbar-burger burger @(showMenu ? "is-active" : "")"
-        aria-label="menu"
-        aria-expanded="false"
-        data-target="navbarBasicExample"
-        @onclick="@toggleMenu"
-      >
+      <a id="hamburger" role="button" class="beta-bump navbar-burger burger @(showMenu ? "is-active" : "")"
+        aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" @onclick="@ToggleMenu">
         <img src="images/burger.svg" alt="toggle menu" width="60" height="60" />
       </a>
     </div>
     <div class="beta-bump navbar-menu @(showMenu ? "is-active" : "")">
       <div class="navbar-start">
-        <a class="navbar-item" @click.prevent="newList()">
+        <a class="navbar-item" href="/edit">
           <span class="icon is-large navbar-icon">
             <i class="fas fa-lg fa-plus-circle"></i>
           </span>
           New
         </a>
-        <router-link
-          v-if="currentUser.loggedIn"
-          class="navbar-item"
-          to="/s/user"
-        >
-          <span class="icon is-large navbar-icon">
-            <i class="fas fa-lg fa-user-circle"></i>
-          </span>
-          My Lists
-        </router-link>
+        @if (loggedIn)
+        {
+          <router-link v-if="currentUser.loggedIn" class="navbar-item" to="/s/user">
+            <span class="icon is-large navbar-icon">
+              <i class="fas fa-lg fa-user-circle"></i>
+            </span>
+            My Lists
+          </router-link>
+        }
         <a href="https://aka.ms/theurlist" class="navbar-item" target="_new">
           <span class="icon is-large navbar-icon">
             <i class="fas fa-lg fa-question-circle"></i>
@@ -46,51 +35,60 @@
           About
         </a>
       </div>
-
       <div class="navbar-end">
-        <div
-          class="navbar-item has-dropdown is-hoverable"
-          v-if="currentUser.loggedIn"
-        >
-          <a class="navbar-link">
-            <div class="columns is-gapless is-mobile">
-              <div class="column is-narrow">
-                <figure id="profileImage" class="image">
-                  <img class="is-rounded" :src="currentUser.profileImage" alt />
-                </figure>
+        @if (loggedIn)
+        {
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              <div class="columns is-gapless is-mobile">
+                <div class="column">
+                  <span class="icon is-large" title="@StateContainer.User.ClientPrincipal.UserDetails">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </div>
               </div>
-              <div class="column">
-                <span>TODO: Username</span>
-              </div>
-            </div>
-          </a>
-          <div class="navbar-dropdown">
-            <a class="navbar-item" :href="logoutUrl">
-              <span class="icon is-medium navbar-icon">
-                <i class="fas fa-sign-out-alt"></i>
-              </span>
-              Log Out
             </a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="@($"/.auth/logout")">
+                <span class="icon is-medium navbar-icon">
+                  <i class="fas fa-sign-out-alt"></i>
+                </span>
+                Log Out
+              </a>
+            </div>
           </div>
-        </div>
-        <a v-else class="navbar-item" @click.prevent="showLoginModal = true">
-          <span class="icon is-large navbar-icon">
-            <i class="fas fa-lg fa-sign-in-alt"></i>
-          </span>
-          Login
-        </a>
+        }
+        else
+        {
+          <a class="navbar-item" @onclick="ToggleModal">
+            <span class="icon is-large navbar-icon">
+              <i class="fas fa-lg fa-sign-in-alt"></i>
+            </span>
+            Login
+          </a>
+        }
       </div>
     </div>
   </nav>
-    @* <modal-login :isActive="showLoginModal" @close="showLoginModal = false"
-  ></modal-login> *@
+  <ModalLogin isOpen="showLoginModal" closeModal="ToggleModal"></ModalLogin>
 </header>
 
 @code {
-    private bool showMenu = false; 
-    private void toggleMenu()
-    { 
-      showMenu = !showMenu;
-      Console.WriteLine("showMenu: " + showMenu);
-    }
-} 
+
+  [Parameter]
+  public bool loggedIn { get; set; }
+
+  private bool showMenu = false;
+
+  private bool showLoginModal = false;
+  private void ToggleMenu()
+  {
+    showMenu = !showMenu;
+  }
+
+  private void ToggleModal()
+  {
+    showLoginModal = !showLoginModal;
+    Console.WriteLine($"showLoginModal: {showLoginModal}");
+  }
+}

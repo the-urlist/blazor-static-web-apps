@@ -26,6 +26,18 @@ public class StateContainer
     }
   }
 
+  private User user = new User();
+
+  public User User
+  {
+    get => user;
+    set
+    {
+      user = value;
+      NotifyStateChanged();
+    }
+  }
+
   public void DeleteLinkFromBundle(Link link)
   {
     LinkBundle.Links.Remove(link);
