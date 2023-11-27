@@ -30,7 +30,7 @@
 
   private void NewLinkAdded(string url)
   {
-    StateContainer.LinkBundle.Links.Add(new Link { Url = url });
+    StateContainer.AddLinkToBundle(url);
   }
 
   private void ResetLinkBundle()

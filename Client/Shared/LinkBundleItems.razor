@@ -15,6 +15,13 @@
 </div>
 
 @code {
+
+  // subscribe to state container changes
+  protected override void OnInitialized()
+  {
+    StateContainer.OnChange += StateHasChanged;
+  }
+
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
     if (firstRender)

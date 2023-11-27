@@ -44,6 +44,12 @@ public class StateContainer
     NotifyStateChanged();
   }
 
+  public void AddLinkToBundle(string url)
+  {
+    LinkBundle.Links.Add(new Link { Url = url });
+    NotifyStateChanged();
+  }
+
   public async Task<HttpResponseMessage> GetLinkBundle(string vanityUrl)
   {
     var client = new HttpClient();
