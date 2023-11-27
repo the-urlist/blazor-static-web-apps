@@ -15,7 +15,14 @@
 
   protected override async Task OnInitializedAsync()
   {
-    await GetClientPrincipalAsync();
+    try
+    {
+      await GetClientPrincipalAsync();
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
   }
 
   private async Task GetClientPrincipalAsync()
