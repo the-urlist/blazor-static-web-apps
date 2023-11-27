@@ -1,0 +1,57 @@
+@using BlazorApp.Shared
+
+@inject StateContainer StateContainer
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+
+<div id="linkBundle">
+  @foreach (var link in StateContainer.LinkBundle.Links)
+  {
+    <div class="link-item" @key="link.Id" ondrop="@(() => Drop(link))" @ondrag="@(() => StartDrag(link))">
+      <BundleItemEditable newLink="link" OnDeleteLink="@DeleteLink">
+      </BundleItemEditable>
+    </div>
+  }
+</div>
+
+@code {
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      var module = JS.InvokeAsync<IJSObjectReference>(
+      "sortable.init");
+    }
+  }
+
+  int currentIndex;
+
+  void StartDrag(Link link)
+  {
+    currentIndex = GetIndex(link);
+  }
+
+  int GetIndex(Link link)
+  {
+    return StateContainer.LinkBundle.Links.FindIndex(x => x.Id == link.Id);
+  }
+
+  private void DeleteLink(Link link)
+  {
+    StateContainer.DeleteLinkFromBundle(link);
+  }
+
+  public void Drop(Link link)
+  {
+    var index = GetIndex(link);
+    var current = StateContainer.LinkBundle.Links[currentIndex];
+
+    StateContainer.LinkBundle.Links.RemoveAt(currentIndex);
+    StateContainer.LinkBundle.Links.Insert(index, current);
+
+    currentIndex = index;
+
+    StateHasChanged();
+  }
+
+}

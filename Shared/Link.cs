@@ -1,10 +1,11 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorApp.Shared
 {
     public class Link
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         [RegularExpression(@"^(https?://)?([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?$", ErrorMessage = "That doesn't look like a valid URL"), Required]
         public string Url { get; set; }
