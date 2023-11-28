@@ -1,8 +1,8 @@
 window.THEURLIST = {
   sortable: {
-    init: (dotnetObjRef, callback) => {
-      new Sortable(document.getElementById('linkBundle'), { 
-        handle: ".drag-handle",  // Drag handle selector within list items);
+    init: (id) => {
+      new Sortable(document.getElementById(id), { 
+        handle: ".drag-handle", 
         animation: 200,
         forceFallback: true
       });
