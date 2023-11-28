@@ -1,4 +1,5 @@
 @using BlazorApp.Shared
+@inject IJSRuntime JSRuntime
 
 <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit" class="mb-6">
   <DataAnnotationsValidator />
@@ -25,5 +26,11 @@
   {
     await AddLink();
     Model = new();
+    await Focus();
+  }
+
+  private async Task Focus()
+  {
+    await JSRuntime.InvokeVoidAsync("THEURLIST.focusElement", "newLink");
   }
 }
