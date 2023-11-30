@@ -3,18 +3,20 @@
 @inject StateContainer StateContainer
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
+@implements IDisposable
 
 <div id="linkBundle">
   @foreach (var link in StateContainer.LinkBundle.Links)
   {
-    <div class="link-item" @key="link.Id" ondrop="@(() => Drop(link))" @ondrag="@(() => StartDrag(link))">
-      <BundleItemEditable newLink="link" OnDeleteLink="@DeleteLink">
-      </BundleItemEditable>
+    <div class="link-item" @key="link.Id">
+      <BundleItemEditable newLink="link" OnDeleteLink="@DeleteLink" />
     </div>
   }
 </div>
 
 @code {
+  private DotNetObjectReference<LinkBundleItems>? selfReference;
+
   protected override void OnInitialized()
   {
     StateContainer.OnChange += StateHasChanged;
@@ -24,16 +26,9 @@
   {
     if (firstRender)
     {
-      var module = JS.InvokeAsync<IJSObjectReference>(
-      "THEURLIST.sortable.init", "linkBundle");
+      selfReference = DotNetObjectReference.Create(this);
+      await JS.InvokeAsync<object>("THEURLIST.sortable.init", "linkBundle", selfReference);
     }
-  }
-
-  int currentIndex;
-
-  void StartDrag(Link link)
-  {
-    currentIndex = GetIndex(link);
   }
 
   int GetIndex(Link link)
@@ -46,16 +41,11 @@
     StateContainer.DeleteLinkFromBundle(link);
   }
 
-  public void Drop(Link link)
+  [JSInvokable]
+  public void Drop(int oldIndex, int newIndex)
   {
-    var index = GetIndex(link);
-    var current = StateContainer.LinkBundle.Links[currentIndex];
-
-    StateContainer.LinkBundle.Links.RemoveAt(currentIndex);
-    StateContainer.LinkBundle.Links.Insert(index, current);
-
-    currentIndex = index;
-
-    StateHasChanged();
+    StateContainer.ReorderLinks(oldIndex, newIndex);
   }
+
+  public void Dispose() => selfReference?.Dispose();
 }
