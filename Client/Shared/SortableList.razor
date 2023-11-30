@@ -1,21 +1,30 @@
 @using BlazorApp.Shared
+@using System.Diagnostics.CodeAnalysis
 
 @inject StateContainer StateContainer
 @inject IJSRuntime JS
-@inject NavigationManager NavigationManager
-@implements IDisposable
 
-<div id="linkBundle">
-  @foreach (var link in StateContainer.LinkBundle.Links)
+<div id="sortableList">
+  @foreach (var item in Items)
   {
-    <div class="link-item" @key="link.Id">
-      <BundleItemEditable newLink="link" OnDeleteLink="@DeleteLink" />
+    <div draggable="true" class="link-item" @key="item.Id">
+      @if (SortableItem is not null)
+      {
+        @SortableItem(item)
+      }
     </div>
   }
 </div>
 
 @code {
-  private DotNetObjectReference<LinkBundleItems>? selfReference;
+
+  [Parameter]
+  public RenderFragment<Link>? SortableItem { get; set; }
+
+  [Parameter, AllowNull]
+  public List<Link> Items { get; set; }
+
+  private DotNetObjectReference<SortableList>? selfReference;
 
   protected override void OnInitialized()
   {
@@ -27,13 +36,8 @@
     if (firstRender)
     {
       selfReference = DotNetObjectReference.Create(this);
-      await JS.InvokeAsync<object>("THEURLIST.sortable.init", "linkBundle", selfReference);
+      await JS.InvokeAsync<object>("THEURLIST.sortable.init", "sortableList", selfReference);
     }
-  }
-
-  int GetIndex(Link link)
-  {
-    return StateContainer.LinkBundle.Links.FindIndex(x => x.Id == link.Id);
   }
 
   private void DeleteLink(Link link)

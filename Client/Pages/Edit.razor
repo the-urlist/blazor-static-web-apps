@@ -18,7 +18,12 @@
         <span class="is-pulled-right">Drag links to re-order</span>
       </div>
     </div>
-    <LinkBundleItems></LinkBundleItems>
+    @* <LinkBundleItems></LinkBundleItems> *@
+    <SortableList Items="@StateContainer.LinkBundle.Links" Context="link">
+      <SortableItem>
+        <BundleItemEditable newLink="@link" OnDeleteLink="@DeleteLink"></BundleItemEditable>
+      </SortableItem>
+    </SortableList>
     <button id="deleteButton" v-if="currentList.links.length > 0 && listIsPublished"
       class="button is-large is-danger has-text-white is-fullwidth" @onclick="ResetLinkBundle">
       Delete This List
@@ -36,5 +41,10 @@
   private void ResetLinkBundle()
   {
     StateContainer.LinkBundle = new LinkBundle();
+  }
+
+  private void DeleteLink(Link link)
+  {
+    StateContainer.DeleteLinkFromBundle(link);
   }
 }
