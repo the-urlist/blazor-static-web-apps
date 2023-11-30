@@ -4,12 +4,14 @@
 <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit" class="mb-6">
   <DataAnnotationsValidator />
   <p>Enter a link and press enter</p>
-  <InputText class="input is-large is-size-2" @bind-Value="Model!.Url" id="newLink" placeholder="http://example.com"
+  <InputText @ref="newLinkInput" class="input is-large is-size-2" @bind-Value="Model!.Url" id="newLink" placeholder="http://example.com"
     ParsingErrorMessage="That doesn't look like a valid URL" />
   <ValidationMessage class="has-text-danger is-font-weight-medium mt-2" For="() => Model.Url" />
 </EditForm>
 
 @code {
+  private InputText? newLinkInput;
+
   public Link? Model { get; set; }
 
   protected override void OnInitialized() => Model ??= new();
@@ -17,20 +19,10 @@
   [Parameter]
   public EventCallback<string> OnNewLinkAdded { get; set; }
 
-  private async Task AddLink()
+  private async Task OnValidSubmit()
   {
     await OnNewLinkAdded.InvokeAsync(Model!.Url);
-  }
-
-  private async void OnValidSubmit()
-  {
-    await AddLink();
-    Model = new();
-    await Focus();
-  }
-
-  private async Task Focus()
-  {
-    await JSRuntime.InvokeVoidAsync("THEURLIST.focusElement", "newLink");
+    Model.Url = null;
+    await newLinkInput!.Element!.Value.FocusAsync();
   }
 }
