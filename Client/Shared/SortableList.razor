@@ -1,0 +1,55 @@
+@using BlazorApp.Shared
+@using System.Diagnostics.CodeAnalysis
+
+@inject StateContainer StateContainer
+@inject IJSRuntime JS
+
+<div id="sortableList">
+  @foreach (var item in Items)
+  {
+    <div draggable="true" class="link-item" @key="item.Id">
+      @if (SortableItem is not null)
+      {
+        @SortableItem(item)
+      }
+    </div>
+  }
+</div>
+
+@code {
+
+  [Parameter]
+  public RenderFragment<Link>? SortableItem { get; set; }
+
+  [Parameter, AllowNull]
+  public List<Link> Items { get; set; }
+
+  private DotNetObjectReference<SortableList>? selfReference;
+
+  protected override void OnInitialized()
+  {
+    StateContainer.OnChange += StateHasChanged;
+  }
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      selfReference = DotNetObjectReference.Create(this);
+      await JS.InvokeAsync<object>("THEURLIST.sortable.init", "sortableList", selfReference);
+    }
+  }
+
+  private void DeleteLink(Link link)
+  {
+    StateContainer.DeleteLinkFromBundle(link);
+  }
+
+  [JSInvokable]
+  public void Drop(int oldIndex, int newIndex)
+  {
+    StateContainer.ReorderLinks(oldIndex, newIndex);
+  }
+
+  public void Dispose() => selfReference?.Dispose();
+}

@@ -18,10 +18,12 @@
         <span class="is-pulled-right">Drag links to re-order</span>
       </div>
     </div>
-    @foreach (var link in StateContainer.LinkBundle.Links)
-    {
-      <BundleItemEditable newLink="link" OnDeleteLink="@DeleteLink"></BundleItemEditable>
-    }
+    @* <LinkBundleItems></LinkBundleItems> *@
+    <SortableList Items="@StateContainer.LinkBundle.Links" Context="link">
+      <SortableItem>
+        <BundleItemEditable newLink="@link" OnDeleteLink="@DeleteLink"></BundleItemEditable>
+      </SortableItem>
+    </SortableList>
     <button id="deleteButton" v-if="currentList.links.length > 0 && listIsPublished"
       class="button is-large is-danger has-text-white is-fullwidth" @onclick="ResetLinkBundle">
       Delete This List
@@ -30,32 +32,19 @@
 </div>
 
 @code {
-  /*
-  [Parameter]
-  public string newUrl { get; set; } = "";
-
-  private LinkBundle linkBundle = new();
-
-  protected override void OnInitialized()
-  {
-
-  linkBundle.Links.Add(new Link() { Url = newUrl });
-  }
-  */
-
-  private void DeleteLink(Link link)
-  {
-    StateContainer.DeleteLinkFromBundle(link);
-  }
 
   private void NewLinkAdded(string url)
   {
-    StateContainer.LinkBundle.Links.Add(new Link() { Url = url });
-    // linkBundle.Links.Add(new Link() { Url = url });
+    StateContainer.AddLinkToBundle(url);
   }
 
   private void ResetLinkBundle()
   {
     StateContainer.LinkBundle = new LinkBundle();
+  }
+
+  private void DeleteLink(Link link)
+  {
+    StateContainer.DeleteLinkFromBundle(link);
   }
 }

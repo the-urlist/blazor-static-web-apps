@@ -44,6 +44,30 @@ public class StateContainer
     NotifyStateChanged();
   }
 
+  public void AddLinkToBundle(string url)
+  {
+    LinkBundle.Links.Add(new Link { Url = url });
+    NotifyStateChanged();
+  }
+
+  public void ReorderLinks(int moveFromIndex, int moveToIndex)
+  {
+    var links = LinkBundle.Links;
+    var itemToMove = links[moveFromIndex];
+    links.RemoveAt(moveFromIndex);
+
+    if (moveToIndex < links.Count)
+    {
+      links.Insert(moveToIndex, itemToMove);
+    }
+    else
+    {
+      links.Add(itemToMove);
+    }
+
+    NotifyStateChanged();
+  }
+
   public async Task<HttpResponseMessage> GetLinkBundle(string vanityUrl)
   {
     var client = new HttpClient();

@@ -95,6 +95,13 @@
 
   private async Task PublishLinkBundle()
   {
-    var linkBundle = await Http.GetFromJsonAsync<LinkBundle>($"api/links/{StateContainer.LinkBundle.VanityUrl}") ?? new LinkBundle();
+    // post the statecontainer.linkbundle to the /api/links endpoint and read the response into the linkbundle
+    var response = await Http.PostAsJsonAsync("api/links", StateContainer.LinkBundle);
+
+      var linkBundle = await response.Content.ReadFromJsonAsync<LinkBundle>();
+      if (linkBundle != null)
+      {
+        StateContainer.LinkBundle = linkBundle;
+      }
   }
 }
