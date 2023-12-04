@@ -8,5 +8,9 @@
   "editor.tabSize": 2,
   "[html]": {
     "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.razor": "${capture}.razor.css"
   }
 }
