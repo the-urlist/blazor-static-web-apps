@@ -15,30 +15,25 @@
 
   protected override async Task OnInitializedAsync()
   {
+    await GetClientPrincipalAsync();
+  }
+
+  private async Task GetClientPrincipalAsync()
+  {
     try
     {
-      await GetClientPrincipalAsync();
+      var result = await Http.GetFromJsonAsync<ClientPrincipalWrapper>("/.auth/me");
+      if (result?.ClientPrincipal != null)
+      {
+        StateContainer.User.ClientPrincipal = result.ClientPrincipal;
+        loggedIn = true;
+        StateHasChanged();
+      }
     }
     catch (Exception ex)
     {
       Console.WriteLine(ex.Message);
     }
-  }
-
-  private async Task GetClientPrincipalAsync()
-  {
-    var result = await Http.GetFromJsonAsync<ClientPrincipalWrapper>("/.auth/me");
-
-    if (result?.ClientPrincipal == null)
-    {
-      return;
-    }
-
-    StateContainer.User.ClientPrincipal = result.ClientPrincipal;
-
-    loggedIn = true;
-
-    StateHasChanged();
   }
 
 }
