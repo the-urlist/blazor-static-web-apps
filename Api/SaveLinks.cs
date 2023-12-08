@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -47,6 +49,24 @@ namespace Api
             EnsureVanityUrl(linkBundle);
 
             Match match = Regex.Match(linkBundle.VanityUrl, VANITY_REGEX, RegexOptions.IgnoreCase);
+
+            ClientPrincipal principal = null;
+
+            if (req.Headers.TryGetValues("x-ms-client-principal", out var header))
+            {
+                var data = header.FirstOrDefault();
+                var decoded = Convert.FromBase64String(data);
+                var json = Encoding.UTF8.GetString(decoded);
+                principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if(principal != null)
+                {
+                    string username = principal.UserDetails;
+                    // Hash the username using the Hasher class
+                    Hasher hasher = new Hasher();
+                    linkBundle.UserId = hasher.HashString(username);
+                    linkBundle.Provider  = principal.IdentityProvider;
+                }
+            }
 
             if (!match.Success)
             {
