@@ -10,10 +10,10 @@
     <div class="container main">
       <div class="columns">
         <div class="column">
-          <label class="control-label" for="vanityUrl">Link Title</label>
+          <label class="control-label" for="vanityUrl">Vanity Url</label>
           <input @bind="StateContainer.LinkBundle.VanityUrl" Class=@($"input is-large has-tooltip {validationErrorClass}")
-            title=" Optional: Enter a name for this list. The name will become the URL (i.e. my-list becomes
-                theurlist.com/my-list). If you leave this box blank, we'll generate a random name for you."
+            title=" Optional: Enter a vanity url for this list (i.e. my-list becomes
+                theurlist.com/my-list). If you leave this box blank, we'll generate a random vanity for you."
             @oninput="ValidateVanityUrl" />
           <span class=@($"has-text-danger is-font-weight-medium mt-2 is-size-7 { validationMessageClass }")>
   @validationErrorMessage</span>
