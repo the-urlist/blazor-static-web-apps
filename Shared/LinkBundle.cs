@@ -17,7 +17,12 @@ namespace BlazorApp.Shared
         public string UserId { get; set; }
         [JsonPropertyName("provider")]
         public string Provider { get; set; }
+
         [JsonPropertyName("links")]
         public List<Link> Links { get; set; } = new List<Link>();
+
+        [JsonIgnore]
+        public bool IsPublished { get; set; } = false;
+
     }
 }

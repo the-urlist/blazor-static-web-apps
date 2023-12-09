@@ -103,6 +103,7 @@
       if (linkBundle != null)
       {
         StateContainer.LinkBundle = linkBundle;
+        linkBundle.IsPublished = true;
         // navigate to the public page
         NavigationManager.NavigateTo($"/{linkBundle.VanityUrl}");
       }
