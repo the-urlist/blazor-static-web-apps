@@ -4,6 +4,7 @@
 
 @inject StateContainer StateContainer
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <div>
   <div id="listDetails" class="addbar flex is-horizontally-centered">
@@ -102,6 +103,8 @@
       if (linkBundle != null)
       {
         StateContainer.LinkBundle = linkBundle;
+        // navigate to the public page
+        NavigationManager.NavigateTo($"/{linkBundle.VanityUrl}");
       }
   }
 }
