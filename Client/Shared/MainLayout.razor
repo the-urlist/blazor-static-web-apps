@@ -25,7 +25,7 @@
       var result = await Http.GetFromJsonAsync<ClientPrincipalWrapper>("/.auth/me");
       if (result?.ClientPrincipal != null)
       {
-        StateContainer.User.ClientPrincipal = result.ClientPrincipal;
+        StateContainer.User = new User(result.ClientPrincipal);
         loggedIn = true;
         StateHasChanged();
       }

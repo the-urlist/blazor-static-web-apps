@@ -33,6 +33,16 @@
 
 @code {
 
+  protected override async Task OnInitializedAsync()
+  {
+    // if the linkbundle is already published and there is no user, reset the link bundle
+    if (StateContainer.LinkBundle.IsPublished && StateContainer.User == null)
+    {
+      ResetLinkBundle();
+    }
+  }
+
+
   private void NewLinkAdded(string url)
   {
     StateContainer.AddLinkToBundle(url);

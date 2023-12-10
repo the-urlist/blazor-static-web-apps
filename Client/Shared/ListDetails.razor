@@ -15,7 +15,8 @@
           <input @bind="StateContainer.LinkBundle.VanityUrl" Class=@($"input is-large has-tooltip {validationErrorClass}")
             title=" Optional: Enter a vanity url for this list (i.e. my-list becomes
                 theurlist.com/my-list). If you leave this box blank, we'll generate a random vanity for you."
-            @oninput="ValidateVanityUrl" />
+            @oninput="ValidateVanityUrl" 
+            disabled=@(StateContainer.LinkBundle.IsPublished)/>
           <span class=@($"has-text-danger is-font-weight-medium mt-2 is-size-7 { validationMessageClass }")>
   @validationErrorMessage</span>
           <p id="liveLink" v-if="listIsPublished">
@@ -47,6 +48,7 @@
   private string validationErrorMessage = "";
   private string validationErrorClass => listIsValid ? "" : "is-danger";
   private string validationMessageClass => listIsValid ? "is-invisible" : "is-visible";
+  
   bool PublishEnabled(bool valid) {
     if (valid) return true;
     return false;

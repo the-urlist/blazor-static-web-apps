@@ -26,9 +26,9 @@ public class StateContainer
     }
   }
 
-  private User user = new User();
+  private User? user;
 
-  public User User
+  public User? User
   {
     get => user;
     set
