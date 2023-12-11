@@ -44,11 +44,14 @@
         {
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">
-              <div class="columns is-gapless is-mobile">
-                <div class="column">
+              <div class="columns is-gapless is-mobile is-vcentered">
+                <div class="column is-narrow">
                   <span class="icon is-large" title="@StateContainer.User?.ClientPrincipal?.UserDetails">
-                    <i class="fas fa-user"></i>
+                    <i class="@($"is-size-4 fab fa-{StateContainer.User?.ClientPrincipal?.IdentityProvider}")"></i>
                   </span>
+                </div>
+                <div class="column">
+                  <span>@StateContainer.User?.ClientPrincipal?.UserDetails</span>
                 </div>
               </div>
             </a>
