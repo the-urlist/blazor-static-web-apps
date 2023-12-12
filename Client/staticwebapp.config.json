@@ -2,11 +2,11 @@
     "routes": [
         {
             "route": "/",
-            "rewrite": "app.html"
+            "rewrite": "blazor.html"
         },
         {
             "route": "/s/*",
-            "rewrite": "app.html"
+            "rewrite": "blazor.html"
         }
     ],
     "navigationFallback": {

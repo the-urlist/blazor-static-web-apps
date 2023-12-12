@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/bulma/css/bulma.min.css" />
   <link href="css/app.css" rel="stylesheet" />
-  <title>Public Page!</title>
+  <title>The Urlist</title>
 </head>
 
 <body>
@@ -36,7 +36,7 @@
                   <span class="icon"><i class="fab fa-facebook-f"></i></span>
                 </a>
                 <a class="button" target="_blank"
-                  href="https://www.linkedin.com/shareArticle?mini=true?summary={{description}}&url=https://theurlist.com?{{vanityUrl}}"">
+                  href="https://www.linkedin.com/shareArticle?mini=true?summary={{vanityUrl}}&url=https://theurlist.com?{{vanityUrl}}&title={{vanityUrl}}">
                   <span class=" icon"><i class="fab fa-linkedin-in"></i></span>
                 </a>
               </div>
@@ -109,6 +109,10 @@
     async function main() {
 
       const linkBundle = await getLinks();
+
+      // update the page title with the vanity url
+      document.title = `The Urlist - ${linkBundle.vanityUrl}`;
+
 
       // parse the links with moustache
       const template = document.getElementById('template').innerHTML;
