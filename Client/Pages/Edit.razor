@@ -2,6 +2,7 @@
 @using BlazorApp.Shared
 
 @inject StateContainer StateContainer
+@inject HttpClient client
 
 <ListDetails></ListDetails>
 <div class="container main content">
@@ -43,9 +44,24 @@
   }
 
 
-  private void NewLinkAdded(string url)
+  private async Task NewLinkAdded(string url)
   {
-    StateContainer.AddLinkToBundle(url);
+    var link = new Link { Url = url };
+    StateContainer.AddLinkToBundle(link);
+    await UpdateLink(link);
+    StateHasChanged();
+  }
+
+  private async Task UpdateLink(Link link)
+  {
+    var response = await client.PostAsJsonAsync($"http://localhost:7071/api/validatePage", link);
+    var result = await response.Content.ReadFromJsonAsync<Link>();
+    if (result != null)
+    {
+        link.Title = result.Title;
+        link.Description = result.Description;
+        link.Image = result.Image;
+    }
   }
 
   private void ResetLinkBundle()

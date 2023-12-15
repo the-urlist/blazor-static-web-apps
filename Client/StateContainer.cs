@@ -1,4 +1,5 @@
 using BlazorApp.Shared;
+using System.Net.Http.Json;
 
 public class StateContainer
 {
@@ -44,9 +45,9 @@ public class StateContainer
     NotifyStateChanged();
   }
 
-  public void AddLinkToBundle(string url)
-  {
-    LinkBundle.Links.Add(new Link { Url = url });
+  public void AddLinkToBundle(Link link)
+  { 
+    LinkBundle.Links.Add(link);
     NotifyStateChanged();
   }
 
