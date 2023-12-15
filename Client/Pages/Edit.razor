@@ -54,7 +54,7 @@
 
   private async Task UpdateLink(Link link)
   {
-    var response = await client.PostAsJsonAsync($"http://localhost:7071/api/validatePage", link);
+    var response = await client.PostAsJsonAsync("api/validatePage", link);
     var result = await response.Content.ReadFromJsonAsync<Link>();
     if (result != null)
     {
