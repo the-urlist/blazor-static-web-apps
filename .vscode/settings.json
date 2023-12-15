@@ -11,6 +11,6 @@
   },
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-    "*.razor": "${capture}.razor.css"
+    "*.razor": "${capture}.razor.*"
   }
 }
