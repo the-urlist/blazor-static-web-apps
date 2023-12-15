@@ -1,5 +1,6 @@
 @using BlazorApp.Shared
-@inject IJSRuntime JSRuntime
+@inject HttpClient Http
+@inject StateContainer StateContainer
 
 <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit" class="mb-6">
   <DataAnnotationsValidator />
@@ -17,12 +18,32 @@
   protected override void OnInitialized() => Model ??= new();
 
   [Parameter]
-  public EventCallback<string> OnNewLinkAdded { get; set; }
+  public EventCallback<Link> OnNewLinkAdded { get; set; }
 
   private async Task OnValidSubmit()
   {
-    await OnNewLinkAdded.InvokeAsync(Model!.Url);
+    var link = new Link
+    {
+      Url = Model!.Url!
+    };
+
+    await OnNewLinkAdded.InvokeAsync(link);
     Model.Url = null;
     await newLinkInput!.Element!.Value.FocusAsync();
+    await UpdateLink(link);
+    await InvokeAsync(StateHasChanged);
+  }
+
+  private async Task UpdateLink(Link link)
+  {
+    var response = await Http.PostAsJsonAsync("/api/oginfo", link);
+    var updatedLink = await response.Content.ReadFromJsonAsync<Link>();
+
+    // If the request fails just return
+    if (updatedLink != null)
+    {
+      // call statecontainer updatelink
+      StateContainer.UpdateLinkInBundle(link, updatedLink);
+    }
   }
 }
