@@ -29,6 +29,10 @@ namespace Api
         {
             var logger = executionContext.GetLogger("GetOpenGraphInfo");
             var link = await req.ReadFromJsonAsync<Link>();
+            if (!link.Url.StartsWith("http://") && !link.Url.StartsWith("https://"))
+            {
+                link.Url = $"https://{link.Url}";
+            }
 
             var httpClient = new System.Net.Http.HttpClient();
             var response = await httpClient.GetAsync(link.Url);
