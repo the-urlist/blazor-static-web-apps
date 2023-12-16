@@ -47,23 +47,6 @@
   private void NewLinkAdded(Link link)
   {
     StateContainer.AddLinkToBundle(link);
-
-    // Update the link from the ogpinfo endpoint
-    //await UpdateLink(link);
-  }
-
-  private async Task UpdateLink(Link link)
-  {
-    var response = await Http.PostAsJsonAsync("/api/ogpinfo", link);
-    var updatedLink = await response.Content.ReadFromJsonAsync<Link>();
-
-    // If the request fails just return
-    if (updatedLink != null)
-    {
-      link.Title = updatedLink.Title;
-      link.Description = updatedLink.Description;
-      link.Image = updatedLink.Image;
-    }
   }
 
   private void ResetLinkBundle()
