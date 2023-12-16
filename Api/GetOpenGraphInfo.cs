@@ -35,6 +35,10 @@ namespace Api
             }
 
             var httpClient = new System.Net.Http.HttpClient();
+
+            // add a header to mimic a browser
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+
             var response = await httpClient.GetAsync(link.Url);
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
@@ -46,13 +50,20 @@ namespace Api
             var parser = new AngleSharp.Html.Parser.HtmlParser();
             var document = parser.ParseDocument(html);
 
-            var title = document.QuerySelector("title").TextContent;
+            var titleEl = document.QuerySelector("title");
+            var title = titleEl != null ? titleEl.TextContent : "";
+
             if (string.IsNullOrEmpty(title))
             {
-                title = document.QuerySelector("meta[property='og:title']").GetAttribute("content");
+                titleEl = document.QuerySelector("meta[property='og:title']");
+                title = titleEl != null ? titleEl.GetAttribute("content") : "";
             }
-            var description = document.QuerySelector("meta[property='og:description']").GetAttribute("content");
-            var image = document.QuerySelector("meta[property='og:image']").GetAttribute("content");
+
+            var descriptionEl = document.QuerySelector("meta[property='og:description']");
+            var description = descriptionEl != null ? descriptionEl.GetAttribute("content") : "";
+
+            var imageEl = document.QuerySelector("meta[property='og:image']");
+            var image = imageEl != null ? imageEl.GetAttribute("content") : "";
 
             // Update the link with the new information
             link.Title = title;
