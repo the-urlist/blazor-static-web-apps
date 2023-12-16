@@ -2,6 +2,7 @@
 @using System.Diagnostics.CodeAnalysis
 
 @inject IJSRuntime JS
+@inject StateContainer StateContainer
 
 @typeparam T
 
@@ -29,6 +30,11 @@
   private string Id = $"sortable-list-{Guid.NewGuid().ToString().Substring(0, 5)}";
 
   private DotNetObjectReference<SortableList<T>>? selfReference;
+
+  protected override void OnInitialized()
+  {
+    StateContainer.OnChange += StateHasChanged;
+  }
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
