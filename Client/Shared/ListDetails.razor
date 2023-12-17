@@ -43,6 +43,10 @@
 
 @code {
 
+  protected override void OnInitialized()
+  {
+    StateContainer.OnChange += StateHasChanged;
+  }
   private Debouncer debouncer = new Debouncer(300);
   private bool listIsValid = true;
   private string validationErrorMessage = "";
@@ -50,7 +54,7 @@
   private string validationMessageClass => listIsValid ? "is-invisible" : "is-visible";
   
   bool PublishEnabled(bool valid) {
-    if (valid) return true;
+    if (valid && StateContainer.LinkBundle.Links.Count > 0) return true;
     return false;
   }
 
