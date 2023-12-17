@@ -37,7 +37,7 @@ namespace Api
             var httpClient = new System.Net.Http.HttpClient();
 
             // add a header to mimic a browser
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.2210.77");
 
             var response = await httpClient.GetAsync(link.Url);
 
@@ -56,12 +56,17 @@ namespace Api
 
             var title = document.QuerySelector("title")?.TextContent
                         ?? document.QuerySelector("meta[property='og:title']")?.GetAttribute("content")
+                        ?? document.QuerySelector("meta[property='og:site_name']")?.GetAttribute("content")
                         ?? "";
 
             var description = document.QuerySelector("meta[property='og:description']")?.GetAttribute("content")
+                              ?? document.QuerySelector("meta[name='description']")?.GetAttribute("content")
                               ?? "";
 
             var image = document.QuerySelector("meta[property='og:image']")?.GetAttribute("content")
+                         ?? document.QuerySelector("link[rel='apple-touch-icon']")?.GetAttribute("href")
+                         ?? document.QuerySelector("link[rel='mask-icon']")?.GetAttribute("href")
+                         ?? document.QuerySelector("link[rel='shortcut icon']")?.GetAttribute("href")
                          ?? "";
 
             // Update the link with the new information
