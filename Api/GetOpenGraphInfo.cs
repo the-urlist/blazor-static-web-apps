@@ -49,21 +49,20 @@ namespace Api
             var html = await response.Content.ReadAsStringAsync();
             var parser = new AngleSharp.Html.Parser.HtmlParser();
             var document = parser.ParseDocument(html);
-
-            var titleEl = document.QuerySelector("title");
-            var title = titleEl != null ? titleEl.TextContent : "";
-
-            if (string.IsNullOrEmpty(title))
+            if (document == null)
             {
-                titleEl = document.QuerySelector("meta[property='og:title']");
-                title = titleEl != null ? titleEl.GetAttribute("content") : "";
+                return req.CreateResponse(HttpStatusCode.BadRequest);
             }
 
-            var descriptionEl = document.QuerySelector("meta[property='og:description']");
-            var description = descriptionEl != null ? descriptionEl.GetAttribute("content") : "";
+            var title = document.QuerySelector("title")?.TextContent
+                        ?? document.QuerySelector("meta[property='og:title']")?.GetAttribute("content")
+                        ?? "";
 
-            var imageEl = document.QuerySelector("meta[property='og:image']");
-            var image = imageEl != null ? imageEl.GetAttribute("content") : "";
+            var description = document.QuerySelector("meta[property='og:description']")?.GetAttribute("content")
+                              ?? "";
+
+            var image = document.QuerySelector("meta[property='og:image']")?.GetAttribute("content")
+                         ?? "";
 
             // Update the link with the new information
             link.Title = title;
