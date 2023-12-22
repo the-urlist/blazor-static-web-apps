@@ -1,20 +1,22 @@
-# Blazor Starter Application
+# The Urlist - Blazor Static Web App rewrite
 
-This template contains an example .NET 7 [Blazor WebAssembly](https://docs.microsoft.com/aspnet/core/blazor/?view=aspnetcore-6.0#blazor-webassembly) client application, a .NET 7 C# [Azure Functions](https://docs.microsoft.com/azure/azure-functions/functions-overview), and a C# class library with shared code.
+The Urlist is an application that lets you create lists of url’s that you can share with others. Get it? A list of URL’s? The Urlist? Listen, naming things is hard and all the good domains are already taken.
 
-> Note: Azure Functions only supports .NET 7 in the isolated process execution model
+The original version of this site was [built in 2019 using Azure Storage, Azure Functions, Azure Front Door, and Vue](https://dev.to/azure/the-urlist-an-application-study-in-serverless-and-azure-2jk1). We originally decided to try a rewrite of this using modern Static Web Apps and Blazor when Twitter authentication became unreliable, trying this in Blazor because it's a new fun challenge. You can [watch us](https://aka.ms/burke-learns-blazor) live stream the effort on Fridays.
 
-## Getting Started
+<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?si=koSxpdouQfVYALYv&amp;list=PLdo4fOcmZ0oUH9Xzat88XaDvVQOdC8iU_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-1. Create a repository from the [GitHub template](https://docs.github.com/en/enterprise/2.22/user/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template) and then clone it locally to your machine.
+## Project planning
 
-1. In the **ApiIsolated** folder, copy `local.settings.example.json` to `local.settings.json`
+We're tracking our work on [this GitHub project](https://github.com/orgs/the-urlist/projects/2).
 
-1. Continue using either Visual Studio or Visual Studio Code.
+## We take pull requests!
 
-### Visual Studio 2022
+We'd love pull requests! Please file an issue for anything new, and communicate in advance before doing any major work. We'd rather not duplicate effort or have you work on something we can't use.
 
-Once you clone the project, open the solution in the latest release of [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) with the Azure workload installed, and follow these steps:
+### Visual Studio 2022 setup
+
+Once you clone the project, open the solution in the latest release of [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) with the Azure workload installed., and follow these steps:
 
 1. Right-click on the solution and select **Set Startup Projects...**.
 
