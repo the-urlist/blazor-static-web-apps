@@ -6,8 +6,9 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["API_Prefix"] ?? builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped<HttpClient>(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["API_Prefix"] ?? builder.HostEnvironment.BaseAddress) });
 
 builder.Services.AddSingleton<StateContainer>();
+builder.Services.AddSingleton<HttpContainer>(services => new HttpContainer(new Uri(builder.Configuration["API_Prefix"] ?? builder.HostEnvironment.BaseAddress)));
 
 await builder.Build().RunAsync();
