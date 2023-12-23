@@ -44,6 +44,7 @@
             <div class="column is-half">
               <div id="view" class="buttons has-addons is-pulled-right">
               </div>
+              {{description}}
             </div>
           </div>
           <br />
@@ -57,16 +58,24 @@
                       <div class="columns is-vcentered">
                         <div class="column is-narrow is-hidden-mobile">
                           <figure class="link-image">
-                            <img width="64" height="64" class="is-64x64" src="@(string.IsNullOrEmpty(link.Image) ? "
-                              /images/no-image.png" : link.Image)" alt="{{ Title }}" />
+                            {{ #Image }}
+                            <img width="64" height="64" class="is-64x64" src="{{ Image }}" alt=" {{ Title }}">
+                            {{ /Image }}
+                            {{ ^Image }}
+                            <img width="64" height="64" src="images/no-image.png" alt="{{Title}}"> {{ /Image }}
                           </figure>
                         </div>
                         <div class="column link-details">
                           <div class="columns is-mobile is-multiline is-gapless">
                             <div class="column is-narrow is-hidden-tablet">
                               <figure class="link-image link-image-little">
-                                <img width="24" height="24" class="is-24x24" src="@(string.IsNullOrEmpty(link.Image) ? "
-                                  /images/no-image.png" : link.Image)" alt="{{ Title }}" />
+                                {{ #Image }}
+                                <img width="24" height="24" class="is-24x24" src="{{ Image }}" alt=" {{ Title }}">
+                                {{ /Image }}
+                                {{ ^Image }}
+                                <img width="28" height="28" class="is-24x24" src="images/no-image.png"
+                                  alt="{{Title}}" />
+                                {{ /Image }}
                               </figure>
                             </div>
                             <div class="column">
