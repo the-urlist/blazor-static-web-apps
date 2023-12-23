@@ -1,7 +1,7 @@
 @using BlazorApp.Shared
 
 <div class="link-outer">
-  <div class="link-wrapper @(editable ? "link-editable" : "")">
+  <div class="link-wrapper">
     <div class="columns is-vcentered is-mobile">
       <div class="card link">
         <div class="column">
@@ -34,27 +34,7 @@
             </div>
           </div>
         </div>
-        @if (!editable)
-        {
-          <a href="@link.Url">
-            <div class="is-overlay" v-if="!editable"></div>
-          </a>
-        }
       </div>
-      @if (editable)
-      {
-        <div class="column is-narrow" v-if="editable">
-          <div class="columns is-vcentered">
-            <div class="column">
-              <a class="has-text-bold link-delete has-text-grey" @click.prevent="deleteLink(link.id)">
-                <span class="icon is-medium">
-                  <i class="fas fa-lg fa-times"></i>
-                </span>
-              </a>
-            </div>
-          </div>
-        </div>
-      }
     </div>
   </div>
 </div>

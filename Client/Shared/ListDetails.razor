@@ -3,7 +3,7 @@
 @using System.ComponentModel.DataAnnotations
 
 @inject StateContainer StateContainer
-@inject HttpClient Http
+@inject HttpContainer HttpContainer
 @inject NavigationManager NavigationManager
 
 <div>
@@ -89,7 +89,9 @@
 
   // calls the API to see if the vanity is stil available for use
   private async Task<bool> VanityUrlIsTaken(string vanityUrl) {
-    var response = await Http.GetAsync($"api/links/{vanityUrl}");
+    
+    var response = await HttpContainer.GetAsync<LinkBundle>($"api/links/{vanityUrl}");
+
     if (response.StatusCode == System.Net.HttpStatusCode.OK)
     {
       listIsValid = false;
@@ -103,13 +105,15 @@
   private async Task PublishLinkBundle()
   {
     // post the statecontainer.linkbundle to the /api/links endpoint and read the response into the linkbundle
-    var response = await Http.PostAsJsonAsync("api/links", StateContainer.LinkBundle);
+    var response = await HttpContainer.PostAsync<LinkBundle>("api/links", StateContainer.LinkBundle);
 
-      var linkBundle = await response.Content.ReadFromJsonAsync<LinkBundle>();
+      var linkBundle = response.Data;
+
       if (linkBundle != null)
       {
         StateContainer.LinkBundle = linkBundle;
         linkBundle.IsPublished = true;
+        
         // navigate to the public page
         NavigationManager.NavigateTo($"/{linkBundle.VanityUrl}");
       }

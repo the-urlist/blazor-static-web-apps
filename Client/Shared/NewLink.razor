@@ -1,12 +1,12 @@
 @using BlazorApp.Shared
-@inject HttpClient Http
+@inject HttpContainer HttpContainer
 @inject StateContainer StateContainer
 
 <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit" class="mb-6">
   <DataAnnotationsValidator />
   <p>Enter a link and press enter</p>
-  <InputText @ref="newLinkInput" class="input is-large is-size-2" @bind-Value="Model!.Url" id="newLink" placeholder="http://example.com"
-    ParsingErrorMessage="That doesn't look like a valid URL" />
+  <InputText @ref="newLinkInput" class="input is-large is-size-2" @bind-Value="Model!.Url" id="newLink"
+    placeholder="http://example.com" ParsingErrorMessage="That doesn't look like a valid URL" />
   <ValidationMessage class="has-text-danger is-font-weight-medium mt-2" For="() => Model.Url" />
 </EditForm>
 
@@ -23,9 +23,9 @@
   private async Task OnValidSubmit()
   {
     var link = new Link
-    {
-      Url = Model!.Url!
-    };
+      {
+        Url = Model!.Url!
+      };
 
     await OnNewLinkAdded.InvokeAsync(link);
     Model.Url = null;
@@ -36,14 +36,13 @@
 
   private async Task UpdateLink(Link link)
   {
-    var response = await Http.PostAsJsonAsync("/api/oginfo", link);
-    var updatedLink = await response.Content.ReadFromJsonAsync<Link>();
+    var response = await HttpContainer.PostAsync<Link>("api/oginfo", link);
 
     // If the request fails just return
-    if (updatedLink != null)
+    if (response != null)
     {
       // call statecontainer updatelink
-      StateContainer.UpdateLinkInBundle(link, updatedLink);
+      StateContainer.UpdateLinkInBundle(link, response.Data);
     }
   }
 }

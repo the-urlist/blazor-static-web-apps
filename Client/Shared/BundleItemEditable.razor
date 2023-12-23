@@ -35,8 +35,7 @@
                 </div>
                 <div class="column is-full">
                   <textarea :placeholder="editable ? 'Enter a description' : ''"
-                    class="link-description textarea has-fixed-size is-size-7">
-                    @newLink.Description
+                    class="link-description textarea has-fixed-size is-size-7" value="@newLink.Description">
                   </textarea>
                   <input disabled="disabled" value="@newLink.Url" class="link-url" />
                 </div>
