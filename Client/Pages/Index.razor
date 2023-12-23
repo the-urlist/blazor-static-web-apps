@@ -48,10 +48,10 @@
 </div>
 
 @code {
-  private void NewLinkAdded(string url)
+  private void NewLinkAdded(Link link)
   {
     // add the url to the state store
-    StateContainer.LinkBundle.Links.Add(new Link { Url = url });
+    StateContainer.AddLinkToBundle(link);
 
     // navigate to the /s/edit route
     NavigationManager.NavigateTo($"/s/edit");

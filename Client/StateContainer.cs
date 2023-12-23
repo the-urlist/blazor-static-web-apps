@@ -44,9 +44,18 @@ public class StateContainer
     NotifyStateChanged();
   }
 
-  public void AddLinkToBundle(string url)
+  public void AddLinkToBundle(Link link)
   {
-    LinkBundle.Links.Add(new Link { Url = url });
+    LinkBundle.Links.Add(link);
+    NotifyStateChanged();
+  }
+
+  public void UpdateLinkInBundle(Link link, Link updatedLink)
+  {
+    link.Title = updatedLink.Title;
+    link.Description = updatedLink.Description;
+    link.Image = updatedLink.Image;
+
     NotifyStateChanged();
   }
 

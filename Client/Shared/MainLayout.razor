@@ -2,10 +2,11 @@
 
 @using BlazorApp.Shared
 
-@inject HttpClient Http
+@inject HttpContainer HttpContainer
 @inject StateContainer StateContainer
 
 <div class="page">
+  <ProgressBar></ProgressBar>
   <NavBar loggedIn="loggedIn"></NavBar>
   @Body
 </div>
@@ -22,13 +23,19 @@
   {
     try
     {
-      var result = await Http.GetFromJsonAsync<ClientPrincipalWrapper>("/.auth/me");
-      if (result?.ClientPrincipal != null)
+      var result = await HttpContainer.GetAsync<ClientPrincipalWrapper>(".auth/me");
+
+      // if the client principal is null, then they are not logged in
+      if (result?.Data?.ClientPrincipal == null)
       {
-        StateContainer.User = new User(result.ClientPrincipal);
-        loggedIn = true;
-        StateHasChanged();
+        return;
       }
+
+      StateContainer.User = new User(result.Data.ClientPrincipal);
+
+      loggedIn = true;
+
+      StateHasChanged();
     }
     catch (Exception ex)
     {
