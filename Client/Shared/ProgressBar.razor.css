@@ -3,10 +3,11 @@
   height: 6px;
   background-color: #4ade9b;
   display: none;
-  position: relative;
+  position: absolute;
   overflow: hidden;
   transition: opacity 0.1s ease-out;
   opacity: 1;
+  z-index: 1000;
 }
 
 .progress-bar--container::after {
@@ -37,15 +38,19 @@
   0% {
     transform: scaleX(0) translateX(0);
   }
+
   1% {
     transform: scaleX(0) translateX(0);
   }
+
   33% {
     transform: scaleX(0.66) translateX(16.5%);
   }
+
   75% {
     transform: scaleX(1.5) translateX(66%);
   }
+
   100% {
     transform: scaleX(2) translateX(150%);
   }
@@ -55,6 +60,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
