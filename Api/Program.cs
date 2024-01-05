@@ -11,7 +11,7 @@ namespace ApiIsolated
 {
     public class Program
     {
-        public static void Main()
+        public static async Task Main()
         {
             // Setup custom serializer to use System.Text.Json
             JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions()
@@ -26,6 +26,7 @@ namespace ApiIsolated
             };
 
             var host = new HostBuilder()
+                .ConfigureFunctionsWorkerDefaults()
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<CosmosClient>(sp => new CosmosClient(
@@ -33,10 +34,9 @@ namespace ApiIsolated
                         context.Configuration["CosmosDb:Key"],
                         cosmosClientOptions));
                 })
-                .ConfigureFunctionsWorkerDefaults()
                 .Build();
 
-            host.Run();
+            await host.RunAsync();
         }
     }
 }
