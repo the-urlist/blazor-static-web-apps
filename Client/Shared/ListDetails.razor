@@ -27,7 +27,7 @@
         <div class="column">
           <label class="control-label" for="description">Description</label>
           <textarea rows="2" title="Optional: The description will show up as the title on your public list page."
-            class="textarea has-fixed-size" id="description" v-model="currentList.description"></textarea>
+            class="textarea has-fixed-size" id="description" @bind="StateContainer.LinkBundle.Description"></textarea>
         </div>
         <div class="column is-narrow">
           <label class="control-label is-hidden-mobile" for>&nbsp;</label>

@@ -42,6 +42,8 @@
     {
       ResetLinkBundle();
     }
+
+    StateContainer.OnChange += StateHasChanged;
   }
 
   private void NewLinkAdded(Link link)
