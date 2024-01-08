@@ -12,5 +12,15 @@
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     "*.razor": "${capture}.razor.*"
-  }
+  },
+  "liveSassCompile.settings.excludeList": [
+    "/**/bulma/**"
+  ],
+  "liveSassCompile.settings.formats": [
+    {
+      "format": "compressed",
+      "savePath": "/Client/wwwroot/css",
+      "extensionName": ".min.css"
+    }
+  ]
 }

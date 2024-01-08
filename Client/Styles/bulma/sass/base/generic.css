@@ -1,0 +1,131 @@
+html {
+  background-color: hsl(0, 0%, 100%);
+  font-size: 16px;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  min-width: 300px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+     -moz-text-size-adjust: 100%;
+          text-size-adjust: 100%;
+}
+
+article,
+aside,
+figure,
+footer,
+header,
+hgroup,
+section {
+  display: block;
+}
+
+body,
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+
+code,
+pre {
+  -moz-osx-font-smoothing: auto;
+  -webkit-font-smoothing: auto;
+  font-family: monospace;
+}
+
+body {
+  color: hsl(0, 0%, 29%);
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+a {
+  color: hsl(229, 53%, 53%);
+  cursor: pointer;
+  text-decoration: none;
+}
+a strong {
+  color: currentColor;
+}
+a:hover {
+  color: hsl(0, 0%, 21%);
+}
+
+code {
+  background-color: hsl(0, 0%, 96%);
+  color: #da1039;
+  font-size: 0.875em;
+  font-weight: normal;
+  padding: 0.25em 0.5em 0.25em;
+}
+
+hr {
+  background-color: hsl(0, 0%, 96%);
+  border: none;
+  display: block;
+  height: 2px;
+  margin: 1.5rem 0;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+input[type=checkbox],
+input[type=radio] {
+  vertical-align: baseline;
+}
+
+small {
+  font-size: 0.875em;
+}
+
+span {
+  font-style: inherit;
+  font-weight: inherit;
+}
+
+strong {
+  color: hsl(0, 0%, 21%);
+  font-weight: 700;
+}
+
+fieldset {
+  border: none;
+}
+
+pre {
+  -webkit-overflow-scrolling: touch;
+  background-color: hsl(0, 0%, 96%);
+  color: hsl(0, 0%, 29%);
+  font-size: 0.875em;
+  overflow-x: auto;
+  padding: 1.25rem 1.5rem;
+  white-space: pre;
+  word-wrap: normal;
+}
+pre code {
+  background-color: transparent;
+  color: currentColor;
+  font-size: 1em;
+  padding: 0;
+}
+
+table td,
+table th {
+  vertical-align: top;
+}
+table td:not([align]),
+table th:not([align]) {
+  text-align: inherit;
+}
+table th {
+  color: hsl(0, 0%, 21%);
+}/*# sourceMappingURL=generic.css.map */

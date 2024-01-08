@@ -1,4 +1,47 @@
-﻿@import url("https://use.fontawesome.com/releases/v5.6.3/css/all.css");
+@import url("https://use.fontawesome.com/releases/v5.6.3/css/all.css");
+
+$green: #20ae96;
+$red: #d9255e;
+
+$primary: $green;
+$danger: $red;
+
+/* /UTILTIES */
+@import "bulma/sass/utilities/initial-variables.sass";
+@import "bulma/sass/utilities/functions.sass";
+@import "bulma/sass/utilities/derived-variables.sass";
+@import "bulma/sass/utilities/mixins.sass";
+@import "bulma/sass/utilities/controls.sass";
+@import "bulma/sass/utilities/extends.sass";
+
+/* BASE */
+@import "bulma/sass/base/_all.sass";
+
+/* HELPERS */
+@import "bulma/sass/helpers/_all.sass";
+
+/* FORM */
+@import "bulma/sass/form/shared.sass";
+@import "bulma/sass/form/input-textarea.sass";
+
+/* ELEMENTS  */
+@import "bulma/sass/elements/button.sass";
+@import "bulma/sass/elements/container.sass";
+@import "bulma/sass/elements/icon.sass";
+@import "bulma/sass/elements/image.sass";
+@import "bulma/sass/elements/tag.sass";
+
+/* LAYOUT */
+@import "bulma/sass/layout/section.sass";
+@import "bulma/sass/layout/hero.sass";
+
+/* COLUMNS */
+@import "bulma/sass/grid/columns.sass";
+
+/* COMPONENTS */
+@import "bulma/sass/components/card.sass";
+@import "bulma/sass/components/modal.sass";
+@import "bulma/sass/components/navbar.sass";
 
 :root {
     --primary: #20ae96;
