@@ -28,7 +28,7 @@
         {
           <div class="column is-one-quarter-widescreen is-one-third-desktop is-half-tablet">
             <img src="../assets/bg.png" alt class="list-dots is-pulled-right is-relative" />
-            <div class="card list-item is-relative" @onclick="EditList">
+            <div class="card list-item is-relative" @onclick="() => EditList(linkBundle)">
               <span class="list-count tag is-primary is-size-6 has-text-weight-bold">
                 @linkBundle.Links.Count Links
               </span>
@@ -63,14 +63,16 @@
     var response = await HttpContainer.GetAsync<List<LinkBundle>>($"api/user");
     return response.Data ?? new List<LinkBundle>();
   }
-  
+
   private void NewList()
   {
     NavigationManager.NavigateTo("/s/edit");
   }
 
-  private void EditList()
+  private void EditList(LinkBundle linkBundle)
   {
+    StateContainer.LinkBundle = linkBundle;
+    StateContainer.LinkBundle.IsPublished = true;
     NavigationManager.NavigateTo("/s/edit");
   }
 
