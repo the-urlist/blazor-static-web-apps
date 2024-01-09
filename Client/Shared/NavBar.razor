@@ -91,7 +91,9 @@
 
   private void NewList()
   {
-    StateContainer.LinkBundle = new LinkBundle();
+    // if the current list is published, reset the link bundle
+    if (StateContainer.LinkBundle?.IsPublished == true)
+      StateContainer.LinkBundle = new LinkBundle();
     NavigationManager.NavigateTo("/s/edit");
   }
   private void ToggleMenu()
