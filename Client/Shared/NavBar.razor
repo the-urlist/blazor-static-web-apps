@@ -85,11 +85,9 @@
   [Parameter]
   public bool loggedIn { get; set; }
 
-  private ModalLogin modalLogin;
+  private ModalLogin? modalLogin;
 
   private bool showMenu = false;
-
-  private bool showLoginModal = false;
 
   private void NewList()
   {
@@ -103,6 +101,9 @@
 
   private void ShowLoginModal()
   {
-    modalLogin.Show();  
+    if (modalLogin != null)
+    {
+      modalLogin.Show();
+    }
   }
 }
