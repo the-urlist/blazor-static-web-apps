@@ -67,7 +67,7 @@
         }
         else
         {
-          <a class="navbar-item" @onclick="ToggleModal">
+          <a class="navbar-item" @onclick="ShowLoginModal">
             <span class="icon is-large navbar-icon">
               <i class="fas fa-lg fa-sign-in-alt"></i>
             </span>
@@ -77,13 +77,15 @@
       </div>
     </div>
   </nav>
-  <ModalLogin isOpen="showLoginModal" closeModal="ToggleModal"></ModalLogin>
+  <ModalLogin @ref="modalLogin"></ModalLogin>
 </header>
 
 @code {
 
   [Parameter]
   public bool loggedIn { get; set; }
+
+  private ModalLogin modalLogin;
 
   private bool showMenu = false;
 
@@ -99,9 +101,8 @@
     showMenu = !showMenu;
   }
 
-  private void ToggleModal()
+  private void ShowLoginModal()
   {
-    showLoginModal = !showLoginModal;
-    Console.WriteLine($"showLoginModal: {showLoginModal}");
+    modalLogin.Show();  
   }
 }

@@ -1,13 +1,8 @@
 ﻿@inject NavigationManager NavigationManager
 
-<div class="modal @((isOpen) ? "is-active" : "")">
-  <div class="modal-background" @onclick="CloseModal"></div>
-  <div class="modal-content">
-    <div class="card modal-content-inner">
-      <a class="flex is-pulled-right" @onclick="CloseModal">
-        <img src="/images/close.png" />
-      </a>
-      <div class="card-content">
+<ModalWindow @ref="modal">
+  <ModalWindowContent>
+          <div class="card-content">
         <div class="columns is-gapless is-vcentered is-relative is-mobile">
           <div class="column">
             <h1 class="is-size-4 has-text-weight-medium is-pulled-right">
@@ -47,27 +42,27 @@
           </span>
         </a>
       </div>
-    </div>
-  </div>
-</div>
+  </ModalWindowContent>
+</ModalWindow>
 
 @code {
-  [Parameter]
-  public bool isOpen { get; set; }
 
-  [Parameter]
-  public EventCallback<bool> closeModal { get; set; }
+  ModalWindow? modal;
 
-
-  private string currentUrl;
+  string? currentUrl;
 
   protected override void OnInitialized()
   {
     currentUrl = NavigationManager.Uri;
   }
 
-  private async void CloseModal()
+  public void Show()
   {
-    await closeModal.InvokeAsync();
+    if (modal != null)
+    {
+      modal.Show();
+    }
+
+    StateHasChanged();
   }
 }
