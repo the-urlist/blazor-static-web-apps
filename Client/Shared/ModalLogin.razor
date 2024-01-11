@@ -51,13 +51,9 @@
 
   string? currentUrl;
 
-  protected override void OnInitialized()
-  {
-    currentUrl = NavigationManager.Uri;
-  }
-
   public void Show()
   {
+    currentUrl = NavigationManager.Uri;
     modal?.ShowModal();
   }
 }
