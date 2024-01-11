@@ -1,8 +1,8 @@
 <div class="modal @((isOpen) ? "is-active" : "")">
-  <div class="modal-background" @onclick="CloseModal"></div>
+  <div class="modal-background" @onclick="HideModal"></div>
   <div class="modal-content">
     <div class="card modal-content-inner">
-      <a class="flex is-pulled-right" @onclick="CloseModal">
+      <a class="flex is-pulled-right" @onclick="HideModal">
         <img src="/images/close.png" />
       </a>
       <div class="card-content">
@@ -16,14 +16,17 @@
   [Parameter]
   public RenderFragment? ModalWindowContent { get; set; }
 
-  public void Show() {
-    isOpen = true;
-  }
-
   public bool isOpen { get; set; }
 
-  public void CloseModal()
+  public void ShowModal()
+  {
+    isOpen = true;
+    StateHasChanged();
+  }
+
+  public void HideModal()
   {
     isOpen = false;
+    StateHasChanged();
   }
 }

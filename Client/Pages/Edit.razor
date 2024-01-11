@@ -26,21 +26,26 @@
         </div>
       </SortableItemTemplate>
     </SortableList>
-    <button id="deleteButton" v-if="currentList.links.length > 0 && listIsPublished"
-      class="button is-large is-danger has-text-white is-fullwidth" @onclick="ResetLinkBundle">
-      Delete This List
-    </button>
+    @if (StateContainer.LinkBundle.IsPublished)
+    {
+      <button id="deleteButton" class="button is-large is-danger has-text-white is-fullwidth" @onclick="ShowDeleteModal">
+        Delete This List
+      </button>
+      <ModalDelete @ref="modalDelete"></ModalDelete>
+    }
   }
 </div>
 
 @code {
+
+  private ModalDelete? modalDelete;
 
   protected override void OnInitialized()
   {
     // if the linkbundle is already published and there is no user, reset the link bundle
     if (StateContainer.LinkBundle.IsPublished && StateContainer.User == null)
     {
-      ResetLinkBundle();
+      StateContainer.LinkBundle = new LinkBundle();
     }
 
     StateContainer.OnChange += StateHasChanged;
@@ -51,9 +56,9 @@
     StateContainer.AddLinkToBundle(link);
   }
 
-  private void ResetLinkBundle()
+  private void ShowDeleteModal()
   {
-    StateContainer.LinkBundle = new LinkBundle();
+    modalDelete?.Show();
   }
 
   private void DeleteLink(Link link)
