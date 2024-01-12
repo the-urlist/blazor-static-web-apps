@@ -78,6 +78,7 @@
     </div>
   </nav>
   <ModalLogin @ref="modalLogin"></ModalLogin>
+  <ModalNew @ref="modalNew"></ModalNew>
 </header>
 
 @code {
@@ -86,13 +87,23 @@
   public bool loggedIn { get; set; }
 
   private ModalLogin? modalLogin;
+  private ModalNew? modalNew;
 
   private bool showMenu = false;
 
   private void NewList()
   {
-    StateContainer.LinkBundle = new LinkBundle();
-    NavigationManager.NavigateTo("/s/edit");
+    // if we are already on the edit page and the list isn't empty, make sure the user
+    // really wants to start over with a new list
+    if (NavigationManager.Uri.Contains("/s/edit") && StateContainer.LinkBundle.Links.Count > 0)
+    {
+      modalNew?.Show();
+      return;
+    }
+    else
+    {
+      NavigationManager.NavigateTo("/s/edit");
+    }
   }
   private void ToggleMenu()
   {

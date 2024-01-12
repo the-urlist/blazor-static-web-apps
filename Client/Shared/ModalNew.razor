@@ -1,0 +1,36 @@
+@using BlazorApp.Shared
+
+@inject StateContainer StateContainer
+
+<ModalWindow @ref="modal">
+  <ModalWindowContent>
+    <h4 class="is-size-4 has-text-weight-normal">Create a new list?</h4>
+    <br />
+    <p>
+      This will clear out the current list you're working on. Is that OK?
+    </p>
+    <br />
+    <button class="button is-primary is-large has-text-white" @onclick="ResetLinkBundle">
+      Yes, that's OK
+    </button>
+    <button class="button is-large" @onclick="() => modal?.HideModal()">
+      No, keep my list
+    </button>
+  </ModalWindowContent>
+</ModalWindow>
+
+@code {
+
+  ModalWindow? modal;
+
+  public void Show()
+  {
+    modal?.ShowModal();
+  }
+
+  public void ResetLinkBundle()
+  {
+    StateContainer.LinkBundle = new LinkBundle();
+    modal?.HideModal();
+  }
+}

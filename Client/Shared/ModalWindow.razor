@@ -1,4 +1,6 @@
-<div class="modal @((isOpen) ? "is-active" : "")">
+@if (isOpen)
+{
+  <div class="modal @((isOpen) ? "is-active" : "")">
   <div class="modal-background" @onclick="HideModal"></div>
   <div class="modal-content">
     <div class="card modal-content-inner">
@@ -11,6 +13,7 @@
     </div>
   </div>
 </div>
+}
 
 @code {
   [Parameter]
