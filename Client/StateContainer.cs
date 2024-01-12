@@ -1,29 +1,45 @@
+using System.Text.Json;
 using BlazorApp.Shared;
+using Microsoft.JSInterop;
+
 
 public class StateContainer
 {
-  private LinkBundle savedLinkBundle = new LinkBundle();
+  private readonly IJSRuntime jsRuntime;
+
+  private LinkBundle? linkBundle;
+
+  public StateContainer(IJSRuntime jsRuntime)
+  {
+    this.jsRuntime = jsRuntime;
+  }
 
   public LinkBundle LinkBundle
   {
-    get => savedLinkBundle ??= new LinkBundle();
+    get => linkBundle ??= new LinkBundle();
     set
     {
-      savedLinkBundle = value;
+      linkBundle = value;
+
+      SaveLinkBundleToLocalStorage();
       NotifyStateChanged();
     }
   }
 
-  private bool appIsBusy { get; set; }
-
-  public bool AppIsBusy
+  public async Task LoadLinkBundleFromLocalStorage()
   {
-    get => appIsBusy;
-    set
+    var json = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "linkBundle");
+    if (!string.IsNullOrEmpty(json))
     {
-      appIsBusy = value;
-      NotifyStateChanged();
+      LinkBundle = JsonSerializer.Deserialize<LinkBundle>(json) ?? new LinkBundle();
     }
+  }
+
+  public void SaveLinkBundleToLocalStorage()
+  {
+    Console.WriteLine("Saving link bundle to local storage");
+    var json = JsonSerializer.Serialize(LinkBundle);
+    jsRuntime.InvokeVoidAsync("localStorage.setItem", "linkBundle", json);
   }
 
   private User? user;
@@ -41,21 +57,31 @@ public class StateContainer
   public void DeleteLinkFromBundle(Link link)
   {
     LinkBundle.Links.Remove(link);
+
+    SaveLinkBundleToLocalStorage();
     NotifyStateChanged();
   }
 
   public void AddLinkToBundle(Link link)
   {
     LinkBundle.Links.Add(link);
+
+    SaveLinkBundleToLocalStorage();
     NotifyStateChanged();
   }
 
-  public void UpdateLinkInBundle(Link link, Link updatedLink)
+  public void UpdateLinkInBundle(Link link, Link? updatedLink)
   {
+    if (updatedLink == null)
+    {
+      return;
+    }
+
     link.Title = updatedLink.Title;
     link.Description = updatedLink.Description;
     link.Image = updatedLink.Image;
 
+    SaveLinkBundleToLocalStorage();
     NotifyStateChanged();
   }
 
@@ -74,17 +100,14 @@ public class StateContainer
       links.Add(itemToMove);
     }
 
+    SaveLinkBundleToLocalStorage();
     NotifyStateChanged();
-  }
-
-  public async Task<HttpResponseMessage> GetLinkBundle(string vanityUrl)
-  {
-    var client = new HttpClient();
-    var response = await client.GetAsync($"links/{vanityUrl}");
-    return response;
   }
 
   public event Action? OnChange;
 
-  private void NotifyStateChanged() => OnChange?.Invoke();
+  private void NotifyStateChanged()
+  {
+    OnChange?.Invoke();
+  }
 }
