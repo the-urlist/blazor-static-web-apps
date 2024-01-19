@@ -78,6 +78,10 @@
     </div>
   </nav>
   <ModalLogin @ref="modalLogin"></ModalLogin>
+  <ModalConfirm @ref="modalConfirm" Type="@ModalConfirm.ModalType.primary" Title="Clear this list?"
+    Prompt="This will reset the current list and you will lose all changes. Are you sure you want to do that?"
+    OnOK="ResetLinkBundle">
+  </ModalConfirm>
 </header>
 
 @code {
@@ -88,10 +92,20 @@
   private bool showMenu = false;
 
   private ModalLogin? modalLogin;
+  private ModalConfirm? modalConfirm;
 
   private void NewList()
   {
-    NavigationManager.NavigateTo("/s/edit");
+    @* if the current page is /s/edit and the linbundle has link items *@
+    if (NavigationManager.Uri.Contains("/s/new") && StateContainer.LinkBundle?.Links?.Count > 0)
+    {
+      modalConfirm?.Show();
+    }
+    else
+    {
+      ResetLinkBundle();
+      NavigationManager.NavigateTo("/s/new");
+    }
   }
   private void ToggleMenu()
   {
@@ -101,5 +115,11 @@
   private void ToggleModal()
   {
     modalLogin?.Show();
+  }
+
+  private void ResetLinkBundle()
+  {
+    StateContainer.LinkBundle = new LinkBundle();
+    NavigationManager.NavigateTo("/s/new");
   }
 }

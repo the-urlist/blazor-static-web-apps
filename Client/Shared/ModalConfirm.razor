@@ -1,23 +1,64 @@
 ﻿<ModalWindow @ref="modal">
-  @Title
+  @if (TitleContent != null)
+  {
+    @TitleContent
+  }
+  else if (!string.IsNullOrEmpty(Title))
+  {
+    <h4 class="is-size-4 has-text-weight-normal">@Title</h4>
+  }
   <br />
-  @Prompt
+  @if (PromptContent != null)
+  {
+    @PromptContent
+  }
+  else if (!string.IsNullOrEmpty(Prompt))
+  {
+    <p>
+      @Prompt
+    </p>
+  }
   <br />
-  <button class="button is-danger is-large is-fullwidth has-text-white" @onclick="OK">
-    OK
-  </button>
-  <button class="button is-large is-fullwidth" @onclick="Cancel">
-    Cancel
-  </button>
+  <div class="field is-grouped">
+    <button class="button is-large has-text-white is-@Type is-fullwidth mr-1" @onclick="OK">
+      @OKText
+    </button>
+    <button class="button is-large is-fullwidth ml-1" @onclick="Cancel">
+      @CancelText
+    </button>
+  </div>
 </ModalWindow>
+
 
 @code {
 
-  [Parameter]
-  public RenderFragment? Title { get; set; }
+  public enum ModalType
+  {
+    primary,
+    info,
+    danger
+  }
 
   [Parameter]
-  public RenderFragment? Prompt { get; set; }
+  public ModalType Type { get; set; } = ModalType.primary;
+
+  [Parameter]
+  public string? Title { get; set; }
+
+  [Parameter]
+  public string? Prompt { get; set; }
+
+  [Parameter]
+  public string OKText { get; set; } = "OK";
+
+  [Parameter]
+  public string CancelText { get; set; } = "Cancel";
+
+  [Parameter]
+  public RenderFragment? TitleContent { get; set; }
+
+  [Parameter]
+  public RenderFragment? PromptContent { get; set; }
 
   [Parameter]
   public EventCallback<bool> OnOK { get; set; }

@@ -3,48 +3,23 @@
 
 @inject StateContainer StateContainer
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
-<ListDetails></ListDetails>
+<ListDetails IsPublished="true"></ListDetails>
 <div class="container main content">
-  <NewLink OnNewLinkAdded="@NewLinkAdded"></NewLink>
-  @if (StateContainer.LinkBundle.Links.Count != 0)
-  {
-    <div id="linkHeader" class="columns is-mobile is-vcentered is-gapless">
-      <div class="column">
-        <h3 class="has-text-primary is-size-3 has-text-weight-medium">
-          Links
-        </h3>
-      </div>
-      <div class="column">
-        <span class="is-pulled-right">Drag links to re-order</span>
-      </div>
-    </div>
-    <SortableList Items="@StateContainer.LinkBundle.Links" Context="link" OnUpdate="@SortList">
-      <SortableItemTemplate>
-        <div class="link-item" @key="link.Id">
-          <BundleItemEditable newLink="@link" OnDeleteLink="@DeleteLink"></BundleItemEditable>
-        </div>
-      </SortableItemTemplate>
-    </SortableList>
-    @if (StateContainer.LinkBundle.IsPublished)
-    {
-      <button id="deleteButton" class="button is-large is-danger has-text-white is-fullwidth" @onclick="ShowDeleteModal">
-        Delete This List
-      </button>
-      <ModalConfirm @ref="modalConfirm">
-        <Title>
-          <h4 class="is-size-4 has-text-weight-normal">Delete this list?</h4>
-        </Title>
-        <Prompt>
-          <p>
-            The url
-            <span class="has-text-danger">@StateContainer.LinkBundle.VanityUrl</span> will be
-            released for others to use.
-          </p>
-        </Prompt>
-      </ModalConfirm>
-    }
-  }
+  <EditList></EditList>
+  <button id="deleteButton" class="button is-large is-danger has-text-white is-fullwidth"
+    @onclick="ShowDeleteModal">Delete This List</button>
+  <ModalConfirm @ref="modalConfirm" Type="@ModalConfirm.ModalType.danger" Title="Delete this list?"
+    OnOK="DeleteLinkBundle">
+    <PromptContent>
+      <p>
+        The url
+        <span class="has-text-danger">@StateContainer.LinkBundle.VanityUrl</span> will be
+        released for others to use.
+      </p>
+    </PromptContent>
+  </ModalConfirm>
 </div>
 
 @code {
@@ -53,16 +28,7 @@
 
   protected override void OnInitialized()
   {
-    // if the linkbundle is already published and there is no user, reset the link bundle
-    @* if (StateContainer.LinkBundle.IsPublished && StateContainer.User == null)
-{} *@
-
     StateContainer.OnChange += StateHasChanged;
-  }
-
-  private void NewLinkAdded(Link link)
-  {
-    StateContainer.AddLinkToBundle(link);
   }
 
   private void ShowDeleteModal()
@@ -70,14 +36,10 @@
     modalConfirm?.Show();
   }
 
-  private void DeleteLink(Link link)
+  private async Task DeleteLinkBundle()
   {
-    StateContainer.DeleteLinkFromBundle(link);
-  }
-
-  private void SortList((int oldIndex, int newIndex) indices)
-  {
-    var (oldIndex, newIndex) = indices;
-    StateContainer.ReorderLinks(oldIndex, newIndex);
+    @* TODO: CALL DELETE API *@
+    StateContainer.LinkBundle = new LinkBundle();
+    NavigationManager.NavigateTo("/s/new");
   }
 }

@@ -59,21 +59,20 @@
     }
   }
 
-  private async Task<List<LinkBundle>> GetLinkBundlesForUser() {
+  private async Task<List<LinkBundle>> GetLinkBundlesForUser()
+  {
     var response = await HttpContainer.GetAsync<List<LinkBundle>>($"api/user");
     return response.Data ?? new List<LinkBundle>();
   }
 
   private void NewList()
   {
-    NavigationManager.NavigateTo("/s/edit");
+    NavigationManager.NavigateTo("/s/new");
   }
 
   private void EditList(LinkBundle linkBundle)
   {
     StateContainer.LinkBundle = linkBundle;
-    StateContainer.LinkBundle.IsPublished = true;
     NavigationManager.NavigateTo("/s/edit");
   }
-
 }

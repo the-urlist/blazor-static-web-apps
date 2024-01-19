@@ -20,9 +20,5 @@ namespace BlazorApp.Shared
 
         [JsonPropertyName("links")]
         public List<Link> Links { get; set; } = new List<Link>();
-
-        [JsonIgnore]
-        public bool IsPublished { get; set; } = false;
-
     }
 }
