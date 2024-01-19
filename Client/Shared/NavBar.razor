@@ -77,7 +77,7 @@
       </div>
     </div>
   </nav>
-  <ModalLogin isOpen="showLoginModal" closeModal="ToggleModal"></ModalLogin>
+  <ModalLogin @ref="modalLogin"></ModalLogin>
 </header>
 
 @code {
@@ -87,7 +87,7 @@
 
   private bool showMenu = false;
 
-  private bool showLoginModal = false;
+  private ModalLogin? modalLogin;
 
   private void NewList()
   {
@@ -100,7 +100,6 @@
 
   private void ToggleModal()
   {
-    showLoginModal = !showLoginModal;
-    Console.WriteLine($"showLoginModal: {showLoginModal}");
+    modalLogin?.Show();
   }
 }

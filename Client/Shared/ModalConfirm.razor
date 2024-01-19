@@ -1,0 +1,46 @@
+﻿<ModalWindow @ref="modal">
+  @Title
+  <br />
+  @Prompt
+  <br />
+  <button class="button is-danger is-large is-fullwidth has-text-white" @onclick="OK">
+    OK
+  </button>
+  <button class="button is-large is-fullwidth" @onclick="Cancel">
+    Cancel
+  </button>
+</ModalWindow>
+
+@code {
+
+  [Parameter]
+  public RenderFragment? Title { get; set; }
+
+  [Parameter]
+  public RenderFragment? Prompt { get; set; }
+
+  [Parameter]
+  public EventCallback<bool> OnOK { get; set; }
+
+  [Parameter]
+  public EventCallback<bool> OnCancel { get; set; }
+
+  private ModalWindow? modal;
+
+  public void Show()
+  {
+    modal?.ShowModal();
+  }
+
+  public async Task OK()
+  {
+    await OnOK.InvokeAsync(true);
+    modal?.DismissModalWithExtremePrejudice();
+  }
+
+  public async Task Cancel()
+  {
+    await OnCancel.InvokeAsync(true);
+    modal?.DismissModalWithExtremePrejudice();
+  }
+}

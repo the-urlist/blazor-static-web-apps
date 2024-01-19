@@ -26,22 +26,36 @@
         </div>
       </SortableItemTemplate>
     </SortableList>
-    <button id="deleteButton" v-if="currentList.links.length > 0 && listIsPublished"
-      class="button is-large is-danger has-text-white is-fullwidth" @onclick="ResetLinkBundle">
-      Delete This List
-    </button>
+    @if (StateContainer.LinkBundle.IsPublished)
+    {
+      <button id="deleteButton" class="button is-large is-danger has-text-white is-fullwidth" @onclick="ShowDeleteModal">
+        Delete This List
+      </button>
+      <ModalConfirm @ref="modalConfirm">
+        <Title>
+          <h4 class="is-size-4 has-text-weight-normal">Delete this list?</h4>
+        </Title>
+        <Prompt>
+          <p>
+            The url
+            <span class="has-text-danger">@StateContainer.LinkBundle.VanityUrl</span> will be
+            released for others to use.
+          </p>
+        </Prompt>
+      </ModalConfirm>
+    }
   }
 </div>
 
 @code {
 
+  private ModalConfirm? modalConfirm;
+
   protected override void OnInitialized()
   {
     // if the linkbundle is already published and there is no user, reset the link bundle
-    if (StateContainer.LinkBundle.IsPublished && StateContainer.User == null)
-    {
-      ResetLinkBundle();
-    }
+    @* if (StateContainer.LinkBundle.IsPublished && StateContainer.User == null)
+{} *@
 
     StateContainer.OnChange += StateHasChanged;
   }
@@ -51,9 +65,9 @@
     StateContainer.AddLinkToBundle(link);
   }
 
-  private void ResetLinkBundle()
+  private void ShowDeleteModal()
   {
-    StateContainer.LinkBundle = new LinkBundle();
+    modalConfirm?.Show();
   }
 
   private void DeleteLink(Link link)
