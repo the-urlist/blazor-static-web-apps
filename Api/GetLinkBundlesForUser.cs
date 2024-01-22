@@ -63,7 +63,7 @@ namespace Api
                         return res;
                     }
                 }
-                
+
                 // return 401 if no client principal
                 await res.WriteAsJsonAsync(new { error = "Unauthorized" }, HttpStatusCode.Unauthorized);
 
