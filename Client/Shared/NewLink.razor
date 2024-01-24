@@ -36,13 +36,21 @@
 
   private async Task UpdateLink(Link link)
   {
-    var response = await HttpContainer.PostAsync<Link>("api/oginfo", link);
-
-    // If the request fails just return
-    if (response != null)
+    try
     {
-      // call statecontainer updatelink
-      StateContainer.UpdateLinkInBundle(link, response.Data);
+      var response = await HttpContainer.PostAsync<Link>("api/oginfo", link);
+
+      // If the request fails just return
+      if (response != null)
+      {
+        // call statecontainer updatelink
+        StateContainer.UpdateLinkInBundle(link, response.Data);
+      }
+    }
+    catch (Exception e)
+    {
+      // I'm not sure what to do with the timeout, so swallow it for now
+      Console.WriteLine(e);
     }
   }
 }
