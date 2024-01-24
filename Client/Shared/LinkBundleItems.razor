@@ -18,7 +18,7 @@
   <SortableList Items="@StateContainer.LinkBundle.Links" Context="link" OnUpdate="@SortList">
     <SortableItemTemplate>
       <div class="link-item" @key="link.Id">
-        <BundleItemEditable newLink="@link" OnDeleteLink="@DeleteLink"></BundleItemEditable>
+        <LinkBundleItemEditable newLink="@link" OnDeleteLink="@DeleteLink"></LinkBundleItemEditable>
       </div>
     </SortableItemTemplate>
   </SortableList>
