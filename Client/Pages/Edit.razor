@@ -5,9 +5,9 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<ListDetails IsPublished="true"></ListDetails>
+<LinkBundleDetails IsPublished="true"></LinkBundleDetails>
 <div class="container main content">
-  <EditList></EditList>
+  <LinkBundleItems></LinkBundleItems>
   <button id="deleteButton" class="button is-large is-danger has-text-white is-fullwidth"
     @onclick="ShowDeleteModal">Delete This List</button>
   <ModalConfirm @ref="modalConfirm" Type="@ModalConfirm.ModalType.danger" Title="Delete this list?"
