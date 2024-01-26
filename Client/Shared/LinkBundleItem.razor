@@ -1,39 +1,43 @@
 @using BlazorApp.Shared
+@inject NavigationManager NavigationManager
 
 <div class="link-outer">
   <div class="link-wrapper">
     <div class="columns is-vcentered is-mobile">
       <div class="card link">
-        <div class="column">
-          <div class="columns is-vcentered">
-            <div class="column is-narrow is-hidden-mobile">
-              <figure class="link-image">
-                <img width="64" height="64" class="is-64x64"
-                  src="@(string.IsNullOrEmpty(link.Image) ? "/images/no-image.png" : link.Image)" alt="@(link.Title)" />
-              </figure>
-            </div>
-            <div class="column link-details">
-              <div class="columns is-mobile is-multiline is-gapless">
-                <div class="column is-narrow is-hidden-tablet">
-                  <figure class="link-image link-image-little">
-                    <img width="24" height="24" class="is-24x24"
-                      src="@(string.IsNullOrEmpty(link.Image) ? "/images/no-image.png" : link.Image)"
-                      alt="@link.Title" />
-                  </figure>
-                </div>
-                <div class="column">
-                  <p class="has-text-weight-bold link-title has-text-weight-medium">@link.Title</p>
-                </div>
-                <div class="column is-full">
-                  <p class="link-description has-fixed-size is-size-7">
-                    @link.Description
-                  </p>
-                  <p class="link-url">@link.Url</p>
+        <a href="@GetUrlWithProtocol(link.Url)" target="_blank" class="has-text-dark">
+          <div class="column">
+            <div class="columns is-vcentered">
+              <div class="column is-narrow is-hidden-mobile">
+                <figure class="link-image">
+                  <img width="64" height="64" class="is-64x64"
+                    src="@(string.IsNullOrEmpty(link.Image) ? "/images/no-image.png" : link.Image)"
+                    alt="@(link.Title)" />
+                </figure>
+              </div>
+              <div class="column link-details">
+                <div class="columns is-mobile is-multiline is-gapless">
+                  <div class="column is-narrow is-hidden-tablet">
+                    <figure class="link-image link-image-little">
+                      <img width="24" height="24" class="is-24x24"
+                        src="@(string.IsNullOrEmpty(link.Image) ? "/images/no-image.png" : link.Image)"
+                        alt="@link.Title" />
+                    </figure>
+                  </div>
+                  <div class="column">
+                    <p class="has-text-weight-bold link-title has-text-weight-medium">@link.Title</p>
+                  </div>
+                  <div class="column is-full">
+                    <p class="link-description has-fixed-size is-size-7">
+                      @link.Description
+                    </p>
+                    <p class="link-url">@link.Url</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </a>
       </div>
     </div>
   </div>
@@ -45,4 +49,15 @@
 
   [Parameter]
   public bool editable { get; set; } = false;
+
+  private string GetUrlWithProtocol(string url)
+  {
+    // determine if the url is missing the protocol
+    if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+    {
+      // add a relative protocol
+      return url = "//" + url;
+    }
+    else return url;
+  }
 }
