@@ -1,4 +1,5 @@
-﻿using BlazorApp.Shared;
+﻿using Api.Utility;
+using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -25,6 +26,9 @@ namespace Api
             string vanityUrl)
         {
             var response = req.CreateResponse();
+
+            ClientPrincipal principal = ClientPrincipalUtility.GetClientPrincipal(req);
+
             var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
 
             // get the document id where vanityUrl == vanityUrl
@@ -35,6 +39,15 @@ namespace Api
 
             if (result.Any())
             {
+                Hasher hasher = new Hasher();
+                var hashedUsername = hasher.HashString(principal.UserDetails);
+                if (hashedUsername != result.First().UserId || principal.IdentityProvider != result.First().Provider)
+                {
+                    await response.WriteStringAsync("Unauthorized");
+                    response.StatusCode = System.Net.HttpStatusCode.Unauthorized;
+                    return response;
+                }
+
                 var partitionKey = new PartitionKey(vanityUrl);
                 await container.DeleteItemAsync<LinkBundle>(result.First().Id, partitionKey);
 

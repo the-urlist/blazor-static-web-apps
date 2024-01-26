@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Api.Utility;
 
 namespace Api
 {
@@ -34,7 +35,6 @@ namespace Api
             var logger = executionContext.GetLogger("SaveLinks");
             logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            // Deserialize JSON from request body into a LinkBundle object.
             var linkBundle = await req.ReadFromJsonAsync<LinkBundle>();
 
             if (!ValidatePayLoad(linkBundle, req))
@@ -42,7 +42,6 @@ namespace Api
                 var res = req.CreateResponse(HttpStatusCode.BadRequest);
                 await res.WriteAsJsonAsync(new { error = "Invalid payload" });
 
-                // Return the response
                 return res;
             }
 
@@ -50,22 +49,14 @@ namespace Api
 
             Match match = Regex.Match(linkBundle.VanityUrl, VANITY_REGEX, RegexOptions.IgnoreCase);
 
-            ClientPrincipal principal = null;
+            ClientPrincipal clientPrincipal = ClientPrincipalUtility.GetClientPrincipal(req);
 
-            if (req.Headers.TryGetValues("x-ms-client-principal", out var header))
+            if (clientPrincipal != null)
             {
-                var data = header.FirstOrDefault();
-                var decoded = Convert.FromBase64String(data);
-                var json = Encoding.UTF8.GetString(decoded);
-                principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                if(principal != null)
-                {
-                    string username = principal.UserDetails;
-                    // Hash the username using the Hasher class
-                    Hasher hasher = new Hasher();
-                    linkBundle.UserId = hasher.HashString(username);
-                    linkBundle.Provider  = principal.IdentityProvider;
-                }
+                string username = clientPrincipal.UserDetails;
+                Hasher hasher = new Hasher();
+                linkBundle.UserId = hasher.HashString(username);
+                linkBundle.Provider = clientPrincipal.IdentityProvider;
             }
 
             if (!match.Success)
@@ -78,28 +69,37 @@ namespace Api
 
             try
             {
-                // Get the cosmos container
                 var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
 
-                // Create the document
+                string vanityUrl = linkBundle.VanityUrl;
+                var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.vanityUrl = @vanityUrl")
+    .WithParameter("@vanityUrl", vanityUrl);
+
+                var result = await container.GetItemQueryIterator<LinkBundle>(query).ReadNextAsync();
+
+                if (result.Any())
+                {
+                    Hasher hasher = new Hasher();
+                    var hashedUsername = hasher.HashString(clientPrincipal.UserDetails);
+                    if (result.First().UserId is null || hashedUsername != result.First().UserId || clientPrincipal.IdentityProvider != result.First().Provider)
+                    {
+                        var res = req.CreateResponse(HttpStatusCode.BadRequest);
+
+                        await res.WriteStringAsync("Unauthorized");
+                        res.StatusCode = System.Net.HttpStatusCode.Unauthorized;
+                        return res;
+                    }
+                }
+
                 var partitionKey = new PartitionKey(linkBundle.VanityUrl);
                 var response = await container.CreateItemAsync(linkBundle);
-
-                // Return the response
                 var responseMessage = req.CreateResponse(HttpStatusCode.Created);
-
-                // Add the location header
                 responseMessage.Headers.Add("Location", $"/{linkBundle.VanityUrl}");
-
-                // Get the document from response
                 var linkDocument = response.Resource;
-
-                // Write the document to the response
                 await responseMessage.WriteAsJsonAsync(linkDocument);
 
                 return responseMessage;
             }
-            // catch specific exception for document conflict
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
             {
                 var res = req.CreateResponse();
