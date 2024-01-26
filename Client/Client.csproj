@@ -5,11 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>BlazorApp.Client</RootNamespace>
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>full</TrimMode>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
-    <BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>    
+    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport> 
     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>    
   </PropertyGroup>
 
