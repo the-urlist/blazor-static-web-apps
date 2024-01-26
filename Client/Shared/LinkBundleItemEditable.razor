@@ -30,21 +30,21 @@
                   </figure>
                 </div>
                 <div class="column">
-                  <input type="text" :placeholder="editable ? 'Enter a title' : ''"
+                  <input type="text" placeholder="Enter a title"
                     class="has-text-weight-bold link-title input has-text-weight-medium" value="@newLink.Title" />
                 </div>
                 <div class="column is-full">
-                  <textarea :placeholder="editable ? 'Enter a description' : ''"
-                    class="link-description textarea has-fixed-size is-size-7" value="@newLink.Description">
+                  <textarea placeholder="Enter a description" class="link-description textarea has-fixed-size is-size-7"
+                    value="@newLink.Description">
                   </textarea>
-                  <input disabled="disabled" value="@newLink.Url" class="link-url" />
+                  <input value="@newLink.Url" class="link-url" />
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="column is-narrow" v-if="editable">
+      <div class="column is-narrow">
         <div class="columns is-vcentered">
           <div class="column">
             <span class="has-text-bold link-delete has-text-grey is-clickable"

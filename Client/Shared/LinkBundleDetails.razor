@@ -16,7 +16,7 @@
             title=" Optional: Enter a vanity url for this list (i.e. my-list becomes
                 theurlist.com/my-list). If you leave this box blank, we'll generate a random vanity for you."
             @oninput="ValidateVanityUrl" 
-            disabled=@(StateContainer.LinkBundle.IsPublished)/>
+            disabled=@(IsPublished)/>
           <span class=@($"has-text-danger is-font-weight-medium mt-2 is-size-7 { validationMessageClass }")>
   @validationErrorMessage</span>
           <p id="liveLink" v-if="listIsPublished">
@@ -27,7 +27,7 @@
         <div class="column">
           <label class="control-label" for="description">Description</label>
           <textarea rows="2" title="Optional: The description will show up as the title on your public list page."
-            class="textarea has-fixed-size" id="description" v-model="currentList.description"></textarea>
+            class="textarea has-fixed-size" id="description" @bind="StateContainer.LinkBundle.Description"></textarea>
         </div>
         <div class="column is-narrow">
           <label class="control-label is-hidden-mobile" for>&nbsp;</label>
@@ -47,6 +47,10 @@
   {
     StateContainer.OnChange += StateHasChanged;
   }
+
+  [Parameter]
+  public bool IsPublished { get; set; } = false;
+  
   private Debouncer debouncer = new Debouncer(300);
   private bool listIsValid = true;
   private string validationErrorMessage = "";
@@ -112,7 +116,6 @@
       if (linkBundle != null)
       {
         StateContainer.LinkBundle = linkBundle;
-        linkBundle.IsPublished = true;
         
         // navigate to the public page
         NavigationManager.NavigateTo($"/{linkBundle.VanityUrl}");

@@ -1,0 +1,49 @@
+@using BlazorApp.Shared
+
+@inject StateContainer StateContainer
+
+<NewLink OnNewLinkAdded="@NewLinkAdded"></NewLink>
+@if (StateContainer.LinkBundle.Links.Count != 0)
+{
+  <div id="linkHeader" class="columns is-mobile is-vcentered is-gapless">
+  <div class="column">
+    <h3 class="has-text-primary is-size-3 has-text-weight-medium">
+      Links
+    </h3>
+  </div>
+  <div class="column">
+    <span class="is-pulled-right">Drag links to re-order</span>
+  </div>
+</div>
+  <SortableList Items="@StateContainer.LinkBundle.Links" Context="link" OnUpdate="@SortList">
+    <SortableItemTemplate>
+      <div class="link-item" @key="link.Id">
+        <LinkBundleItemEditable newLink="@link" OnDeleteLink="@DeleteLink"></LinkBundleItemEditable>
+      </div>
+    </SortableItemTemplate>
+  </SortableList>
+}
+
+@code {
+
+  protected override void OnInitialized()
+  {
+    StateContainer.OnChange += StateHasChanged;
+  }
+
+  private void NewLinkAdded(Link link)
+  {
+    StateContainer.AddLinkToBundle(link);
+  }
+
+  private void DeleteLink(Link link)
+  {
+    StateContainer.DeleteLinkFromBundle(link);
+  }
+
+  private void SortList((int oldIndex, int newIndex) indices)
+  {
+    var (oldIndex, newIndex) = indices;
+    StateContainer.ReorderLinks(oldIndex, newIndex);
+  }
+}

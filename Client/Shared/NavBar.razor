@@ -25,7 +25,7 @@
         </a>
         @if (loggedIn)
         {
-          <a class="navbar-item" to="/s/user">
+          <a class="navbar-item" href="/s/mylists">
             <span class="icon is-large navbar-icon">
               <i class="fas fa-lg fa-user-circle"></i>
             </span>
@@ -77,7 +77,11 @@
       </div>
     </div>
   </nav>
-  <ModalLogin isOpen="showLoginModal" closeModal="ToggleModal"></ModalLogin>
+  <ModalLogin @ref="modalLogin"></ModalLogin>
+  <ModalConfirm @ref="modalConfirm" Type="@ModalConfirm.ModalType.primary" Title="Clear this list?"
+    Prompt="This will reset the current list and you will lose all changes. Are you sure you want to do that?"
+    OnOK="ResetLinkBundle">
+  </ModalConfirm>
 </header>
 
 @code {
@@ -87,12 +91,21 @@
 
   private bool showMenu = false;
 
-  private bool showLoginModal = false;
+  private ModalLogin? modalLogin;
+  private ModalConfirm? modalConfirm;
 
   private void NewList()
   {
-    StateContainer.LinkBundle = new LinkBundle();
-    NavigationManager.NavigateTo("/s/edit");
+    @* if the current page is /s/edit and the linbundle has link items *@
+    if (NavigationManager.Uri.Contains("/s/new") && StateContainer.LinkBundle?.Links?.Count > 0)
+    {
+      modalConfirm?.Show();
+    }
+    else
+    {
+      ResetLinkBundle();
+      NavigationManager.NavigateTo("/s/new");
+    }
   }
   private void ToggleMenu()
   {
@@ -101,7 +114,12 @@
 
   private void ToggleModal()
   {
-    showLoginModal = !showLoginModal;
-    Console.WriteLine($"showLoginModal: {showLoginModal}");
+    modalLogin?.Show();
+  }
+
+  private void ResetLinkBundle()
+  {
+    StateContainer.LinkBundle = new LinkBundle();
+    NavigationManager.NavigateTo("/s/new");
   }
 }

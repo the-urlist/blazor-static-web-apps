@@ -1,0 +1,17 @@
+﻿@page "/s/new"
+@using BlazorApp.Shared
+
+@inject StateContainer StateContainer
+@inject HttpClient Http
+
+<LinkBundleDetails></LinkBundleDetails>
+<div class="container main content">
+  <LinkBundleItems></LinkBundleItems>
+</div>
+
+@code {
+  protected override void OnInitialized()
+  {
+    StateContainer.OnChange += StateHasChanged;
+  }
+}
