@@ -90,7 +90,7 @@ public class HttpContainer
     }
     catch (Exception ex)
     {
-      throw;
+      throw new Exception(ex.Message);
     }
     finally
     {

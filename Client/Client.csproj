@@ -19,4 +19,12 @@
     <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared/ModalConfirm.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Shared/ModalConfirm.razor" />
+  </ItemGroup>
+
 </Project>

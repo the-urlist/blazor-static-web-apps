@@ -4,6 +4,8 @@ The Urlist is an application that lets you create lists of url’s that you can 
 
 The original version of this site was [built in 2019 using Azure Storage, Azure Functions, Azure Front Door, and Vue](https://dev.to/azure/the-urlist-an-application-study-in-serverless-and-azure-2jk1). We originally decided to try a rewrite of this using modern Static Web Apps and Blazor when Twitter authentication became unreliable, trying this in Blazor because it's a new fun challenge. You can [watch us](https://aka.ms/burke-learns-blazor) live stream the effort on Fridays.
 
+See the work in progress here 👉 [https://victorious-forest-0ccd7d90f.3.azurestaticapps.net](https://victorious-forest-0ccd7d90f.3.azurestaticapps.net)
+
 ## Project planning
 
 We're tracking our work on [this GitHub project](https://github.com/orgs/the-urlist/projects/2).

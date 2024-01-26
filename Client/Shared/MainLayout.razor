@@ -17,6 +17,9 @@
   protected override async Task OnInitializedAsync()
   {
     await GetClientPrincipalAsync();
+
+    // try to load the last list they were on from localstorage
+    await StateContainer.LoadLinkBundleFromLocalStorage();
   }
 
   private async Task GetClientPrincipalAsync()

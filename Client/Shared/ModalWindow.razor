@@ -1,0 +1,32 @@
+﻿<div class="modal @((isOpen) ? "is-active" : "")">
+  <div class="modal-background" @onclick="DismissModalWithExtremePrejudice"></div>
+  <div class="modal-content">
+    <div class="card modal-content-inner">
+      <a class="flex is-pulled-right" @onclick="DismissModalWithExtremePrejudice">
+        <img src="/images/close.png" />
+      </a>
+      <div class="card-content">
+        @ChildContent
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+  private bool isOpen { get; set; }
+
+  [Parameter]
+  public RenderFragment? ChildContent { get; set; }
+
+  public void ShowModal()
+  {
+    isOpen = true;
+    StateHasChanged();
+  }
+
+  public void DismissModalWithExtremePrejudice()
+  {
+    isOpen = false;
+    StateHasChanged();
+  }
+}
