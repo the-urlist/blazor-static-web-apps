@@ -11,7 +11,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 
-namespace Api
+namespace Api.Functions
 {
     public class GetLinkBundlesForUser
     {
@@ -21,7 +21,7 @@ namespace Api
         public GetLinkBundlesForUser(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
         {
             _logger = loggerFactory.CreateLogger<GetLinkBundlesForUser>();
-            _cosmosClient = cosmosClient ?? throw new System.ArgumentNullException(nameof(cosmosClient));
+            _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
         }
 
         [Function("GetLinkBundlesForUser")]

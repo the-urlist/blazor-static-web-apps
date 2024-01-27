@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Api
+namespace Api.Functions
 {
     public class GetOpenGraphInfo
     {
@@ -41,7 +41,7 @@ namespace Api
 
             var response = await httpClient.GetAsync(link.Url);
 
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
                 return req.CreateResponse(HttpStatusCode.BadRequest);
             }

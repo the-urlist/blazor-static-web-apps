@@ -12,9 +12,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Api.Utility;
 
-namespace Api
+namespace Api.Functions
 {
-    public class SaveLinks
+    public class CreateLinkBundle
     {
         protected const string CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         protected const string VANITY_REGEX = @"^([\w\d-])+(/([\w\d-])+)*$";
@@ -22,13 +22,13 @@ namespace Api
         private readonly ILogger _logger;
         private readonly CosmosClient _cosmosClient;
 
-        public SaveLinks(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
+        public CreateLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
         {
-            _logger = loggerFactory.CreateLogger<SaveLinks>();
+            _logger = loggerFactory.CreateLogger<CreateLinkBundle>();
             _cosmosClient = cosmosClient;
         }
 
-        [Function("SaveLinks")]
+        [Function(nameof(CreateLinkBundle))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "links")] HttpRequestData req,
             FunctionContext executionContext)
         {
@@ -72,24 +72,9 @@ namespace Api
                 var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
 
                 string vanityUrl = linkBundle.VanityUrl;
-                var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.vanityUrl = @vanityUrl")
-    .WithParameter("@vanityUrl", vanityUrl);
+                var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.vanityUrl = @vanityUrl").WithParameter("@vanityUrl", vanityUrl);
 
                 var result = await container.GetItemQueryIterator<LinkBundle>(query).ReadNextAsync();
-
-                if (result.Any())
-                {
-                    Hasher hasher = new Hasher();
-                    var hashedUsername = hasher.HashString(clientPrincipal.UserDetails);
-                    if (result.First().UserId is null || hashedUsername != result.First().UserId || clientPrincipal.IdentityProvider != result.First().Provider)
-                    {
-                        var res = req.CreateResponse(HttpStatusCode.BadRequest);
-
-                        await res.WriteStringAsync("Unauthorized");
-                        res.StatusCode = System.Net.HttpStatusCode.Unauthorized;
-                        return res;
-                    }
-                }
 
                 var partitionKey = new PartitionKey(linkBundle.VanityUrl);
                 var response = await container.CreateItemAsync(linkBundle);
@@ -117,63 +102,6 @@ namespace Api
 
         }
 
-        [Function("UpdateLinks")]
-        public async Task<HttpResponseData> Update([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "links/{vanityUrl}")] HttpRequestData req,
-                       string vanityUrl, FunctionContext executionContext)
-        {
-            var logger = executionContext.GetLogger("UpdateLinks");
-            logger.LogInformation("C# HTTP trigger function processed a request.");
-
-            // Deserialize JSON from request body into a LinkBundle object.
-            var linkBundle = await req.ReadFromJsonAsync<LinkBundle>();
-
-            if (!ValidatePayLoad(linkBundle, req))
-            {
-                var res = req.CreateResponse(HttpStatusCode.BadRequest);
-                await res.WriteAsJsonAsync(new { error = "Invalid payload" });
-
-                // Return the response
-                return res;
-            }
-
-            if (string.IsNullOrEmpty(vanityUrl))
-            {
-                var res = req.CreateResponse(HttpStatusCode.BadRequest);
-                await res.WriteAsJsonAsync(new { error = "Invalid vanity url" });
-
-                return res;
-            }
-
-            try
-            {
-                // Get the cosmos container
-                var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
-
-                // Create the document
-                var partitionKey = new PartitionKey(vanityUrl);
-                var response = await container.UpsertItemAsync(linkBundle, partitionKey);
-
-                // Return the response
-                var responseMessage = req.CreateResponse(HttpStatusCode.OK);
-
-                // Get the document from response
-                var linkDocument = response.Resource;
-
-                // Write the document to the response
-                await responseMessage.WriteAsJsonAsync(linkDocument);
-
-                return responseMessage;
-            }
-            catch (Exception ex)
-            {
-                var res = req.CreateResponse();
-                await res.WriteAsJsonAsync(new { error = ex.Message }, HttpStatusCode.InternalServerError);
-
-                return res;
-            }
-
-        }   
-
         private void EnsureVanityUrl(LinkBundle linkDocument)
         {
             if (string.IsNullOrWhiteSpace(linkDocument.VanityUrl))
@@ -191,7 +119,7 @@ namespace Api
 
         private static bool ValidatePayLoad(LinkBundle linkDocument, HttpRequestData req)
         {
-            bool isValid = (linkDocument != null) && linkDocument.Links.Count() > 0;
+            bool isValid = linkDocument != null && linkDocument.Links.Count() > 0;
 
             return isValid;
         }

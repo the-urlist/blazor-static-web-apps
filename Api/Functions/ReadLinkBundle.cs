@@ -8,16 +8,16 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace ApiIsolated
+namespace Api.Functions
 {
-    public class GetLinks
+    public class ReadLinkBundle
     {
         private readonly ILogger _logger;
         private readonly CosmosClient _cosmosClient;
 
-        public GetLinks(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
+        public ReadLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
         {
-            _logger = loggerFactory.CreateLogger<GetLinks>();
+            _logger = loggerFactory.CreateLogger<ReadLinkBundle>();
             _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
         }
 

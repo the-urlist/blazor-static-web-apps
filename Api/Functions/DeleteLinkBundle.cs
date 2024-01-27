@@ -7,21 +7,21 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Api
+namespace Api.Functions
 {
-    public class DeleteLinks
+    public class DeleteLinkBundle
     {
         private readonly ILogger _logger;
         private readonly CosmosClient _cosmosClient;
 
-        public DeleteLinks(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
+        public DeleteLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
         {
-            _logger = loggerFactory.CreateLogger<DeleteLinks>();
+            _logger = loggerFactory.CreateLogger<DeleteLinkBundle>();
             _cosmosClient = cosmosClient;
         }
 
-        [Function("DeleteLinks")]
-        public async Task<HttpResponseData> Run(
+        [Function(nameof(Delete))]
+        public async Task<HttpResponseData> Delete(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "links/{vanityUrl}")] HttpRequestData req,
             string vanityUrl)
         {
