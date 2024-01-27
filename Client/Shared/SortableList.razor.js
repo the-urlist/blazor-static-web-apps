@@ -1,6 +1,6 @@
 export function init(id, component) {
-  console.log(id);
-  new Sortable(document.getElementById(id), { 
+  var list = document.getElementById(id);
+  new Sortable(list, { 
       animation: 200,
       forceFallback: true,
       onUpdate: (event) => {
