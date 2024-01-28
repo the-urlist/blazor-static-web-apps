@@ -14,6 +14,18 @@ public class StateContainer
     this.jsRuntime = jsRuntime;
   }
 
+  private int activeHttpRequests;
+
+  public int ActiveHttpRequests
+  {
+    get => activeHttpRequests;
+    set
+    {
+      activeHttpRequests = value;
+      NotifyStateChanged();
+    }
+  }
+
   public LinkBundle LinkBundle
   {
     get => linkBundle ??= new LinkBundle();
