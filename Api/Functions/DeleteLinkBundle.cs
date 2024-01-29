@@ -20,8 +20,8 @@ namespace Api.Functions
             _cosmosClient = cosmosClient;
         }
 
-        [Function(nameof(Delete))]
-        public async Task<HttpResponseData> Delete(
+        [Function(nameof(DeleteLinkBundle))]
+        public async Task<HttpResponseData> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "links/{vanityUrl}")] HttpRequestData req,
             string vanityUrl)
         {

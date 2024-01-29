@@ -24,7 +24,7 @@ namespace Api.Functions
             _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
         }
 
-        [Function("GetLinkBundlesForUser")]
+        [Function(nameof(GetLinkBundlesForUser))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequestData req)
         {
             try

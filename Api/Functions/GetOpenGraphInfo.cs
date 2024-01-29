@@ -23,7 +23,7 @@ namespace Api.Functions
             _logger = loggerFactory.CreateLogger<GetOpenGraphInfo>();
         }
 
-        [Function("GetOpenGraphInfo")]
+        [Function(nameof(GetOpenGraphInfo))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "oginfo")] HttpRequestData req,
             FunctionContext executionContext)
         {
