@@ -4,7 +4,7 @@
 
 @inject StateContainer StateContainer
 @inject NavigationManager NavigationManager
-@inject HttpContainer HttpContainer
+@inject HttpClient Http
 
 <div class="container">
   <div class="lists">
@@ -61,8 +61,8 @@
 
   private async Task<List<LinkBundle>> GetLinkBundlesForUser()
   {
-    var response = await HttpContainer.GetAsync<List<LinkBundle>>($"api/user");
-    return response.Data ?? new List<LinkBundle>();
+    var response = await Http.GetFromJsonAsync<List<LinkBundle>>($"api/user");
+    return response ?? new List<LinkBundle>();
   }
 
   private void NewList()

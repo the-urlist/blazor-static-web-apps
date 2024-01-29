@@ -6,9 +6,27 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped<HttpClient>(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["API_Prefix"] ?? builder.HostEnvironment.BaseAddress) });
-
 builder.Services.AddSingleton<StateContainer>();
-builder.Services.AddSingleton<HttpContainer>(services => new HttpContainer(new Uri(builder.Configuration["API_Prefix"] ?? builder.HostEnvironment.BaseAddress)));
+
+// Add custom HTTP Handler and register HttpClient
+builder.Services.AddScoped(services =>
+{
+  var stateContainer = services.GetRequiredService<StateContainer>();
+  return new CustomHttpHandler(stateContainer);
+});
+
+builder.Services.AddScoped(services =>
+{
+  var customHttpHandler = services.GetRequiredService<CustomHttpHandler>();
+  var httpClientHandler = new HttpClientHandler();
+  customHttpHandler.InnerHandler = httpClientHandler;
+
+  var httpClient = new HttpClient(customHttpHandler)
+  {
+    BaseAddress = new Uri(builder.Configuration["API_Prefix"] ?? builder.HostEnvironment.BaseAddress)
+  };
+
+  return httpClient;
+});
 
 await builder.Build().RunAsync();
