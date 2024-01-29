@@ -39,7 +39,10 @@
     {
       StateContainer.AddLinkToUpdatePool(link);
 
-      var response = await Http.PostAsJsonAsync<Link>("api/oginfo", link);
+      var cts = new CancellationTokenSource();
+      cts.CancelAfter(TimeSpan.FromSeconds(5));
+
+      var response = await Http.PostAsJsonAsync<Link>("api/oginfo", link, cts.Token);
       var updatedLink = await response.Content.ReadFromJsonAsync<Link>();
 
       if (updatedLink != null)
@@ -52,6 +55,7 @@
     {
       // the request to get opengraph info failed, so log and swallow
       Console.WriteLine(e);
+      StateContainer.RemoveLinkFromUpdatePool(link);
     }
     finally
     {
