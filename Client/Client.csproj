@@ -7,7 +7,7 @@
     <RootNamespace>BlazorApp.Client</RootNamespace>
     <InvariantGlobalization>true</InvariantGlobalization>
     <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport> 
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>    
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
   </PropertyGroup>
 
   <ItemGroup>

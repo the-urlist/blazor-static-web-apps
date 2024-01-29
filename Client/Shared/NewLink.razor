@@ -1,5 +1,5 @@
 @using BlazorApp.Shared
-@inject HttpContainer HttpContainer
+@inject HttpClient Http
 @inject StateContainer StateContainer
 
 <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit" class="mb-6">
@@ -38,18 +38,19 @@
   {
     try
     {
-      var response = await HttpContainer.PostAsync<Link>("api/oginfo", link);
+      var response = await Http.PostAsJsonAsync<Link>("api/oginfo", link);
+      var updatedLink = await response.Content.ReadFromJsonAsync<Link>();
 
       // If the request fails just return
-      if (response != null)
+      if (updatedLink != null)
       {
         // call statecontainer updatelink
-        StateContainer.UpdateLinkInBundle(link, response.Data);
+        StateContainer.UpdateLinkInBundle(link, updatedLink);
       }
     }
     catch (Exception e)
     {
-      // I'm not sure what to do with the timeout, so swallow it for now
+      // the request to get opengraph info failed, so log and swallow
       Console.WriteLine(e);
     }
   }
