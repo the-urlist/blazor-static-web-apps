@@ -8,9 +8,21 @@
 
 <div class="container">
   <div class="lists">
-    <h2 class="is-size-3 is-heading has-text-primary has-text-weight-medium">
-      My Lists
-    </h2>
+    @if (LoadingUsersLists)
+    {
+      <h2 class="is-size-3 is-heading has-text-primary has-text-weight-medium">
+        Loading your lists
+        <span class="dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </span>
+      </h2>
+    }
+    else
+    {
+      <h2 class="is-size-3 is-heading has-text-primary has-text-weight-medium">My Lists</h2>
+    }
     <div class="columns is-multiline list">
       <div class="column is-one-quarter-widescreen is-one-third-desktop is-half-tablet">
         <div class="list-item" @onclick="NewList">
@@ -22,6 +34,7 @@
           </div>
         </div>
       </div>
+
       @if (StateContainer.User?.LinkBundles != null)
       {
         @foreach (var linkBundle in StateContainer.User.LinkBundles)
@@ -50,6 +63,9 @@
 </div>
 
 @code {
+
+  private bool LoadingUsersLists { get; set; } = false;
+
   protected override async Task OnInitializedAsync()
   {
     var linkBundles = await GetLinkBundlesForUser();
@@ -61,8 +77,22 @@
 
   private async Task<List<LinkBundle>> GetLinkBundlesForUser()
   {
-    var response = await Http.GetFromJsonAsync<List<LinkBundle>>($"api/user");
-    return response ?? new List<LinkBundle>();
+    try
+    {
+      LoadingUsersLists = true;
+
+      var response = await Http.GetFromJsonAsync<List<LinkBundle>>($"api/user");
+      return response ?? new List<LinkBundle>();
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+      return new List<LinkBundle>();
+    }
+    finally
+    {
+      LoadingUsersLists = false;
+    }
   }
 
   private void NewList()

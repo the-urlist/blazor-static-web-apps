@@ -11,6 +11,12 @@
         </span>
       </div>
       <div class="card link">
+        <div class="progress-bar--wrapper">
+          @if (StateContainer.LinkUpdatePool.Contains(newLink))
+          {
+            <div id="progressBar" class="progress-bar--container visible"></div>
+          }
+        </div>
         <div class="column">
           <div class="columns is-vcentered">
             <div class="column is-narrow is-hidden-mobile">
@@ -37,7 +43,7 @@
                   <textarea placeholder="Enter a description" class="link-description textarea has-fixed-size is-size-7"
                     value="@newLink.Description">
                   </textarea>
-                  <input value="@newLink.Url" class="link-url" />
+                  <input value="@newLink.Url" class="link-url mb-2" />
                 </div>
               </div>
             </div>
@@ -61,10 +67,15 @@
 </div>
 
 @code {
+
+  protected override void OnInitialized()
+  {
+    StateContainer.OnChange += StateHasChanged;
+  }
+
   [Parameter]
   public Link newLink { get; set; } = new Link();
 
   [Parameter]
   public EventCallback<Link> OnDeleteLink { get; set; }
-
 }
