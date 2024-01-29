@@ -3,6 +3,7 @@ export function init(id, component) {
   new Sortable(list, { 
       animation: 200,
       forceFallback: true,
+      handle: '.drag-handle',
       onUpdate: (event) => {
           // Revert the DOM to match the .NET state
           event.item.remove();

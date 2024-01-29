@@ -12,13 +12,13 @@
       <div class="columns">
         <div class="column">
           <label class="control-label" for="vanityUrl">Vanity Url</label>
-          <input @bind="StateContainer.LinkBundle.VanityUrl" Class=@($"input is-large has-tooltip {validationErrorClass}")
+          <input id="vanityUrl" @bind="StateContainer.LinkBundle.VanityUrl" Class=@($"input is-large has-tooltip {validationErrorClass}")
             title=" Optional: Enter a vanity url for this list (i.e. my-list becomes
                 theurlist.com/my-list). If you leave this box blank, we'll generate a random vanity for you."
             @oninput="ValidateVanityUrl" 
             disabled=@(IsPublished)/>
-          <span class=@($"has-text-danger is-font-weight-medium mt-2 is-size-7 { validationMessageClass }")>
-  @validationErrorMessage</span>
+          <p class=@($"has-text-danger is-font-weight-medium mt-2 { validationMessageClass }")>
+  @validationErrorMessage</p>
           <p id="liveLink" v-if="listIsPublished">
             <a :href="liveLink" target="_new">
             </a>
@@ -54,7 +54,7 @@
   private Debouncer debouncer = new Debouncer(300);
   private bool listIsValid = true;
   private string validationErrorMessage = "";
-  private string validationErrorClass => listIsValid ? "" : "is-danger";
+  private string validationErrorClass => listIsValid ? "" : "invalid";
   private string validationMessageClass => listIsValid ? "is-invisible" : "is-visible";
   
   bool PublishEnabled(bool valid) {

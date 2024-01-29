@@ -49,7 +49,6 @@ public class StateContainer
 
   public void SaveLinkBundleToLocalStorage()
   {
-    Console.WriteLine("Saving link bundle to local storage");
     var json = JsonSerializer.Serialize(LinkBundle);
     jsRuntime.InvokeVoidAsync("localStorage.setItem", "linkBundle", json);
   }
