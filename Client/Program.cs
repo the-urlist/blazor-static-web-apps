@@ -8,18 +8,20 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddSingleton<StateContainer>();
 
+// Add custom HTTP Handler and register HttpClient
 builder.Services.AddScoped(services =>
 {
   var stateContainer = services.GetRequiredService<StateContainer>();
   return new CustomHttpHandler(stateContainer);
 });
+
 builder.Services.AddScoped(services =>
 {
-  var customHttpHanlder = services.GetRequiredService<CustomHttpHandler>();
+  var customHttpHandler = services.GetRequiredService<CustomHttpHandler>();
   var httpClientHandler = new HttpClientHandler();
-  customHttpHanlder.InnerHandler = httpClientHandler;
+  customHttpHandler.InnerHandler = httpClientHandler;
 
-  var httpClient = new HttpClient(customHttpHanlder)
+  var httpClient = new HttpClient(customHttpHandler)
   {
     BaseAddress = new Uri(builder.Configuration["API_Prefix"] ?? builder.HostEnvironment.BaseAddress)
   };
