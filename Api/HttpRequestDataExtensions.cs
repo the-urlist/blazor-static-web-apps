@@ -1,6 +1,5 @@
 using Microsoft.Azure.Functions.Worker.Http;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Api

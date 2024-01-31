@@ -1,3 +1,4 @@
+using Api.Utility;
 using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
@@ -6,11 +7,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Net;
-using System.Text.Json;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Api.Utility;
 
 namespace Api.Functions
 {

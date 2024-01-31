@@ -1,9 +1,9 @@
+using BlazorApp.Shared;
 using Microsoft.Azure.Functions.Worker.Http;
 using System;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using BlazorApp.Shared;
 
 namespace Api.Utility
 {

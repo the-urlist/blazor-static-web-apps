@@ -1,14 +1,7 @@
 using BlazorApp.Shared;
-using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
 using System.Net;
-using System.Text.Json;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Api.Functions
