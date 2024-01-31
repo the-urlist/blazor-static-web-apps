@@ -7,39 +7,41 @@
 
 <div class="container">
   <div class="section">
-    <div>
-      <h2 class="is-size-3 is-heading has-text-weight-medium has-text-primary">
-        @linkBundle.Description
-      </h2>
-      <div class="columns is-mobile">
-        <div class="column is-half">
-          <div id="share" class="buttons has-addons">
-            <a class="button" target="_blank" :href="
+    @if (linkBundle.Links.Count > 0)
+    {
+      <div>
+        <h2 class="is-size-3 is-heading has-text-weight-medium has-text-primary">
+          @linkBundle.Description
+        </h2>
+        <div class="columns is-mobile">
+          <div class="column is-half">
+            <div id="share" class="buttons has-addons">
+              <a class="button" target="_blank" :href="
             `https://twitter.com/intent/tweet?text=${
               currentList.description
             } theurlist.com/${currentList.vanityUrl}`
-          ">
-              <span class="icon"><i class="fab fa-twitter"></i></span>
-            </a>
-            <a class="button" target="_blank" :href="
+              ">
+                <span class="icon"><i class="fab fa-twitter"></i></span>
+              </a>
+              <a class="button" target="_blank" :href="
             `https://www.facebook.com/sharer/sharer.php?u=theurlist.com/${
               currentList.vanityUrl
             }`
-          ">
-              <span class="icon"><i class="fab fa-facebook-f"></i></span>
-            </a>
-            <a class="button" target="_blank" :href="
+              ">
+                <span class="icon"><i class="fab fa-facebook-f"></i></span>
+              </a>
+              <a class="button" target="_blank" :href="
             `https://www.linkedin.com/shareArticle?mini=true?summary=${
               currentList.description
             }&url=https://theurlist.com?${currentList.vanityUrl}`
-          ">
-              <span class="icon"><i class="fab fa-linkedin-in"></i></span>
-            </a>
+              ">
+                <span class="icon"><i class="fab fa-linkedin-in"></i></span>
+              </a>
+            </div>
           </div>
-        </div>
-        <div class="column is-half">
-          <div id="view" class="buttons has-addons is-pulled-right">
-            @* <button
+          <div class="column is-half">
+            <div id="view" class="buttons has-addons is-pulled-right">
+              @* <button
             title="View as List"
             class="button"
             :class="{ 'is-active': !qr }"
@@ -49,7 +51,7 @@
             </button>
             > *@
 
-            @* <button
+              @* <button
             title="View as QR Code"
             class="button"
             :class="{ 'is-active': qr }"
@@ -58,28 +60,30 @@
             <span class="icon"><i class="fas fa-qrcode"></i></span>
             </button>
             > *@
+            </div>
           </div>
         </div>
-      </div>
-      <br />
-      @foreach (var link in linkBundle.Links)
-      {
-        <LinkBundleItem link="link"></LinkBundleItem>
-      }
-      @* <div class="has-text-centered" v-else>
+        <br />
+        @foreach (var link in linkBundle.Links)
+        {
+          <LinkBundleItem link="link"></LinkBundleItem>
+        }
+        @* <div class="has-text-centered" v-else>
       <qr-code :value="`https://theurlist.com/${this.vanityUrl}`"></qr-code>
       </div> *@
-    </div>
-    @if (linkBundle.Links.Count <= 0)
+      </div>
+    }
+    else
     {
-      <h1 class="title has-text-centered">
-        This list is empty.
-      </h1>
-      @* <not-found
-    id="notFound"
-    v-if="notFound"
-    :vanityUrl="vanityUrl"
-    ></not-found> *@
+      <div class="has-text-centered">
+        <figure>
+          <img src="images/urly.png" alt="Urly Character" />
+        </figure>
+        <h2 class="is-size-2">
+          We couldn't find that Urlist.
+        </h2>
+        <h3 class="is-size-5">But don't be sad! That means <a href="/s/new">@vanityUrl</a> is still available.</h3>
+      </div>
     }
   </div>
 </div>
@@ -91,8 +95,17 @@
   private LinkBundle linkBundle { get; set; } = new LinkBundle();
   protected override async Task OnInitializedAsync()
   {
-    var response = await Http.GetFromJsonAsync<LinkBundle>($"api/links/{vanityUrl}");
+    try
+    {
+      var response = await Http.GetFromJsonAsync<LinkBundle>($"api/links/{vanityUrl}");
+      linkBundle = response ?? new LinkBundle();
+    }
+    catch (Exception ex)
+    {
+      // if the error is 404, then the vanity url doesn't exist
 
-    linkBundle = response ?? new LinkBundle();
+      // if the error is something else, log it
+      Console.WriteLine(ex.Message);
+    }
   }
 }
