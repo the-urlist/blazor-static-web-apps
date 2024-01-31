@@ -14,19 +14,10 @@ using Api.Utility;
 
 namespace Api.Functions
 {
-    public class CreateLinkBundle
+    public partial class CreateLinkBundle(CosmosClient cosmosClient)
     {
-        protected const string CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        protected const string CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789";
         protected const string VANITY_REGEX = @"^([\w\d-])+(/([\w\d-])+)*$";
-
-        private readonly ILogger _logger;
-        private readonly CosmosClient _cosmosClient;
-
-        public CreateLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
-        {
-            _logger = loggerFactory.CreateLogger<CreateLinkBundle>();
-            _cosmosClient = cosmosClient;
-        }
 
         [Function(nameof(CreateLinkBundle))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "links")] HttpRequestData req,
@@ -37,39 +28,33 @@ namespace Api.Functions
 
             var linkBundle = await req.ReadFromJsonAsync<LinkBundle>();
 
-            if (!ValidatePayLoad(linkBundle, req))
+            if (!ValidatePayLoad(linkBundle))
             {
-                var res = req.CreateResponse(HttpStatusCode.BadRequest);
-                await res.WriteAsJsonAsync(new { error = "Invalid payload" });
-
-                return res;
+                return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "Invalid payload");
             }
 
             EnsureVanityUrl(linkBundle);
 
-            Match match = Regex.Match(linkBundle.VanityUrl, VANITY_REGEX, RegexOptions.IgnoreCase);
+            Match match = VanityRegex().Match(linkBundle.VanityUrl);
 
             ClientPrincipal clientPrincipal = ClientPrincipalUtility.GetClientPrincipal(req);
 
             if (clientPrincipal != null)
             {
                 string username = clientPrincipal.UserDetails;
-                Hasher hasher = new Hasher();
+                Hasher hasher = new();
                 linkBundle.UserId = hasher.HashString(username);
                 linkBundle.Provider = clientPrincipal.IdentityProvider;
             }
 
             if (!match.Success)
             {
-                var res = req.CreateResponse(HttpStatusCode.BadRequest);
-                await res.WriteAsJsonAsync(new { error = "Invalid vanity url" });
-
-                return res;
+                return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "Invalid vanity url");
             }
 
             try
             {
-                var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
+                var container = cosmosClient.GetContainer("TheUrlist", "linkbundles");
 
                 string vanityUrl = linkBundle.VanityUrl;
                 var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.vanityUrl = @vanityUrl").WithParameter("@vanityUrl", vanityUrl);
@@ -77,6 +62,7 @@ namespace Api.Functions
                 var result = await container.GetItemQueryIterator<LinkBundle>(query).ReadNextAsync();
 
                 var partitionKey = new PartitionKey(linkBundle.VanityUrl);
+
                 var response = await container.CreateItemAsync(linkBundle);
                 var responseMessage = req.CreateResponse(HttpStatusCode.Created);
                 responseMessage.Headers.Add("Location", $"/{linkBundle.VanityUrl}");
@@ -87,22 +73,16 @@ namespace Api.Functions
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
             {
-                var res = req.CreateResponse();
-                await res.WriteAsJsonAsync(new { error = "Vanity url already exists" }, HttpStatusCode.Conflict);
-
-                return res;
+                return await req.CreateJsonResponse(HttpStatusCode.Conflict, "Vanity url already exists");
             }
             catch (Exception ex)
             {
-                var res = req.CreateResponse();
-                await res.WriteAsJsonAsync(new { error = ex.Message }, HttpStatusCode.InternalServerError);
-
-                return res;
+                return await req.CreateJsonResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
 
         }
 
-        private void EnsureVanityUrl(LinkBundle linkDocument)
+        private static void EnsureVanityUrl(LinkBundle linkDocument)
         {
             if (string.IsNullOrWhiteSpace(linkDocument.VanityUrl))
             {
@@ -112,16 +92,14 @@ namespace Api.Functions
 
                 linkDocument.VanityUrl = code;
             }
-
-            // force lowercase
-            linkDocument.VanityUrl = linkDocument.VanityUrl.ToLower();
         }
 
-        private static bool ValidatePayLoad(LinkBundle linkDocument, HttpRequestData req)
+        private static bool ValidatePayLoad(LinkBundle linkDocument)
         {
-            bool isValid = linkDocument != null && linkDocument.Links.Count() > 0;
-
-            return isValid;
+            return linkDocument != null && linkDocument.Links.Count > 0;
         }
+
+        [GeneratedRegex(VANITY_REGEX, RegexOptions.IgnoreCase, "en-US")]
+        private static partial Regex VanityRegex();
     }
 }

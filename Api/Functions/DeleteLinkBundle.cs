@@ -9,27 +9,18 @@ using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public class DeleteLinkBundle
+    public class DeleteLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
     {
-        private readonly ILogger _logger;
-        private readonly CosmosClient _cosmosClient;
-
-        public DeleteLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
-        {
-            _logger = loggerFactory.CreateLogger<DeleteLinkBundle>();
-            _cosmosClient = cosmosClient;
-        }
+        private readonly ILogger _logger = loggerFactory.CreateLogger<DeleteLinkBundle>();
 
         [Function(nameof(Delete))]
         public async Task<HttpResponseData> Delete(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "links/{vanityUrl}")] HttpRequestData req,
             string vanityUrl)
         {
-            var response = req.CreateResponse();
-
             ClientPrincipal principal = ClientPrincipalUtility.GetClientPrincipal(req);
 
-            var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
+            var container = cosmosClient.GetContainer("TheUrlist", "linkbundles");
 
             // get the document id where vanityUrl == vanityUrl
             var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.vanityUrl = @vanityUrl")
@@ -37,28 +28,22 @@ namespace Api.Functions
 
             var result = await container.GetItemQueryIterator<LinkBundle>(query).ReadNextAsync();
 
-            if (result.Any())
+            if (result.Count != 0)
             {
-                Hasher hasher = new Hasher();
+                Hasher hasher = new();
                 var hashedUsername = hasher.HashString(principal.UserDetails);
                 if (hashedUsername != result.First().UserId || principal.IdentityProvider != result.First().Provider)
                 {
-                    await response.WriteStringAsync("Unauthorized");
-                    response.StatusCode = System.Net.HttpStatusCode.Unauthorized;
-                    return response;
+                    return await req.CreateJsonResponse(System.Net.HttpStatusCode.Unauthorized, message: "Unauthorized");
                 }
 
                 var partitionKey = new PartitionKey(vanityUrl);
                 await container.DeleteItemAsync<LinkBundle>(result.First().Id, partitionKey);
 
-                await response.WriteStringAsync("Link deleted");
-                return response;
+                return await req.CreateOkResponse("Link deleted");
             }
 
-
-            await response.WriteStringAsync("Link not found");
-            response.StatusCode = System.Net.HttpStatusCode.NotFound;
-            return response;
+            return await req.CreateJsonResponse(System.Net.HttpStatusCode.NotFound, message: "Link not found");
         }
     }
 }

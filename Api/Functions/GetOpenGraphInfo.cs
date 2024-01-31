@@ -15,19 +15,9 @@ namespace Api.Functions
 {
     public class GetOpenGraphInfo
     {
-        private readonly ILogger _logger;
-        private readonly CosmosClient _cosmosClient;
-
-        public GetOpenGraphInfo(ILoggerFactory loggerFactory)
-        {
-            _logger = loggerFactory.CreateLogger<GetOpenGraphInfo>();
-        }
-
         [Function("GetOpenGraphInfo")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "oginfo")] HttpRequestData req,
-            FunctionContext executionContext)
+        public static async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "oginfo")] HttpRequestData req)
         {
-            var logger = executionContext.GetLogger("GetOpenGraphInfo");
             var link = await req.ReadFromJsonAsync<Link>();
             if (!link.Url.StartsWith("http://") && !link.Url.StartsWith("https://"))
             {
@@ -43,7 +33,7 @@ namespace Api.Functions
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "Unable to load URL");
             }
 
             var html = await response.Content.ReadAsStringAsync();
@@ -51,7 +41,7 @@ namespace Api.Functions
             var document = parser.ParseDocument(html);
             if (document == null)
             {
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "Unable to parse document");
             }
 
             var title = document.QuerySelector("title")?.TextContent
@@ -75,9 +65,7 @@ namespace Api.Functions
             link.Image = image;
 
             // Return the updated link
-            var res = req.CreateResponse(HttpStatusCode.OK);
-            await res.WriteAsJsonAsync(link);
-            return res;
+            return await req.CreateOkResponse(link);
         }
     }
 }

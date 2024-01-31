@@ -1,67 +1,48 @@
-using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+using Api.Utility;
 using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public class GetLinkBundlesForUser
+    public class GetLinkBundlesForUser(CosmosClient cosmosClient)
     {
-        private readonly ILogger _logger;
-        private readonly CosmosClient _cosmosClient;
-
-        public GetLinkBundlesForUser(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
-        {
-            _logger = loggerFactory.CreateLogger<GetLinkBundlesForUser>();
-            _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
-        }
-
         [Function("GetLinkBundlesForUser")]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequestData req)
         {
             try
             {
-                var container = _cosmosClient.GetContainer("TheUrlist", "linkbundles");
+                var container = cosmosClient.GetContainer("TheUrlist", "linkbundles");
                 var res = req.CreateResponse();
 
-                ClientPrincipal principal = null;
+                ClientPrincipal clientPrincipal = ClientPrincipalUtility.GetClientPrincipal(req);
 
-                if (req.Headers.TryGetValues("x-ms-client-principal", out var header))
+                if (clientPrincipal != null)
                 {
-                    var data = header.FirstOrDefault();
-                    var decoded = Convert.FromBase64String(data);
-                    var json = Encoding.UTF8.GetString(decoded);
-                    principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    Hasher hasher = new();
+                    string username = hasher.HashString(clientPrincipal.UserDetails);
+                    string provider = clientPrincipal.IdentityProvider;
 
-                    if (principal != null)
+                    var query = new QueryDefinition("SELECT c.id, c.vanityUrl, c.description, c.links FROM c WHERE c.userId = @username AND c.provider = @provider")
+                        .WithParameter("@username", username)
+                        .WithParameter("@provider", provider);
+
+                    var response = await container.GetItemQueryIterator<LinkBundle>(query).ReadNextAsync();
+
+                    if (response.Count == 0)
                     {
-                        Hasher hasher = new Hasher();
-                        string username = hasher.HashString(principal.UserDetails);
-                        string provider = principal.IdentityProvider;
-
-                        var query = new QueryDefinition("SELECT c.id, c.vanityUrl, c.description, c.links FROM c WHERE c.userId = @username AND c.provider = @provider")
-                            .WithParameter("@username", username)
-                            .WithParameter("@provider", provider);
-
-                        var response = await container.GetItemQueryIterator<LinkBundle>(query).ReadNextAsync();
-
-                        if (!response.Any())
-                        {
-                            return req.CreateResponse(HttpStatusCode.NotFound);
-                        }
-
-                        await res.WriteAsJsonAsync(response);
-
-                        return res;
+                        return await req.CreateJsonResponse(HttpStatusCode.NotFound, "No link bundles found for user");
                     }
+
+                    await res.WriteAsJsonAsync(response);
+
+                    return res;
                 }
 
                 // return 401 if no client principal
