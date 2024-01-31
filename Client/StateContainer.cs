@@ -7,8 +7,6 @@ public class StateContainer
 {
   private readonly IJSRuntime jsRuntime;
 
-  private LinkBundle? linkBundle;
-
   public StateContainer(IJSRuntime jsRuntime)
   {
     this.jsRuntime = jsRuntime;
@@ -26,6 +24,7 @@ public class StateContainer
     }
   }
 
+  private LinkBundle? linkBundle;
   public LinkBundle LinkBundle
   {
     get => linkBundle ??= new LinkBundle();
@@ -36,6 +35,30 @@ public class StateContainer
       SaveLinkBundleToLocalStorage();
       NotifyStateChanged();
     }
+  }
+
+  private List<Link>? _linkUpdatePool { get; set; }
+
+  public List<Link> LinkUpdatePool
+  {
+    get => _linkUpdatePool ??= new List<Link>();
+    set
+    {
+      _linkUpdatePool = value;
+      NotifyStateChanged();
+    }
+  }
+
+  public void AddLinkToUpdatePool(Link link)
+  {
+    LinkUpdatePool.Add(link);
+    NotifyStateChanged();
+  }
+
+  public void RemoveLinkFromUpdatePool(Link link)
+  {
+    LinkUpdatePool.Remove(link);
+    NotifyStateChanged();
   }
 
   public async Task LoadLinkBundleFromLocalStorage()
@@ -54,7 +77,6 @@ public class StateContainer
   }
 
   private User? user;
-
   public User? User
   {
     get => user;
@@ -76,6 +98,7 @@ public class StateContainer
   public void AddLinkToBundle(Link link)
   {
     LinkBundle.Links.Add(link);
+    LinkUpdatePool.Add(link);
 
     SaveLinkBundleToLocalStorage();
     NotifyStateChanged();
@@ -91,6 +114,8 @@ public class StateContainer
     link.Title = updatedLink.Title;
     link.Description = updatedLink.Description;
     link.Image = updatedLink.Image;
+
+    LinkUpdatePool.Remove(link);
 
     SaveLinkBundleToLocalStorage();
     NotifyStateChanged();

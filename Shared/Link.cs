@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BlazorApp.Shared
 {
@@ -7,7 +8,7 @@ namespace BlazorApp.Shared
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
-        [RegularExpression(@"^(https?://)?([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?$", ErrorMessage = "That doesn't look like a valid URL"), Required]
+        [RegularExpression(@"^(https?://)?([\w-]+\.)+[\w-]+(/[\w- ./:?%&=#]*)?$", ErrorMessage = "That doesn't look like a valid URL"), Required]
         public string Url { get; set; }
 
         public string Title { get; set; }

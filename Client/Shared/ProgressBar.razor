@@ -1,10 +1,17 @@
 @inject StateContainer StateContainer
 
-<div id="progressBar" class="progress-bar--container @(StateContainer.ActiveHttpRequests > 0 ? "visible" : "")"></div>
+<div class="progress-bar--wrapper">
+  <div id="progressBar" class="progress-bar--container visible"></div>
+</div>
 
 @code {
   protected override void OnInitialized()
   {
     StateContainer.OnChange += StateHasChanged;
+  }
+
+  public void Dispose()
+  {
+    StateContainer.OnChange -= StateHasChanged;
   }
 }
