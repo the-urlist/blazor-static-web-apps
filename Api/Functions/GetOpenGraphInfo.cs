@@ -15,7 +15,7 @@ namespace Api.Functions
 {
     public class GetOpenGraphInfo
     {
-        [Function("GetOpenGraphInfo")]
+        [Function(nameof(GetOpenGraphInfo))]
         public static async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "oginfo")] HttpRequestData req)
         {
             var link = await req.ReadFromJsonAsync<Link>();

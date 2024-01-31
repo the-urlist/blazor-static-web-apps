@@ -13,7 +13,7 @@ namespace Api.Functions
 {
     public class GetLinkBundlesForUser(CosmosClient cosmosClient)
     {
-        [Function("GetLinkBundlesForUser")]
+        [Function(nameof(GetLinkBundlesForUser))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequestData req)
         {
             try
