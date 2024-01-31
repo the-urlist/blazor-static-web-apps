@@ -10,8 +10,17 @@ using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public class ReadLinkBundle(CosmosClient _cosmosClient)
+    public class ReadLinkBundle
     {
+        private readonly ILogger _logger;
+        private readonly CosmosClient _cosmosClient;
+
+        public ReadLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
+        {
+            _logger = loggerFactory.CreateLogger<ReadLinkBundle>();
+            _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
+        }
+
         [Function("GetLinks")]
         public async Task<HttpResponseData> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "links/{vanityUrl}")] HttpRequestData req, string vanityUrl)

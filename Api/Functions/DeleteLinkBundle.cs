@@ -13,8 +13,8 @@ namespace Api.Functions
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<DeleteLinkBundle>();
 
-        [Function(nameof(Delete))]
-        public async Task<HttpResponseData> Delete(
+        [Function(nameof(DeleteLinkBundle))]
+        public async Task<HttpResponseData> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "links/{vanityUrl}")] HttpRequestData req,
             string vanityUrl)
         {
