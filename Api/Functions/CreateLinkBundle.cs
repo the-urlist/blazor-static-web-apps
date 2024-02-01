@@ -23,7 +23,6 @@ namespace Api.Functions
         {
             var logger = executionContext.GetLogger("SaveLinks");
             logger.LogInformation("C# HTTP trigger function processed a request.");
-
             var linkBundle = await req.ReadFromJsonAsync<LinkBundle>();
 
             if (!ValidatePayLoad(linkBundle))
@@ -32,8 +31,12 @@ namespace Api.Functions
             }
 
             EnsureVanityUrl(linkBundle);
-
             Match match = VanityRegex().Match(linkBundle.VanityUrl);
+
+            if (!match.Success)
+            {
+                return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "Invalid vanity url");
+            }
 
             ClientPrincipal clientPrincipal = ClientPrincipalUtility.GetClientPrincipal(req);
 
@@ -43,11 +46,6 @@ namespace Api.Functions
                 Hasher hasher = new();
                 linkBundle.UserId = hasher.HashString(username);
                 linkBundle.Provider = clientPrincipal.IdentityProvider;
-            }
-
-            if (!match.Success)
-            {
-                return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "Invalid vanity url");
             }
 
             try
