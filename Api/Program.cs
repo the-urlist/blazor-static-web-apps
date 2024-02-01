@@ -5,12 +5,12 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 // Setup custom serializer to use System.Text.Json
-JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions()
+JsonSerializerOptions jsonSerializerOptions = new()
 {
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
 };
-CosmosSystemTextJsonSerializer cosmosSystemTextJsonSerializer = new CosmosSystemTextJsonSerializer(jsonSerializerOptions);
-CosmosClientOptions cosmosClientOptions = new CosmosClientOptions()
+CosmosSystemTextJsonSerializer cosmosSystemTextJsonSerializer = new(jsonSerializerOptions);
+CosmosClientOptions cosmosClientOptions = new()
 {
     ApplicationName = "SystemTextJson",
     Serializer = cosmosSystemTextJsonSerializer

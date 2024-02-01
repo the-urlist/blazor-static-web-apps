@@ -10,16 +10,10 @@ using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public class ReadLinkBundle
+    public class ReadLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
     {
-        private readonly ILogger _logger;
-        private readonly CosmosClient _cosmosClient;
-
-        public ReadLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
-        {
-            _logger = loggerFactory.CreateLogger<ReadLinkBundle>();
-            _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
-        }
+        private readonly ILogger _logger = loggerFactory.CreateLogger<ReadLinkBundle>();
+        private readonly CosmosClient _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
 
         [Function(nameof(ReadLinkBundle))]
         public async Task<HttpResponseData> Run(
