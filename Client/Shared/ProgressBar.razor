@@ -1,10 +1,17 @@
-@inject HttpContainer HttpContainer
+@inject StateContainer StateContainer
 
-<div id="progressBar" class="progress-bar--container @(HttpContainer.RequestQueue > 0 ? "visible" : "")"></div>
+<div class="progress-bar--wrapper">
+  <div id="progressBar" class="progress-bar--container visible"></div>
+</div>
 
 @code {
   protected override void OnInitialized()
   {
-    HttpContainer.OnChange += StateHasChanged;
+    StateContainer.OnChange += StateHasChanged;
+  }
+
+  public void Dispose()
+  {
+    StateContainer.OnChange -= StateHasChanged;
   }
 }

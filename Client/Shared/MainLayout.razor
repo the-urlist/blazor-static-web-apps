@@ -2,48 +2,10 @@
 
 @using BlazorApp.Shared
 
-@inject HttpContainer HttpContainer
 @inject StateContainer StateContainer
+@inject HttpClient Http
 
 <div class="page">
-  <ProgressBar></ProgressBar>
-  <NavBar loggedIn="loggedIn"></NavBar>
+  <NavBar></NavBar>
   @Body
 </div>
-
-@code {
-  private bool loggedIn = false;
-
-  protected override async Task OnInitializedAsync()
-  {
-    await GetClientPrincipalAsync();
-
-    // try to load the last list they were on from localstorage
-    await StateContainer.LoadLinkBundleFromLocalStorage();
-  }
-
-  private async Task GetClientPrincipalAsync()
-  {
-    try
-    {
-      var result = await HttpContainer.GetAsync<ClientPrincipalWrapper>(".auth/me");
-
-      // if the client principal is null, then they are not logged in
-      if (result?.Data?.ClientPrincipal == null)
-      {
-        return;
-      }
-
-      StateContainer.User = new User(result.Data.ClientPrincipal);
-
-      loggedIn = true;
-
-      StateHasChanged();
-    }
-    catch (Exception ex)
-    {
-      Console.WriteLine(ex.Message);
-    }
-  }
-
-}

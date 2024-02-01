@@ -1,5 +1,5 @@
 @using BlazorApp.Shared
-@inject HttpContainer HttpContainer
+@inject HttpClient Http
 @inject StateContainer StateContainer
 
 <EditForm Model="@Model" OnValidSubmit="@OnValidSubmit" class="mb-6">
@@ -30,19 +30,36 @@
     await OnNewLinkAdded.InvokeAsync(link);
     Model.Url = null;
     await newLinkInput!.Element!.Value.FocusAsync();
-    await UpdateLink(link);
-    await InvokeAsync(StateHasChanged);
+    await GetOpenGraphInfoForLink(link);
   }
 
-  private async Task UpdateLink(Link link)
+  private async Task GetOpenGraphInfoForLink(Link link)
   {
-    var response = await HttpContainer.PostAsync<Link>("api/oginfo", link);
-
-    // If the request fails just return
-    if (response != null)
+    try
     {
-      // call statecontainer updatelink
-      StateContainer.UpdateLinkInBundle(link, response.Data);
+      StateContainer.AddLinkToUpdatePool(link);
+
+      var cts = new CancellationTokenSource();
+      cts.CancelAfter(TimeSpan.FromSeconds(5));
+
+      var response = await Http.PostAsJsonAsync<Link>("api/oginfo", link, cts.Token);
+      var updatedLink = await response.Content.ReadFromJsonAsync<Link>();
+
+      if (updatedLink != null)
+      {
+        // call statecontainer updatelink
+        StateContainer.UpdateLinkInBundle(link, updatedLink);
+      }
+    }
+    catch (Exception e)
+    {
+      // the request to get opengraph info failed, so log and swallow
+      Console.WriteLine(e);
+      StateContainer.RemoveLinkFromUpdatePool(link);
+    }
+    finally
+    {
+      StateContainer.RemoveLinkFromUpdatePool(link);
     }
   }
 }

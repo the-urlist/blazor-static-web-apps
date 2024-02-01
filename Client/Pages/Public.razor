@@ -1,10 +1,9 @@
 @page "/{vanityUrl}"
 
-@inject HttpContainer HttpContainer
-
 @using BlazorApp.Shared
 @using System.Collections.Generic
 
+@inject HttpClient Http
 
 <div class="container">
   <div class="section">
@@ -92,8 +91,8 @@
   private LinkBundle linkBundle { get; set; } = new LinkBundle();
   protected override async Task OnInitializedAsync()
   {
-    var response = await HttpContainer.GetAsync<LinkBundle>($"api/links/{vanityUrl}");
+    var response = await Http.GetFromJsonAsync<LinkBundle>($"api/links/{vanityUrl}");
 
-    linkBundle = response.Data ?? new LinkBundle();
+    linkBundle = response ?? new LinkBundle();
   }
 }

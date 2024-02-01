@@ -2,13 +2,14 @@
 
 @inject StateContainer StateContainer
 @inject NavigationManager NavigationManager
+@inject HttpClient Http
 
 
 <header id="navbar" class="header">
   <nav class="navbar container" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="/">
-        <img width="100" height="60" src="/images/logo-beta.svg" alt="urlist logo" />
+        <img class="mt-4" width="100" height="60" src="/images/logo.svg" alt="urlist logo" />
       </a>
       <a id="hamburger" role="button" class="beta-bump navbar-burger burger @(showMenu ? "is-active" : "")"
         aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" @onclick="@ToggleMenu">
@@ -85,9 +86,7 @@
 </header>
 
 @code {
-
-  [Parameter]
-  public bool loggedIn { get; set; }
+  private bool loggedIn = false;
 
   private bool showMenu = false;
 
@@ -121,5 +120,36 @@
   {
     StateContainer.LinkBundle = new LinkBundle();
     NavigationManager.NavigateTo("/s/new");
+  }
+  protected override async Task OnInitializedAsync()
+  {
+    await GetClientPrincipalAsync();
+
+    // try to load the last list they were on from localstorage
+    await StateContainer.LoadLinkBundleFromLocalStorage();
+  }
+
+  private async Task GetClientPrincipalAsync()
+  {
+    try
+    {
+      var result = await Http.GetFromJsonAsync<ClientPrincipalWrapper>(".auth/me");
+
+      // if the client principal is null, then they are not logged in
+      if (result?.ClientPrincipal == null)
+      {
+        return;
+      }
+
+      StateContainer.User = new User(result.ClientPrincipal);
+
+      loggedIn = true;
+
+      StateHasChanged();
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex.Message);
+    }
   }
 }
