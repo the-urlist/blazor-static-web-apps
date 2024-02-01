@@ -41,7 +41,13 @@
     if (firstRender)
     {
       selfReference = DotNetObjectReference.Create(this);
+
+      // import the sortablejs library
+      await JS.InvokeVoidAsync("import", "./js/sortable.min.js");
+
+      // import the sortablelist component JavaScript
       var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Shared/SortableList.razor.js");
+
       await module.InvokeAsync<string>("init", Id, selfReference);
     }
   }
