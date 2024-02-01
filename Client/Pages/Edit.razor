@@ -38,9 +38,8 @@
 
   private async Task DeleteLinkBundle()
   {
-    await Http.DeleteAsync($"api/links/{vanityUrl}");
+    await Http.DeleteAsync($"api/links/{StateContainer.LinkBundle.VanityUrl}");
     StateContainer.LinkBundle = new LinkBundle();
     NavigationManager.NavigateTo("/s/new");
-    modalConfirm?.Hide();
   }
 }
