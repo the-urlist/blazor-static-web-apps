@@ -35,20 +35,6 @@
   margin-bottom: 20px;
 }
 
-.list .list-item .list-item-loader {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: #f9fafc;
-  animation: breathing 1.5s ease-in-out infinite;
-}
-
-@keyframes breathing {
-  0% { background-color: #f9fafc; }
-  50% { background-color: #ffffff; }
-  100% { background-color: #f9fafc; }
-}
-
 .list .list-placeholder {
   display: flex;
   height: 100%;
