@@ -4,42 +4,61 @@
 @using System.Collections.Generic
 
 @inject HttpClient Http
+@inject StateContainer StateContainer
+@inject NavigationManager NavigationManager
 
 <div class="container">
-  <div class="section">
-    <div>
-      <h2 class="is-size-3 is-heading has-text-weight-medium has-text-primary">
-        @linkBundle.Description
+  @if (LoadingList)
+  {
+    <div class="has-text-centered">
+      <h2 class="is-size-3 is-heading has-text-primary has-text-weight-medium">
+        Loading
+        <span class="dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </span>
       </h2>
-      <div class="columns is-mobile">
-        <div class="column is-half">
-          <div id="share" class="buttons has-addons">
-            <a class="button" target="_blank" :href="
+    </div>
+  }
+  else
+  {
+    <div class="section">
+      @if (linkBundle.Links.Count > 0)
+      {
+        <div>
+          <h2 class="is-size-3 is-heading has-text-weight-medium has-text-primary">
+            @linkBundle.Description
+          </h2>
+          <div class="columns is-mobile">
+            <div class="column is-half">
+              <div id="share" class="buttons has-addons">
+                <a class="button" target="_blank" :href="
             `https://twitter.com/intent/tweet?text=${
               currentList.description
             } theurlist.com/${currentList.vanityUrl}`
-          ">
-              <span class="icon"><i class="fab fa-twitter"></i></span>
-            </a>
-            <a class="button" target="_blank" :href="
+                                                                                                            ">
+                  <span class="icon"><i class="fab fa-twitter"></i></span>
+                </a>
+                <a class="button" target="_blank" :href="
             `https://www.facebook.com/sharer/sharer.php?u=theurlist.com/${
               currentList.vanityUrl
             }`
-          ">
-              <span class="icon"><i class="fab fa-facebook-f"></i></span>
-            </a>
-            <a class="button" target="_blank" :href="
+                                                                                                            ">
+                  <span class="icon"><i class="fab fa-facebook-f"></i></span>
+                </a>
+                <a class="button" target="_blank" :href="
             `https://www.linkedin.com/shareArticle?mini=true?summary=${
               currentList.description
             }&url=https://theurlist.com?${currentList.vanityUrl}`
-          ">
-              <span class="icon"><i class="fab fa-linkedin-in"></i></span>
-            </a>
-          </div>
-        </div>
-        <div class="column is-half">
-          <div id="view" class="buttons has-addons is-pulled-right">
-            @* <button
+                                                                                                            ">
+                  <span class="icon"><i class="fab fa-linkedin-in"></i></span>
+                </a>
+              </div>
+            </div>
+            <div class="column is-half">
+              <div id="view" class="buttons has-addons is-pulled-right">
+                @* <button
             title="View as List"
             class="button"
             :class="{ 'is-active': !qr }"
@@ -49,7 +68,7 @@
             </button>
             > *@
 
-            @* <button
+                @* <button
             title="View as QR Code"
             class="button"
             :class="{ 'is-active': qr }"
@@ -58,41 +77,69 @@
             <span class="icon"><i class="fas fa-qrcode"></i></span>
             </button>
             > *@
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <br />
-      @foreach (var link in linkBundle.Links)
-      {
-        <LinkBundleItem link="link"></LinkBundleItem>
-      }
-      @* <div class="has-text-centered" v-else>
+          <br />
+          @foreach (var link in linkBundle.Links)
+          {
+            <LinkBundleItem link="link"></LinkBundleItem>
+          }
+          @* <div class="has-text-centered" v-else>
       <qr-code :value="`https://theurlist.com/${this.vanityUrl}`"></qr-code>
       </div> *@
+        </div>
+      }
+      else
+      {
+        <div class="has-text-centered">
+          <figure>
+            <img src="images/urly.png" alt="Sad green fuzzy" width="500" height="500" />
+          </figure>
+          <h2 class="is-size-4 has-text-weight-bold">
+            We couldn't find that Urlist
+          </h2>
+          <h3 class="is-size-5">But don't be sad! That means <a @onclick="NewLinkBundle">@vanityUrl</a> is still available.
+          </h3>
+        </div>
+      }
     </div>
-    @if (linkBundle.Links.Count <= 0)
-    {
-      <h1 class="title has-text-centered">
-        This list is empty.
-      </h1>
-      @* <not-found
-    id="notFound"
-    v-if="notFound"
-    :vanityUrl="vanityUrl"
-    ></not-found> *@
-    }
-  </div>
+  }
 </div>
 
 @code {
   [Parameter]
   public string vanityUrl { get; set; } = "";
 
+  private bool LoadingList { get; set; } = false;
+
   private LinkBundle linkBundle { get; set; } = new LinkBundle();
   protected override async Task OnInitializedAsync()
   {
-    var response = await Http.GetFromJsonAsync<LinkBundle>($"api/links/{vanityUrl}");
+    try
+    {
+      LoadingList = true;
 
-    linkBundle = response ?? new LinkBundle();
+      var response = await Http.GetFromJsonAsync<LinkBundle>($"api/links/{vanityUrl}");
+      linkBundle = response ?? new LinkBundle();
+    }
+    catch (Exception ex)
+    {
+      // if the error is 404, then the vanity url doesn't exist
+
+      // if the error is something else, log it
+      Console.WriteLine(ex.Message);
+    }
+    finally
+    {
+      LoadingList = false;
+    }
+  }
+
+  private void NewLinkBundle()
+  {
+    StateContainer.LinkBundle = new LinkBundle();
+    StateContainer.LinkBundle.VanityUrl = vanityUrl;
+    NavigationManager.NavigateTo($"/s/new/");
   }
 }
