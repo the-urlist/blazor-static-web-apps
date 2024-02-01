@@ -1,4 +1,6 @@
 POST http://localhost:7071/api/links
+x-ms-client-principal: eyJ1c2VySWQiOiJ0ZXN0VXNlciIsInVzZXJSb2xlcyI6WyJhbm9ueW1vdXMiLCAiYXV0aGVudGljYXRlZCJdLCJpZGVudGl0eVByb3ZpZGVyIjoidGVzdFByb3ZpZGVyIiwidXNlckRldGFpbHMiOiJ0ZXN0RGV0YWlscyJ9
+#original value: {"userId":"testUser","userRoles":["anonymous", "authenticated"],"identityProvider":"testProvider","userDetails":"testDetails"}
 
 {
   "links":[
@@ -40,6 +42,7 @@ POST http://localhost:7071/api/links
 GET http://localhost:7071/api/links/test
 ###
 PUT http://localhost:7071/api/links/test
+x-ms-client-principal: eyJ1c2VySWQiOiJ0ZXN0VXNlciIsInVzZXJSb2xlcyI6WyJhbm9ueW1vdXMiLCAiYXV0aGVudGljYXRlZCJdLCJpZGVudGl0eVByb3ZpZGVyIjoidGVzdFByb3ZpZGVyIiwidXNlckRldGFpbHMiOiJ0ZXN0RGV0YWlscyJ9
 
 {
   "links":[
@@ -79,3 +82,4 @@ PUT http://localhost:7071/api/links/test
 }
 ###
 DELETE http://localhost:7071/api/links/test
+x-ms-client-principal: eyJ1c2VySWQiOiJ0ZXN0VXNlciIsInVzZXJSb2xlcyI6WyJhbm9ueW1vdXMiLCAiYXV0aGVudGljYXRlZCJdLCJpZGVudGl0eVByb3ZpZGVyIjoidGVzdFByb3ZpZGVyIiwidXNlckRldGFpbHMiOiJ0ZXN0RGV0YWlscyJ9
