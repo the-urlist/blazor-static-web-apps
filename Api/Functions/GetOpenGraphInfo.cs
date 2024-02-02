@@ -1,33 +1,16 @@
 using BlazorApp.Shared;
-using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
 using System.Net;
-using System.Text.Json;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Api
+namespace Api.Functions
 {
     public class GetOpenGraphInfo
     {
-        private readonly ILogger _logger;
-        private readonly CosmosClient _cosmosClient;
-
-        public GetOpenGraphInfo(ILoggerFactory loggerFactory)
+        [Function(nameof(GetOpenGraphInfo))]
+        public static async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "oginfo")] HttpRequestData req)
         {
-            _logger = loggerFactory.CreateLogger<GetOpenGraphInfo>();
-        }
-
-        [Function("GetOpenGraphInfo")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "oginfo")] HttpRequestData req,
-            FunctionContext executionContext)
-        {
-            var logger = executionContext.GetLogger("GetOpenGraphInfo");
             var link = await req.ReadFromJsonAsync<Link>();
             if (!link.Url.StartsWith("http://") && !link.Url.StartsWith("https://"))
             {
@@ -41,9 +24,9 @@ namespace Api
 
             var response = await httpClient.GetAsync(link.Url);
 
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "Unable to load URL");
             }
 
             var html = await response.Content.ReadAsStringAsync();
@@ -51,7 +34,7 @@ namespace Api
             var document = parser.ParseDocument(html);
             if (document == null)
             {
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "Unable to parse document");
             }
 
             var title = document.QuerySelector("title")?.TextContent
@@ -75,9 +58,7 @@ namespace Api
             link.Image = image;
 
             // Return the updated link
-            var res = req.CreateResponse(HttpStatusCode.OK);
-            await res.WriteAsJsonAsync(link);
-            return res;
+            return await req.CreateOkResponse(link);
         }
     }
 }

@@ -8,26 +8,20 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace ApiIsolated
+namespace Api.Functions
 {
-    public class GetLinks
+    public class ReadLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
     {
-        private readonly ILogger _logger;
-        private readonly CosmosClient _cosmosClient;
+        private readonly ILogger _logger = loggerFactory.CreateLogger<ReadLinkBundle>();
+        private readonly CosmosClient _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
 
-        public GetLinks(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
-        {
-            _logger = loggerFactory.CreateLogger<GetLinks>();
-            _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
-        }
-
-        [Function("GetLinks")]
+        [Function(nameof(ReadLinkBundle))]
         public async Task<HttpResponseData> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "links/{vanityUrl}")] HttpRequestData req, string vanityUrl)
         {
             if (string.IsNullOrEmpty(vanityUrl))
             {
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "vanityUrl is required");
             }
 
             var database = _cosmosClient.GetDatabase("TheUrlist");
@@ -38,9 +32,9 @@ namespace ApiIsolated
 
             var result = await container.GetItemQueryIterator<LinkBundle>(query).ReadNextAsync();
 
-            if (!result.Any())
+            if (result.Count == 0)
             {
-                return req.CreateResponse(HttpStatusCode.NotFound);
+                return await req.CreateJsonResponse(HttpStatusCode.NotFound, "No LinkBundle found for this vanity url");
             }
 
             var response = req.CreateResponse(HttpStatusCode.OK);

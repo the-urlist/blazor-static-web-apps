@@ -1,4 +1,9 @@
-POST http://localhost:7071/api/links
+@port=7071
+@clientPrincipal=eyJ1c2VySWQiOiJ0ZXN0VXNlciIsInVzZXJSb2xlcyI6WyJhbm9ueW1vdXMiLCAiYXV0aGVudGljYXRlZCJdLCJpZGVudGl0eVByb3ZpZGVyIjoidGVzdFByb3ZpZGVyIiwidXNlckRldGFpbHMiOiJ0ZXN0RGV0YWlscyJ9
+#original value: {"userId":"testUser","userRoles":["anonymous", "authenticated"],"identityProvider":"testProvider","userDetails":"testDetails"}
+
+POST http://localhost:{{port}}/api/linksi
+x-ms-client-principal: {{clientPrincipal}}
 
 {
   "links":[
@@ -37,9 +42,10 @@ POST http://localhost:7071/api/links
   "id":"ffffffff-ffff-ffff-ffff-ffffffffffff"
 }
 ###
-GET http://localhost:7071/api/links/test
+GET http://localhost:{{port}}/api/links/test
 ###
-PUT http://localhost:7071/api/links/test
+PUT http://localhost:{{port}}/api/links/test
+x-ms-client-principal: {{clientPrincipal}}
 
 {
   "links":[
@@ -78,4 +84,5 @@ PUT http://localhost:7071/api/links/test
 "id":"ffffffff-ffff-ffff-ffff-ffffffffffff"
 }
 ###
-DELETE http://localhost:7071/api/links/test
+DELETE http://localhost:{{port}}/api/links/test
+x-ms-client-principal: {{clientPrincipal}}
