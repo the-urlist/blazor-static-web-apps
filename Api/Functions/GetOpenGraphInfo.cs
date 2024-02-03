@@ -53,14 +53,18 @@ namespace Api.Functions
 
             var title = document.QuerySelector("title")?.TextContent
                         ?? document.QuerySelector("meta[property='og:title']")?.GetAttribute("content")
+                        ?? document.QuerySelector("meta[property='twitter:title']")?.GetAttribute("content")
+                        ?? document.QuerySelector("meta[property='twitter:title']")?.GetAttribute("content")
                         ?? document.QuerySelector("meta[property='og:site_name']")?.GetAttribute("content")
                         ?? "";
 
             var description = document.QuerySelector("meta[property='og:description']")?.GetAttribute("content")
-                              ?? document.QuerySelector("meta[name='description']")?.GetAttribute("content")
-                              ?? "";
+                        ?? document.QuerySelector("meta[property='twitter:description']")?.GetAttribute("content")
+                        ?? document.QuerySelector("meta[name='description']")?.GetAttribute("content")
+                        ?? "";
 
             var image = document.QuerySelector("meta[property='og:image']")?.GetAttribute("content")
+                         ?? document.QuerySelector("meta[property='og:image']")?.GetAttribute("content")
                          ?? document.QuerySelector("link[rel='apple-touch-icon']")?.GetAttribute("href")
                          ?? document.QuerySelector("link[rel='mask-icon']")?.GetAttribute("href")
                          ?? document.QuerySelector("link[rel='shortcut icon']")?.GetAttribute("href")
