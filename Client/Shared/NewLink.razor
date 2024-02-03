@@ -11,39 +11,39 @@
 </EditForm>
 
 @code {
-  private InputText? newLinkInput;
+    private InputText? newLinkInput;
 
-  public Link? Model { get; set; }
+    public Link? Model { get; set; }
 
-  protected override void OnInitialized() => Model ??= new();
+    protected override void OnInitialized() => Model ??= new();
 
-  [Parameter]
-  public EventCallback<Link> OnNewLinkAdded { get; set; }
+    [Parameter]
+    public EventCallback<Link> OnNewLinkAdded { get; set; }
 
-  private async Task OnValidSubmit()
-  {
-    var link = new Link
+    private async Task OnValidSubmit()
+    {
+        var link = new Link
       {
         Url = Model!.Url!
       };
 
-    await OnNewLinkAdded.InvokeAsync(link);
-    Model.Url = null;
-    await newLinkInput!.Element!.Value.FocusAsync();
-    await GetOpenGraphInfoForLink(link);
-  }
+        await OnNewLinkAdded.InvokeAsync(link);
+        Model.Url = null;
+        await newLinkInput!.Element!.Value.FocusAsync();
+        await GetOpenGraphInfoForLink(link);
+    }
 
-  private async Task GetOpenGraphInfoForLink(Link link)
-  {
-    try
+    private async Task GetOpenGraphInfoForLink(Link link)
     {
-      StateContainer.AddLinkToUpdatePool(link);
+        try
+        {
+            StateContainer.AddLinkToUpdatePool(link);
 
-      var cts = new CancellationTokenSource();
-      cts.CancelAfter(TimeSpan.FromSeconds(5));
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(20));
 
-      var response = await Http.PostAsJsonAsync<Link>("api/oginfo", link, cts.Token);
-      var updatedLink = await response.Content.ReadFromJsonAsync<Link>();
+            var response = await Http.PostAsJsonAsync<Link>("api/oginfo", link, cts.Token);
+            var updatedLink = await response.Content.ReadFromJsonAsync<Link>();
 
       if (updatedLink != null)
       {
