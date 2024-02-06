@@ -19,21 +19,24 @@
     </span>
   </a>
   <br />
-  <a id="facebookButton" href="/.auth/login/facebook" class="button is-large is-fullwidth has-text-white">
+  <a id="facebookButton" href="@($"/.auth/login/facebook?post_login_redirect_uri={currentUrl}")"
+    class="button is-large is-fullwidth has-text-white">
     <span>
       <i id="facebookIcon" class="fab fa-facebook icon"></i>
       <span class="is-size-5 has-text-weight-medium">with Facebook</span>
     </span>
   </a>
   <br />
-  <a id="githubButton" href="/.auth/login/github" class="button is-large is-fullwidth has-text-white">
+  <a id="githubButton" href="@($"/.auth/login/github?post_login_redirect_uri={currentUrl}")"
+    class="button is-large is-fullwidth has-text-white">
     <span>
       <i id="githubIcon" class="fab fa-github icon"></i>
       <span class="is-size-5 has-text-weight-medium">with GitHub</span>
     </span>
   </a>
   <br />
-  <a id="googleButton" href="/.auth/login/google" class="button is-large is-fullwidth has-text-white">
+  <a id="googleButton" href="@($"/.auth/login/google?post_login_redirect_uri={currentUrl}")"
+    class="button is-large is-fullwidth has-text-white">
     <span>
       <i id="googleIcon" class="fab fa-google icon"></i>
       <span class="is-size-5 has-text-weight-medium">with Google</span>
