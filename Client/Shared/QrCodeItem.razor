@@ -1,0 +1,20 @@
+﻿@using Net.Codecrete.QrCodeGenerator
+
+@((MarkupString)svgMarkup)
+
+@code {
+    [Parameter]
+    public string Url { get; set; } = "https://theurlist.com";
+
+    private string svgMarkup = "";
+
+    protected override void OnInitialized()
+    {
+        if (!string.IsNullOrEmpty(Url))
+        {
+            // create the qr code svg using QrCodeGenerator
+            var qrCode = QrCode.EncodeText(Url, QrCode.Ecc.Medium);
+            svgMarkup = qrCode.ToSvgString(4, "#121212", "#F9FAFC");
+        }
+    }
+}
