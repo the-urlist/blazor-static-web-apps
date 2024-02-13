@@ -2,7 +2,7 @@
 @clientPrincipal=eyJ1c2VySWQiOiJ0ZXN0VXNlciIsInVzZXJSb2xlcyI6WyJhbm9ueW1vdXMiLCAiYXV0aGVudGljYXRlZCJdLCJpZGVudGl0eVByb3ZpZGVyIjoidGVzdFByb3ZpZGVyIiwidXNlckRldGFpbHMiOiJ0ZXN0RGV0YWlscyJ9
 #original value: {"userId":"testUser","userRoles":["anonymous", "authenticated"],"identityProvider":"testProvider","userDetails":"testDetails"}
 
-POST http://localhost:{{port}}/api/linksi
+POST http://localhost:{{port}}/api/links
 x-ms-client-principal: {{clientPrincipal}}
 
 {
@@ -50,8 +50,8 @@ x-ms-client-principal: {{clientPrincipal}}
 {
   "links":[
     {
-      "id":"https://stackoverflow.com",
-      "url":"https://stackoverflow.com",
+      "id":"https://montemagno.com",
+      "url":"https://montemagno.com",
       "title":"Stack Overflow",
       "description":"Stack Overflow is the largest, most trusted online community for developers to learn, share their programming knowledge, and build their careers.",
       "image":""
@@ -86,3 +86,27 @@ x-ms-client-principal: {{clientPrincipal}}
 ###
 DELETE http://localhost:{{port}}/api/links/test
 x-ms-client-principal: {{clientPrincipal}}
+
+###
+DELETE http://localhost:{{port}}/api/links/jons-links
+x-ms-client-principal: {{clientPrincipal}}
+
+###
+PUT http://localhost:{{port}}/api/links/jons-links
+x-ms-client-principal: {{clientPrincipal}}
+
+{
+  "links":[
+    {
+      "id":"https://montemagno.com",
+      "url":"https://montemagno.com",
+      "title":"Stack Overflow",
+      "description":"Stack Overflow is the largest, most trusted online community for developers to learn, share their programming knowledge, and build their careers.",
+      "image":""
+    }
+  ],
+  "vanityUrl":"test",
+  "description":"",
+  "userId":"",
+"id":"ffffffff-ffff-ffff-ffff-ffffffffffff"
+}
