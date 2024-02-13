@@ -54,7 +54,7 @@ namespace Api.Functions
             var title = document.QuerySelector("title")?.TextContent
                         ?? document.QuerySelector("meta[property='og:title']")?.GetAttribute("content")
                         ?? document.QuerySelector("meta[property='twitter:title']")?.GetAttribute("content")
-                        ?? document.QuerySelector("meta[property='twitter:title']")?.GetAttribute("content")
+                        ?? document.QuerySelector("h1")?.TextContent
                         ?? document.QuerySelector("meta[property='og:site_name']")?.GetAttribute("content")
                         ?? "";
 
