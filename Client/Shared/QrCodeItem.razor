@@ -1,0 +1,27 @@
+﻿@using System.Net
+@using System.Text
+@inject HttpClient Http
+
+@((MarkupString)svgMarkup)
+
+@code {
+    [Parameter]
+    public string Url { get; set; } = "https://theurlist.com";
+
+    private string svgMarkup = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(Url))
+        {
+            // Base64 encode the URL because URL encoding doesn't work with static web app routing
+            var encodedUrl = Convert.ToBase64String(Encoding.UTF8.GetBytes(Url));
+
+            var response = await Http.GetAsync($"api/qrcode/{encodedUrl}");
+            if (response.IsSuccessStatusCode)
+            {
+                svgMarkup = await response.Content.ReadAsStringAsync();
+            }
+        }
+    }
+}
