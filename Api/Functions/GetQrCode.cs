@@ -1,7 +1,9 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Net.Codecrete.QrCodeGenerator;
+using System;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Api.Functions
@@ -17,7 +19,9 @@ namespace Api.Functions
                 return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "vanityUrl is required");
             }
 
-            string decodedVanityUrl = System.Web.HttpUtility.UrlDecode(vanityUrl);
+            // Decode the vanityUrl from base64
+            // We're using base64 encoding to allow for special characters in the vanityUrl
+            string decodedVanityUrl = Encoding.UTF8.GetString(Convert.FromBase64String(vanityUrl));
 
             var qrCode = QrCode.EncodeText(decodedVanityUrl, QrCode.Ecc.Medium);
             var response = req.CreateResponse(HttpStatusCode.OK);

@@ -1,4 +1,5 @@
 ﻿@using System.Net
+@using System.Text
 @inject HttpClient Http
 
 @((MarkupString)svgMarkup)
@@ -13,7 +14,8 @@
     {
         if (!string.IsNullOrEmpty(Url))
         {
-            var encodedUrl = WebUtility.UrlEncode(Url);
+            // Base64 encode the URL because URL encoding doesn't work with static web app routing
+            var encodedUrl = Convert.ToBase64String(Encoding.UTF8.GetBytes(Url));
 
             var response = await Http.GetAsync($"api/qrcode/{encodedUrl}");
             if (response.IsSuccessStatusCode)
