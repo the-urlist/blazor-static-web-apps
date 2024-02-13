@@ -27,4 +27,12 @@
     <_ContentIncludedByDefault Remove="Shared/ModalConfirm.razor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Users\Jon\Documents\GitHub\BlazorSWA\Client\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\Users\Jon\Documents\GitHub\BlazorSWA\Client\.editorconfig" />
+  </ItemGroup>
+
 </Project>
