@@ -2,7 +2,9 @@
 @using System.Text
 @inject HttpClient Http
 
-@((MarkupString)svgMarkup)
+<div class="qrcode">
+    @((MarkupString)svgMarkup)
+</div>
 
 @code {
     [Parameter]
