@@ -9,7 +9,7 @@ namespace Api
         public static async Task<HttpResponseData> CreateJsonResponse<T>(this HttpRequestData req, HttpStatusCode statusCode, T message)
         {
             var response = req.CreateResponse(statusCode);
-            await response.WriteAsJsonAsync(new { error = message }, statusCode);
+            await response.WriteAsJsonAsync(message, statusCode);
             return response;
         }
 
