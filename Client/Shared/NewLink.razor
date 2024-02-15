@@ -2,35 +2,57 @@
 @inject HttpClient Http
 @inject StateContainer StateContainer
 
-<EditForm Model="@Model" OnValidSubmit="@OnValidSubmit" class="mb-6">
-  <DataAnnotationsValidator />
-  <p>Enter a link and press enter</p>
-  <InputText @ref="newLinkInput" class="input is-large is-size-2" @bind-Value="Model!.Url" id="newLink"
-    placeholder="http://example.com" ParsingErrorMessage="That doesn't look like a valid URL" />
-  <ValidationMessage class="has-text-danger is-font-weight-medium mt-2" For="() => Model.Url" />
-</EditForm>
+<form method="post" @formname="newlinkform" @onsubmit="OnSubmit" class="mb-6">
+    <p>Enter a link and press enter</p>
+    <input @ref="newLinkInput" id="newLink" @bind-value="linkurl" placeholder="http://example.com" class="input is-large is-size-2 modified">
+    <div class="is-font-weight-medium mt-2 @((invalid ? "has-text-danger" : "is-hidden"))">That doesn't look like a valid URL</div>
+</form>
 
 @code {
-    private InputText? newLinkInput;
-
-    public Link? Model { get; set; }
-
-    protected override void OnInitialized() => Model ??= new();
+    private string? linkurl;
+    private bool invalid = false;
+    private ElementReference newLinkInput;
 
     [Parameter]
     public EventCallback<Link> OnNewLinkAdded { get; set; }
 
-    private async Task OnValidSubmit()
+    private async Task OnSubmit()
     {
+        if (!ValidateUrl(linkurl))
+        {
+            invalid = true;
+            StateHasChanged();
+            return;
+        }
+
+        invalid = false;
+
         var link = new Link
-      {
-        Url = Model!.Url!
-      };
+            {
+                Url = linkurl
+            };
 
         await OnNewLinkAdded.InvokeAsync(link);
-        Model.Url = null;
-        await newLinkInput!.Element!.Value.FocusAsync();
+        linkurl = null;
+        await newLinkInput.FocusAsync();
         await GetOpenGraphInfoForLink(link);
+    }
+
+    private bool ValidateUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return false;
+        }
+
+        if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+        {
+            url = "http://" + url;
+        }
+
+        return Uri.TryCreate(url, UriKind.Absolute, out Uri uriResult)
+          && (uriResult.Scheme == Uri.UriSchemeHttp
+          || uriResult.Scheme == Uri.UriSchemeHttps) && uriResult.Host.Replace("www.", "").Split('.').Count() > 1 && uriResult.HostNameType == UriHostNameType.Dns && uriResult.Host.Length > uriResult.Host.LastIndexOf(".") + 1;
     }
 
     private async Task GetOpenGraphInfoForLink(Link link)
@@ -45,21 +67,21 @@
             var response = await Http.PostAsJsonAsync<Link>("api/oginfo", link, cts.Token);
             var updatedLink = await response.Content.ReadFromJsonAsync<Link>();
 
-      if (updatedLink != null)
-      {
-        // call statecontainer updatelink
-        StateContainer.UpdateLinkInBundle(link, updatedLink);
-      }
+            if (updatedLink != null)
+            {
+                // call statecontainer updatelink
+                StateContainer.UpdateLinkInBundle(link, updatedLink);
+            }
+        }
+        catch (Exception e)
+        {
+            // the request to get opengraph info failed, so log and swallow
+            Console.WriteLine(e);
+            StateContainer.RemoveLinkFromUpdatePool(link);
+        }
+        finally
+        {
+            StateContainer.RemoveLinkFromUpdatePool(link);
+        }
     }
-    catch (Exception e)
-    {
-      // the request to get opengraph info failed, so log and swallow
-      Console.WriteLine(e);
-      StateContainer.RemoveLinkFromUpdatePool(link);
-    }
-    finally
-    {
-      StateContainer.RemoveLinkFromUpdatePool(link);
-    }
-  }
 }

@@ -70,16 +70,12 @@
 
     if (String.IsNullOrEmpty(vanityUrl)) return;
 
-    // Create a ValidationContext based on the LinkBundle object
-    var context = new ValidationContext(StateContainer.LinkBundle, null, null);
-    // This list will hold the results of the validation
-    var results = new List<ValidationResult>();
-    // Perform the data annotations validation
-    listIsValid = Validator.TryValidateObject(StateContainer.LinkBundle, context, results, true);
-
-    // if the data annotations validation fails, no need to check if the vanity url is taken
-    if (!listIsValid) {
-      validationErrorMessage = results.FirstOrDefault()?.ErrorMessage ?? "";
+    // Ensure the vanity url contains only letters, numbers, and dashes without using regex
+    if (vanityUrl.Any(c => !char.IsLetterOrDigit(c) && c != '-'))
+    {
+      // if the data annotations validation fails, no need to check if the vanity url is taken
+      listIsValid = false;
+      validationErrorMessage = "Vanity URLs can only contain letters, numbers, and dashes.";
       return;
     }
 
