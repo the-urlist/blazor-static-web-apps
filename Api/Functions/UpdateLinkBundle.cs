@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Api
 {
-    public class UpdateLinkBundle(CosmosClient cosmosClient)
+    public class UpdateLinkBundle(CosmosClient cosmosClient, Hasher hasher)
     {
         [Function(nameof(UpdateLinkBundle))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "links/{vanityUrl}")] HttpRequestData req,
@@ -45,7 +45,6 @@ namespace Api
 
                 if (result.Count != 0)
                 {
-                    Hasher hasher = new();
                     var hashedUsername = hasher.HashString(principal.UserDetails);
                     if (hashedUsername != result.First().UserId || principal.IdentityProvider != result.First().Provider)
                     {

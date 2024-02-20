@@ -1,3 +1,4 @@
+using Api;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,6 +24,9 @@ var host = new HostBuilder()
             context.Configuration["CosmosDb:Endpoint"],
             context.Configuration["CosmosDb:Key"],
             cosmosClientOptions));
+        services.AddSingleton<Hasher>(services => new Hasher(
+            context.Configuration["HASHER_KEY"],
+            context.Configuration["HASHER_SALT"]));
     })
     .ConfigureFunctionsWorkerDefaults()
     .Build();
