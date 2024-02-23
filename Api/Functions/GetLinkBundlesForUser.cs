@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public class GetLinkBundlesForUser(CosmosClient cosmosClient)
+    public class GetLinkBundlesForUser(CosmosClient cosmosClient, Hasher hasher)
     {
         [Function(nameof(GetLinkBundlesForUser))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequestData req)
@@ -23,7 +23,6 @@ namespace Api.Functions
 
                 if (clientPrincipal != null)
                 {
-                    Hasher hasher = new();
                     string username = hasher.HashString(clientPrincipal.UserDetails);
                     string provider = clientPrincipal.IdentityProvider;
 

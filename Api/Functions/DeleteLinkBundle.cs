@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public class DeleteLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
+    public class DeleteLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient, Hasher hasher)
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<DeleteLinkBundle>();
 
@@ -30,7 +30,6 @@ namespace Api.Functions
 
             if (result.Count != 0)
             {
-                Hasher hasher = new();
                 var hashedUsername = hasher.HashString(principal.UserDetails);
                 if (hashedUsername != result.First().UserId || principal.IdentityProvider != result.First().Provider)
                 {
