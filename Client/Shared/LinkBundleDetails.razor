@@ -7,117 +7,129 @@
 @inject NavigationManager NavigationManager
 
 <div>
-  <div id="listDetails" class="addbar flex is-horizontally-centered">
-    <div class="container main">
-      <div class="columns">
-        <div class="column">
-          <label class="control-label" for="vanityUrl">Vanity Url</label>
-          <input id="vanityUrl" @bind="StateContainer.LinkBundle.VanityUrl" Class=@($"input is-large has-tooltip {validationErrorClass}")
-            title=" Optional: Enter a vanity url for this list (i.e. my-list becomes
+    <div id="listDetails" class="addbar flex is-horizontally-centered">
+        <div class="container main">
+            <div class="columns">
+                <div class="column">
+                    <label class="control-label" for="vanityUrl">Vanity Url</label>
+                    <input id="vanityUrl" @bind="StateContainer.LinkBundle.VanityUrl" Class=@($"input is-large has-tooltip {validationErrorClass}")
+                           title=" Optional: Enter a vanity url for this list (i.e. my-list becomes
                 theurlist.com/my-list). If you leave this box blank, we'll generate a random vanity for you."
-            @oninput="ValidateVanityUrl" 
-            disabled=@(IsPublished)/>
-          <p class=@($"has-text-danger is-font-weight-medium mt-2 { validationMessageClass }")>
-  @validationErrorMessage</p>
-          <p id="liveLink" v-if="listIsPublished">
-            <a :href="liveLink" target="_new">
-            </a>
-          </p>
+                           @oninput="ValidateVanityUrl"
+                           disabled=@(IsPublished) />
+                    <p class=@($"has-text-danger is-font-weight-medium mt-2 { validationMessageClass }")>
+                        @validationErrorMessage
+                    </p>
+                    <p id="liveLink" v-if="listIsPublished">
+                        <a :href="liveLink" target="_new">
+                        </a>
+                    </p>
+                </div>
+                <div class="column">
+                    <label class="control-label" for="description">Description</label>
+                    <textarea rows="2" title="Optional: The description will show up as the title on your public list page."
+                              class="textarea has-fixed-size" id="description" @bind="StateContainer.LinkBundle.Description"></textarea>
+                </div>
+                <div class="column is-narrow">
+                    <label class="control-label is-hidden-mobile" for>&nbsp;</label>
+                    <button type="submit" id="publishButton" disabled="@(!PublishEnabled(listIsValid))"
+                            class="button is-primary is-large has-text-white has-text-weight-bold" @onclick="PublishLinkBundle">
+                        Publish
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="column">
-          <label class="control-label" for="description">Description</label>
-          <textarea rows="2" title="Optional: The description will show up as the title on your public list page."
-            class="textarea has-fixed-size" id="description" @bind="StateContainer.LinkBundle.Description"></textarea>
-        </div>
-        <div class="column is-narrow">
-          <label class="control-label is-hidden-mobile" for>&nbsp;</label>
-          <button type="submit" id="publishButton" disabled="@(!PublishEnabled(listIsValid))"
-            class="button is-primary is-large has-text-white has-text-weight-bold" @onclick="PublishLinkBundle">
-            Publish
-          </button>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 
 @code {
 
-  protected override void OnInitialized()
-  {
-    StateContainer.OnChange += StateHasChanged;
-  }
-
-  [Parameter]
-  public bool IsPublished { get; set; } = false;
-  
-  private Debouncer debouncer = new Debouncer(300);
-  private bool listIsValid = true;
-  private string validationErrorMessage = "";
-  private string validationErrorClass => listIsValid ? "" : "invalid";
-  private string validationMessageClass => listIsValid ? "is-invisible" : "is-visible";
-  
-  bool PublishEnabled(bool valid) {
-    if (valid && StateContainer.LinkBundle.Links.Count > 0) return true;
-    return false;
-  }
-
-  private void ValidateVanityUrl(ChangeEventArgs e)
-  {
-    var vanityUrl = e.Value?.ToString();
-    StateContainer.LinkBundle.VanityUrl = vanityUrl;
-    listIsValid = true;
-
-    if (String.IsNullOrEmpty(vanityUrl)) return;
-
-    // Create a ValidationContext based on the LinkBundle object
-    var context = new ValidationContext(StateContainer.LinkBundle, null, null);
-    // This list will hold the results of the validation
-    var results = new List<ValidationResult>();
-    // Perform the data annotations validation
-    listIsValid = Validator.TryValidateObject(StateContainer.LinkBundle, context, results, true);
-
-    // if the data annotations validation fails, no need to check if the vanity url is taken
-    if (!listIsValid) {
-      validationErrorMessage = results.FirstOrDefault()?.ErrorMessage ?? "";
-      return;
+    protected override void OnInitialized()
+    {
+        StateContainer.OnChange += StateHasChanged;
     }
 
-    debouncer.Debounce(async () =>
-    {
-      // the characters are valid, so now check to see if the vanity url is already in use
-      await VanityUrlIsTaken(vanityUrl);
-      StateHasChanged();
-    });
-  }
+    [Parameter]
+    public bool IsPublished { get; set; } = false;
 
-  // calls the API to see if the vanity is stil available for use
-  private async Task<bool> VanityUrlIsTaken(string vanityUrl) {
-    
-    var response = await Http.GetAsync($"api/links/{vanityUrl}");
+    private Debouncer debouncer = new Debouncer(300);
+    private bool listIsValid = true;
+    private string validationErrorMessage = "";
+    private string validationErrorClass => listIsValid ? "" : "invalid";
+    private string validationMessageClass => listIsValid ? "is-invisible" : "is-visible";
 
-    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+    bool PublishEnabled(bool valid)
     {
-      listIsValid = false;
-      validationErrorMessage = "This vanity URL is already in use. Please choose another.";
-      return true;
+        if (valid && StateContainer.LinkBundle.Links.Count > 0) return true;
+        return false;
     }
 
-    return false;
-  }
-
-  private async Task PublishLinkBundle()
-  {
-    // post the statecontainer.linkbundle to the /api/links endpoint and read the response into the linkbundle
-    var response = await Http.PostAsJsonAsync<LinkBundle>("api/links", StateContainer.LinkBundle);
-    var linkBundle = await response.Content.ReadFromJsonAsync<LinkBundle>();
-
-    if (linkBundle != null)
+    private void ValidateVanityUrl(ChangeEventArgs e)
     {
-      StateContainer.LinkBundle = linkBundle;
-      
-      // navigate to the public page
-      NavigationManager.NavigateTo($"/{linkBundle.VanityUrl}");
+        var vanityUrl = e.Value?.ToString();
+        StateContainer.LinkBundle.VanityUrl = vanityUrl;
+        listIsValid = true;
+
+        if (String.IsNullOrEmpty(vanityUrl)) return;
+
+        // Create a ValidationContext based on the LinkBundle object
+        var context = new ValidationContext(StateContainer.LinkBundle, null, null);
+        // This list will hold the results of the validation
+        var results = new List<ValidationResult>();
+        // Perform the data annotations validation
+        listIsValid = Validator.TryValidateObject(StateContainer.LinkBundle, context, results, true);
+
+        // if the data annotations validation fails, no need to check if the vanity url is taken
+        if (!listIsValid)
+        {
+            validationErrorMessage = results.FirstOrDefault()?.ErrorMessage ?? "";
+            return;
+        }
+
+        debouncer.Debounce(async () =>
+        {
+            // the characters are valid, so now check to see if the vanity url is already in use
+            await VanityUrlIsTaken(vanityUrl);
+            StateHasChanged();
+        });
     }
-  }
+
+    // calls the API to see if the vanity is stil available for use
+    private async Task<bool> VanityUrlIsTaken(string vanityUrl)
+    {
+
+        var response = await Http.GetAsync($"api/links/{vanityUrl}");
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            listIsValid = false;
+            validationErrorMessage = "This vanity URL is already in use. Please choose another.";
+            return true;
+        }
+
+        return false;
+    }
+
+    private async Task PublishLinkBundle()
+    {
+        HttpResponseMessage response;
+
+        if (IsPublished)
+        {
+            response = await Http.PutAsJsonAsync<LinkBundle>($"api/links/{StateContainer.LinkBundle.VanityUrl}", StateContainer.LinkBundle);
+        }
+        else
+        {
+            response = await Http.PostAsJsonAsync<LinkBundle>("api/links", StateContainer.LinkBundle);
+        }
+        var linkBundle = await response.Content.ReadFromJsonAsync<LinkBundle>();
+
+        if (linkBundle != null)
+        {
+            StateContainer.LinkBundle = linkBundle;
+
+            // navigate to the public page
+            NavigationManager.NavigateTo($"/{linkBundle.VanityUrl}");
+        }
+    }
 }
