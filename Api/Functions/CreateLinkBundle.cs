@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public partial class CreateLinkBundle(CosmosClient cosmosClient)
+    public partial class CreateLinkBundle(CosmosClient cosmosClient, Hasher hasher)
     {
         protected const string CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789";
         protected const string VANITY_REGEX = @"^([\w\d-])+(/([\w\d-])+)*$";
@@ -43,7 +43,6 @@ namespace Api.Functions
             if (clientPrincipal != null)
             {
                 string username = clientPrincipal.UserDetails;
-                Hasher hasher = new();
                 linkBundle.UserId = hasher.HashString(username);
                 linkBundle.Provider = clientPrincipal.IdentityProvider;
             }
