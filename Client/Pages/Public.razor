@@ -38,7 +38,7 @@
             `https://twitter.com/intent/tweet?text=${
               currentList.description
             } theurlist.com/${currentList.vanityUrl}`
-                                                                                                                                ">
+                                                                                                                                                        ">
                   <span class="icon"><i class="fab fa-twitter"></i></span>
                 </a>
                 <a class="button" target="_blank"
@@ -46,7 +46,7 @@
             `https://www.facebook.com/sharer/sharer.php?u=theurlist.com/${
               currentList.vanityUrl
             }`
-                                                                                                                                ">
+                                                                                                                                                        ">
                   <span class="icon"><i class="fab fa-facebook-f"></i></span>
                 </a>
                 <a class="button" target="_blank"
@@ -54,7 +54,7 @@
             `https://www.linkedin.com/shareArticle?mini=true?summary=${
               currentList.description
             }&url=https://theurlist.com?${currentList.vanityUrl}`
-                                                                                                                                ">
+                                                                                                                                                        ">
                   <span class="icon"><i class="fab fa-linkedin-in"></i></span>
                 </a>
               </div>
@@ -70,14 +70,10 @@
               </div>
             </div>
           </div>
-          @if (ShowQr)
-          {
-            <div class="has-text-centered">
-              <QrCodeItem Url="@($"https://theurlist.com/{vanityUrl}")"></QrCodeItem>
-            </div>
-          }
-          else
-          {
+          <div class="has-text-centered @(ShowQr ? "" : "is-hidden")">
+            <QrCodeItem Url="@($"https://theurlist.com/{vanityUrl}")"></QrCodeItem>
+          </div>
+          <div class="@(ShowQr ? "is-hidden" : "")">
             <br />
             <div>
               @foreach (var link in linkBundle.Links)
@@ -85,7 +81,7 @@
                 <LinkBundleItem link="link"></LinkBundleItem>
               }
             </div>
-          }
+          </div>
         </div>
       }
       else

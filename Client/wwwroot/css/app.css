@@ -348,3 +348,8 @@ a {
 code {
     color: #c02d76;
 }
+
+svg {
+    width: 100%;
+    height: 100%;
+}
