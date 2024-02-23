@@ -72,17 +72,12 @@
 
         if (String.IsNullOrEmpty(vanityUrl)) return;
 
-        // Create a ValidationContext based on the LinkBundle object
-        var context = new ValidationContext(StateContainer.LinkBundle, null, null);
-        // This list will hold the results of the validation
-        var results = new List<ValidationResult>();
-        // Perform the data annotations validation
-        listIsValid = Validator.TryValidateObject(StateContainer.LinkBundle, context, results, true);
-
-        // if the data annotations validation fails, no need to check if the vanity url is taken
-        if (!listIsValid)
+        // Ensure the vanity url contains only letters, numbers, and dashes without using regex
+        if (vanityUrl.Any(c => !char.IsLetterOrDigit(c) && c != '-'))
         {
-            validationErrorMessage = results.FirstOrDefault()?.ErrorMessage ?? "";
+            // if the data annotations validation fails, no need to check if the vanity url is taken
+            listIsValid = false;
+            validationErrorMessage = "Vanity URLs can only contain letters, numbers, and dashes.";
             return;
         }
 
@@ -113,7 +108,6 @@
     private async Task PublishLinkBundle()
     {
         HttpResponseMessage response;
-
         if (IsPublished)
         {
             response = await Http.PutAsJsonAsync<LinkBundle>($"api/links/{StateContainer.LinkBundle.VanityUrl}", StateContainer.LinkBundle);
@@ -122,6 +116,7 @@
         {
             response = await Http.PostAsJsonAsync<LinkBundle>("api/links", StateContainer.LinkBundle);
         }
+
         var linkBundle = await response.Content.ReadFromJsonAsync<LinkBundle>();
 
         if (linkBundle != null)

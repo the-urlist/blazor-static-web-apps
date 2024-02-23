@@ -9,7 +9,7 @@ namespace BlazorApp.Shared
     {
         [JsonPropertyName("id")]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        [JsonPropertyName("vanityUrl"), RegularExpression(@"^(^$|[a-zA-Z0-9_\-])+$", ErrorMessage = "Only letters, numbers and dashes")]
+        [JsonPropertyName("vanityUrl")]
         public string VanityUrl { get; set; }
         [JsonPropertyName("description")]
         public string Description { get; set; }
@@ -17,7 +17,6 @@ namespace BlazorApp.Shared
         public string UserId { get; set; }
         [JsonPropertyName("provider")]
         public string Provider { get; set; }
-
         [JsonPropertyName("links")]
         public List<Link> Links { get; set; } = new List<Link>();
     }
