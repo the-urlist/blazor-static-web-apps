@@ -44,40 +44,9 @@
 
 @code {
 
-  protected override void OnInitialized()
-  {
-    StateContainer.OnChange += StateHasChanged;
-  }
-
-  [Parameter]
-  public bool IsPublished { get; set; } = false;
-  
-  private Debouncer debouncer = new Debouncer(300);
-  private bool listIsValid = true;
-  private string validationErrorMessage = "";
-  private string validationErrorClass => listIsValid ? "" : "invalid";
-  private string validationMessageClass => listIsValid ? "is-invisible" : "is-visible";
-  
-  bool PublishEnabled(bool valid) {
-    if (valid && StateContainer.LinkBundle.Links.Count > 0) return true;
-    return false;
-  }
-
-  private void ValidateVanityUrl(ChangeEventArgs e)
-  {
-    var vanityUrl = e.Value?.ToString();
-    StateContainer.LinkBundle.VanityUrl = vanityUrl;
-    listIsValid = true;
-
-    if (String.IsNullOrEmpty(vanityUrl)) return;
-
-    // Ensure the vanity url contains only letters, numbers, and dashes without using regex
-    if (vanityUrl.Any(c => !char.IsLetterOrDigit(c) && c != '-'))
+    protected override void OnInitialized()
     {
-      // if the data annotations validation fails, no need to check if the vanity url is taken
-      listIsValid = false;
-      validationErrorMessage = "Vanity URLs can only contain letters, numbers, and dashes.";
-      return;
+        StateContainer.OnChange += StateHasChanged;
     }
 
     [Parameter]
@@ -103,17 +72,12 @@
 
         if (String.IsNullOrEmpty(vanityUrl)) return;
 
-        // Create a ValidationContext based on the LinkBundle object
-        var context = new ValidationContext(StateContainer.LinkBundle, null, null);
-        // This list will hold the results of the validation
-        var results = new List<ValidationResult>();
-        // Perform the data annotations validation
-        listIsValid = Validator.TryValidateObject(StateContainer.LinkBundle, context, results, true);
-
-        // if the data annotations validation fails, no need to check if the vanity url is taken
-        if (!listIsValid)
+        // Ensure the vanity url contains only letters, numbers, and dashes without using regex
+        if (vanityUrl.Any(c => !char.IsLetterOrDigit(c) && c != '-'))
         {
-            validationErrorMessage = results.FirstOrDefault()?.ErrorMessage ?? "";
+            // if the data annotations validation fails, no need to check if the vanity url is taken
+            listIsValid = false;
+            validationErrorMessage = "Vanity URLs can only contain letters, numbers, and dashes.";
             return;
         }
 
@@ -144,7 +108,6 @@
     private async Task PublishLinkBundle()
     {
         HttpResponseMessage response;
-
         if (IsPublished)
         {
             response = await Http.PutAsJsonAsync<LinkBundle>($"api/links/{StateContainer.LinkBundle.VanityUrl}", StateContainer.LinkBundle);
@@ -153,6 +116,7 @@
         {
             response = await Http.PostAsJsonAsync<LinkBundle>("api/links", StateContainer.LinkBundle);
         }
+
         var linkBundle = await response.Content.ReadFromJsonAsync<LinkBundle>();
 
         if (linkBundle != null)
