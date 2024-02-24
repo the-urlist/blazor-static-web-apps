@@ -37,13 +37,13 @@
                 </div>
                 <div class="column">
                   <input type="text" placeholder="Enter a title"
-                    class="has-text-weight-bold link-title input has-text-weight-medium" value="@newLink.Title" />
+                    class="has-text-weight-bold link-title input has-text-weight-medium" @bind="newLink.Title" />
                 </div>
                 <div class="column is-full">
                   <textarea placeholder="Enter a description" class="link-description textarea has-fixed-size is-size-7"
-                    value="@newLink.Description">
+                    @bind="newLink.Description">
                   </textarea>
-                  <input value="@newLink.Url" class="link-url mb-2" />
+                  <input @bind="newLink.Url" class="link-url mb-2" />
                 </div>
               </div>
             </div>
