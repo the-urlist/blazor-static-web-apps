@@ -1,5 +1,33 @@
 {
     "navigationFallback": {
         "rewrite": "/index.html"
+    },
+    "auth": {
+        "identityProviders": {
+            "google": {
+                "registration": {
+                    "clientIdSettingName": "GOOGLE_CLIENT_ID",
+                    "clientSecretSettingName": "GOOGLE_CLIENT_SECRET"
+                }
+            },
+            "twitter": {
+                "registration": {
+                    "consumerKeySettingName": "TWITTER_CONSUMER_KEY",
+                    "consumerSecretSettingName": "TWITTER_CONSUMER_SECRET"
+                }
+            },
+            "github": {
+                "registration": {
+                    "clientIdSettingName": "GITHUB_CLIENT_ID",
+                    "clientSecretSettingName": "GITHUB_CLIENT_SECRET"
+                }
+            },
+            "facebook": {
+                "registration": {
+                    "appIdSettingName": "FACEBOOK_APP_ID",
+                    "appSecretSettingName": "FACEBOOK_APP_SECRET"
+                }
+            }
+        }
     }
 }
