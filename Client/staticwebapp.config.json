@@ -10,12 +10,6 @@
                     "clientSecretSettingName": "GOOGLE_CLIENT_SECRET"
                 }
             },
-            "twitter": {
-                "registration": {
-                    "consumerKeySettingName": "TWITTER_CONSUMER_KEY",
-                    "consumerSecretSettingName": "TWITTER_CONSUMER_SECRET"
-                }
-            },
             "github": {
                 "registration": {
                     "clientIdSettingName": "GITHUB_CLIENT_ID",
