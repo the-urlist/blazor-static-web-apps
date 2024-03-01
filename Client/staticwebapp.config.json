@@ -1,6 +1,17 @@
 {
+    "routes": [
+        {
+            "route": "/",
+            "rewrite": "app.html"
+        },
+        {
+            "route": "/s/*",
+            "rewrite": "app.html"
+        }
+    ],
     "navigationFallback": {
-        "rewrite": "/index.html"
+        "rewrite": "index.html",
+        "exclude": ["/images/*.{png,jpg,gif}", "/css/*"]
     },
     "auth": {
         "identityProviders": {

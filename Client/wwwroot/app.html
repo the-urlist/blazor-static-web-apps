@@ -8,6 +8,7 @@
   <base href="/" />
   <link rel="stylesheet" href="css/bulma/css/bulma.min.css" />
   <link href="css/app.css" rel="stylesheet" />
+  <link href="Client.styles.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -23,27 +24,13 @@
       </div>
     </div>
   </div>
+
+  <div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">X</a>
+  </div>
+  <script src="_framework/blazor.webassembly.js"></script>
 </body>
-
-<script>
-  (async function () {
-
-    const response = await fetch("/api/public/jons-links");
-    const html = await response.text();
-
-    document.body.innerHTML = html;
-
-    document.getElementById("btnShowListView").onclick = () => {
-      document.getElementById("qrCodeView").classList.add("is-hidden");
-      document.getElementById("listView").classList.remove("is-hidden");
-    };
-
-    document.getElementById("btnShowQRCodeView").onclick = () => {
-      document.getElementById("listView").classList.add("is-hidden");
-      document.getElementById("qrCodeView").classList.remove("is-hidden");
-    };
-
-  }());
-</script>
 
 </html>
