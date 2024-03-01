@@ -58,7 +58,6 @@ namespace Api.Functions
 
             var data = new
             {
-                name = "ok",
                 linkBundle,
                 qrCode = qrCode.ToSvgString(4, "#121212", "#F9FAFC")
             };
