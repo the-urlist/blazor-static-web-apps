@@ -11,20 +11,20 @@
   <div class="container" id="page">
     <div class="section">
       <div>
-        <h2 class="is-size-3 is-heading has-text-weight-medium has-text-primary">{{linkBundle.Description}}</h2>
+        <h2 class="is-size-3 is-heading has-text-weight-medium has-text-primary">{{Description}}</h2>
         <div class="columns is-mobile">
           <div class="column is-half">
             <div id="share" class="buttons has-addons">
               <a class="button" target="_blank"
-                href="https://twitter.com/intent/tweet?text={{Description}} theurlist.com/{{linkBundle.VanityUrl}}">
+                href="https://twitter.com/intent/tweet?text={{Description}} theurlist.com/{{VanityUrl}}">
                 <span class="icon"><i class="fab fa-twitter"></i></span>
               </a>
               <a class="button" target="_blank"
-                href="https://www.facebook.com/sharer/sharer.php?u=theurlist.com/{{linkBundle.VanityUrl}}">
+                href="https://www.facebook.com/sharer/sharer.php?u=theurlist.com/{{VanityUrl}}">
                 <span class="icon"><i class="fab fa-facebook-f"></i></span>
               </a>
               <a class="button" target="_blank"
-                href="https://www.linkedin.com/shareArticle?mini=true?summary={{linkBundle.VanityUrl}}&url=https://theurlist.com?{{linkBundle.VanityUrl}}&title={{linkBundle.VanityUrl}}">
+                href="https://www.linkedin.com/shareArticle?mini=true?summary={{VanityUrl}}&url=https://theurlist.com?{{VanityUrl}}&title={{VanityUrl}}">
                 <span class=" icon"><i class="fab fa-linkedin-in"></i></span>
               </a>
             </div>
@@ -41,11 +41,11 @@
           </div>
         </div>
         <div id="qrCodeView" class="has-text-centered is-hidden">
-          {{{#qrCode}}}
+
         </div>
         <div id="listView">
           <br />
-          {{#linkBundle.Links}}
+          {{#Links}}
           <a href="{{Url}}">
             <div class="link-outer">
               <div class="link-wrapper">
@@ -92,7 +92,7 @@
               </div>
             </div>
           </a>
-          {{/linkBundle.Links}}
+          {{/Links}}
         </div>
       </div>
     </div>

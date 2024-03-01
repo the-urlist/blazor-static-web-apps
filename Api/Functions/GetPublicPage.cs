@@ -51,21 +51,17 @@ namespace Api.Functions
                 source = await reader.ReadToEndAsync();
             }
 
-            // Decode the vanityUrl from base64
-            // We're using base64 encoding to allow for special characters in the vanityUrl
-            // string decodedVanityUrl = Encoding.UTF8.GetString(Convert.FromBase64String(vanityUrl));
-            var qrCode = QrCode.EncodeText($"https://theurlist.com/{vanityUrl}", QrCode.Ecc.Medium);
+
+            var template = Handlebars.Compile(source);
+            var rendered = template(linkBundle);
 
             var data = new
             {
                 linkBundle,
-                qrCode = qrCode.ToSvgString(4, "#121212", "#F9FAFC")
+                rendered
             };
 
-            var template = Handlebars.Compile(source);
-            var rendered = template(data);
-
-            response.WriteString(rendered);
+            await response.WriteAsJsonAsync(data);
 
             return response;
         }
