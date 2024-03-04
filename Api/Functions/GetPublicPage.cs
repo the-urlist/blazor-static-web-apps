@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using HandlebarsDotNet;
 using System.Linq;
-using Net.Codecrete.QrCodeGenerator;
 
 namespace Api.Functions
 {
@@ -46,11 +45,13 @@ namespace Api.Functions
             LinkBundle linkBundle = result.First();
 
             string source;
-            using (var reader = new StreamReader("../../Templates/public.html"))
+
+            var path = Environment.CurrentDirectory + "/Templates/GetPublicPageTemplate.html";
+
+            using (var reader = new StreamReader(path))
             {
                 source = await reader.ReadToEndAsync();
             }
-
 
             var template = Handlebars.Compile(source);
             var rendered = template(linkBundle);
