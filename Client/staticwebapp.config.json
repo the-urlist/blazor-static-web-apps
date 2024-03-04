@@ -32,6 +32,12 @@
                     "appIdSettingName": "FACEBOOK_APP_ID",
                     "appSecretSettingName": "FACEBOOK_APP_SECRET"
                 }
+            },
+            "twitter": {
+                "registration": {
+                    "consumerKeySettingName": "TWITTER_CONSUMER_KEY",
+                    "consumerSecretSettingName": "TWITTER_CONSUMER_SECRET"
+                }
             }
         }
     }
