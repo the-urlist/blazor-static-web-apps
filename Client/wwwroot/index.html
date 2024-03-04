@@ -4,15 +4,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Open Graph tags -->
+  <meta property="og:title" content="The Urlist - Share the internet" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="Your website URL" />
+  <meta property="og:image" content="https://theurlist.com/images/logo-big.png" />
+  <meta property="og:description" content="Description of the website" />
+
   <title>The Urlist - Share the internet</title>
   <base href="/" />
   <link rel="stylesheet" href="css/bulma/css/bulma.min.css" />
   <link href="css/app.css" rel="stylesheet" />
-  <link href="Client.styles.css" rel="stylesheet" />
 </head>
 
 <body>
-  <div id="app" class="hero is-fullheight">
+  <div id="public" class="hero is-fullheight">
     <div class="hero-body">
       <div class="container has-text-centered">
         <img src="images/logo.svg" width="200" alt="">
@@ -24,13 +30,54 @@
       </div>
     </div>
   </div>
-
-  <div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">X</a>
-  </div>
-  <script src="_framework/blazor.webassembly.js"></script>
 </body>
+
+<script>
+  (async function () {
+
+    // get the vanity url from the path
+    const path = window.location.pathname;
+    const vanityUrl = path.substring(1);
+
+    // set the title of the page
+    document.title = `The Urlist: ${vanityUrl}`;
+
+    // get the LinkBundle and HTML for the body from the server
+    let response = await fetch(`/api/public/${vanityUrl}`);
+    let data = await response.json();
+
+    // set open graph tags
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    ogTitle.setAttribute("content", `The Urlist - ${data.vanityUrl}`);
+
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    ogUrl.setAttribute("content", `https://theurlist.com/${data.vanityUrl}`);
+
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    ogDescription.setAttribute("content", `${data.description || "Share the internet"}`);
+
+    // replace all body content with the HTML from the server
+    document.body.innerHTML = data.rendered;
+
+    // get the QR code from the server
+    const base64VanityUrl = btoa(vanityUrl);
+    response = await fetch(`/api/qrcode/${base64VanityUrl}`);
+    data = await response.text();
+
+    document.getElementById("qrCodeView").innerHTML = data;
+
+    // add event listeners to the buttons to toggle between listview and qrcodeview
+    document.getElementById("btnShowListView").onclick = () => {
+      document.getElementById("qrCodeView").classList.add("is-hidden");
+      document.getElementById("listView").classList.remove("is-hidden");
+    };
+
+    document.getElementById("btnShowQRCodeView").onclick = () => {
+      document.getElementById("listView").classList.add("is-hidden");
+      document.getElementById("qrCodeView").classList.remove("is-hidden");
+    };
+
+  }());
+</script>
 
 </html>
