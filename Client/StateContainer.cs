@@ -1,149 +1,133 @@
+using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using BlazorApp.Shared;
 using Microsoft.JSInterop;
 
-
 public class StateContainer
 {
-  private readonly IJSRuntime jsRuntime;
+	private readonly IJSRuntime jsRuntime;
 
-  public StateContainer(IJSRuntime jsRuntime)
-  {
-    this.jsRuntime = jsRuntime;
-  }
+	public StateContainer(IJSRuntime jsRuntime)
+	{
+		this.jsRuntime = jsRuntime;
+	}
 
-  private int activeHttpRequests;
+	private LinkBundle? linkBundle;
+	public LinkBundle LinkBundle
+	{
+		get => linkBundle ??= new LinkBundle();
+		set
+		{
+			linkBundle = value;
 
-  public int ActiveHttpRequests
-  {
-    get => activeHttpRequests;
-    set
-    {
-      activeHttpRequests = value;
-      NotifyStateChanged();
-    }
-  }
+			SaveLinkBundleToLocalStorage();
+			NotifyStateChanged();
+		}
+	}
 
-  private LinkBundle? linkBundle;
-  public LinkBundle LinkBundle
-  {
-    get => linkBundle ??= new LinkBundle();
-    set
-    {
-      linkBundle = value;
+	private readonly List<Link> _linksPendingUpdate = [];
 
-      SaveLinkBundleToLocalStorage();
-      NotifyStateChanged();
-    }
-  }
+	public void AddLinkToUpdatePool(Link link)
+	{
+		_linksPendingUpdate.Add(link);
+		NotifyStateChanged();
+	}
 
-  private List<Link>? _linkUpdatePool { get; set; }
+	public void RemoveLinkFromUpdatePool(Link link)
+	{
+		_linksPendingUpdate.Remove(link);
+		NotifyStateChanged();
+	}
 
-  public List<Link> LinkUpdatePool
-  {
-    get => _linkUpdatePool ??= new List<Link>();
-    set
-    {
-      _linkUpdatePool = value;
-      NotifyStateChanged();
-    }
-  }
+	public bool IsLinkInUpdatePool(Link link)
+	{
+		return _linksPendingUpdate.Contains(link);
+	}
 
-  public void AddLinkToUpdatePool(Link link)
-  {
-    LinkUpdatePool.Add(link);
-    NotifyStateChanged();
-  }
+	[UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Shared assembly hasn't opted into trimming")]
+	public async Task LoadLinkBundleFromLocalStorage()
+	{
+		var json = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "linkBundle");
+		if (!string.IsNullOrEmpty(json))
+		{
+			LinkBundle = JsonSerializer.Deserialize<LinkBundle>(json) ?? new LinkBundle();
+		}
+	}
 
-  public void RemoveLinkFromUpdatePool(Link link)
-  {
-    LinkUpdatePool.Remove(link);
-    NotifyStateChanged();
-  }
+	[UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Shared assembly hasn't opted into trimming")]
+	public void SaveLinkBundleToLocalStorage()
+	{
+		var json = JsonSerializer.Serialize(LinkBundle);
+		jsRuntime.InvokeVoidAsync("localStorage.setItem", "linkBundle", json).AsTask();
+	}
 
-  public async Task LoadLinkBundleFromLocalStorage()
-  {
-    var json = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "linkBundle");
-    if (!string.IsNullOrEmpty(json))
-    {
-      LinkBundle = JsonSerializer.Deserialize<LinkBundle>(json) ?? new LinkBundle();
-    }
-  }
+	private User? user;
+	public User? User
+	{
+		get => user;
+		set
+		{
+			user = value;
+			NotifyStateChanged();
+		}
+	}
 
-  public void SaveLinkBundleToLocalStorage()
-  {
-    var json = JsonSerializer.Serialize(LinkBundle);
-    jsRuntime.InvokeVoidAsync("localStorage.setItem", "linkBundle", json);
-  }
+	public void DeleteLinkFromBundle(Link link)
+	{
+		LinkBundle.Links.Remove(link);
 
-  private User? user;
-  public User? User
-  {
-    get => user;
-    set
-    {
-      user = value;
-      NotifyStateChanged();
-    }
-  }
+		LinkBundleHasChanged();
+	}
 
-  public void DeleteLinkFromBundle(Link link)
-  {
-    LinkBundle.Links.Remove(link);
+	public void AddLinkToBundle(Link link)
+	{
+		LinkBundle.Links.Add(link);
+		LinkBundleHasChanged();
+	}
 
-    SaveLinkBundleToLocalStorage();
-    NotifyStateChanged();
-  }
+	public void UpdateLinkInBundle(Link link, Link? updatedLink)
+	{
+		if (updatedLink == null)
+		{
+			return;
+		}
 
-  public void AddLinkToBundle(Link link)
-  {
-    LinkBundle.Links.Add(link);
-    LinkUpdatePool.Add(link);
+		link.Title = updatedLink.Title;
+		link.Description = updatedLink.Description;
+		link.Image = updatedLink.Image;
 
-    SaveLinkBundleToLocalStorage();
-    NotifyStateChanged();
-  }
+		LinkBundleHasChanged();
+	}
 
-  public void UpdateLinkInBundle(Link link, Link? updatedLink)
-  {
-    if (updatedLink == null)
-    {
-      return;
-    }
+	public void ReorderLinks(int moveFromIndex, int moveToIndex)
+	{
+		var links = LinkBundle.Links;
+		var itemToMove = links[moveFromIndex];
+		links.RemoveAt(moveFromIndex);
 
-    link.Title = updatedLink.Title;
-    link.Description = updatedLink.Description;
-    link.Image = updatedLink.Image;
+		if (moveToIndex < links.Count)
+		{
+			links.Insert(moveToIndex, itemToMove);
+		}
+		else
+		{
+			links.Add(itemToMove);
+		}
 
-    LinkUpdatePool.Remove(link);
+		LinkBundleHasChanged();
+	}
 
-    SaveLinkBundleToLocalStorage();
-    NotifyStateChanged();
-  }
+	private void LinkBundleHasChanged()
+	{
+		SaveLinkBundleToLocalStorage();
+		NotifyStateChanged();
+	}
 
-  public void ReorderLinks(int moveFromIndex, int moveToIndex)
-  {
-    var links = LinkBundle.Links;
-    var itemToMove = links[moveFromIndex];
-    links.RemoveAt(moveFromIndex);
+	public event Action? OnChange;
 
-    if (moveToIndex < links.Count)
-    {
-      links.Insert(moveToIndex, itemToMove);
-    }
-    else
-    {
-      links.Add(itemToMove);
-    }
-
-    SaveLinkBundleToLocalStorage();
-    NotifyStateChanged();
-  }
-
-  public event Action? OnChange;
-
-  private void NotifyStateChanged()
-  {
-    OnChange?.Invoke();
-  }
+	private void NotifyStateChanged()
+	{
+		OnChange?.Invoke();
+	}
 }

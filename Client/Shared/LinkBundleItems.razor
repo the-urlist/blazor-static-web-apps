@@ -2,6 +2,8 @@
 
 @inject StateContainer StateContainer
 
+@implements IDisposable
+
 <NewLink OnNewLinkAdded="@NewLinkAdded"></NewLink>
 @if (StateContainer.LinkBundle.Links.Count != 0)
 {
@@ -45,5 +47,10 @@
   {
     var (oldIndex, newIndex) = indices;
     StateContainer.ReorderLinks(oldIndex, newIndex);
+  }
+
+  public void Dispose()
+  {
+    StateContainer.OnChange -= StateHasChanged;
   }
 }
