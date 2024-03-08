@@ -4,9 +4,11 @@
 @inject IJSRuntime JS
 @inject StateContainer StateContainer
 
+@implements IDisposable
+
 @typeparam T
 
-<div id="@Id">
+<div @ref="sortableEl">
   @foreach (var item in Items)
   {
     @if (SortableItemTemplate is not null)
@@ -21,13 +23,13 @@
   [Parameter]
   public RenderFragment<T>? SortableItemTemplate { get; set; }
 
-  [Parameter, AllowNull]
+  [Parameter, EditorRequired]
   public List<T> Items { get; set; }
 
   [Parameter]
   public EventCallback<(int oldIndex, int newIndex)> OnUpdate { get; set; }
 
-  private string Id = $"sortable-list-{Guid.NewGuid().ToString().Substring(0, 5)}";
+  private ElementReference sortableEl;
 
   private DotNetObjectReference<SortableList<T>>? selfReference;
 
@@ -48,7 +50,7 @@
       // import the sortablelist component JavaScript
       var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Shared/SortableList.razor.js");
 
-      await module.InvokeAsync<string>("init", Id, selfReference);
+      await module.InvokeAsync<string>("init", sortableEl, selfReference);
     }
   }
 

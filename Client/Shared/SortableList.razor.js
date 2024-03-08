@@ -1,5 +1,4 @@
-export function init(id, component) {
-  var list = document.getElementById(id);
+export function init(list, component) {
   new Sortable(list, { 
       animation: 200,
       forceFallback: true,
