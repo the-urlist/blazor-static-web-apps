@@ -76,7 +76,6 @@
         catch (Exception e)
         {
             // the request to get opengraph info failed, so log and swallow
-            Console.WriteLine(e);
             StateContainer.RemoveLinkFromUpdatePool(link);
         }
         finally

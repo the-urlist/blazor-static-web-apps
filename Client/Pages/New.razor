@@ -4,6 +4,8 @@
 @inject StateContainer StateContainer
 @inject HttpClient Http
 
+@implements IDisposable
+
 <LinkBundleDetails></LinkBundleDetails>
 <div class="container main content">
   <LinkBundleItems></LinkBundleItems>
@@ -13,5 +15,10 @@
   protected override void OnInitialized()
   {
     StateContainer.OnChange += StateHasChanged;
+  }
+
+  public void Dispose()
+  {
+    StateContainer.OnChange -= StateHasChanged;
   }
 }

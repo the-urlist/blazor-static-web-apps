@@ -2,6 +2,8 @@
 
 @inject StateContainer StateContainer
 
+@implements IDisposable
+
 <div class="link-outer">
   <div class="link-wrapper">
     <div class="columns is-vcentered is-mobile">
@@ -12,7 +14,7 @@
       </div>
       <div class="card link">
         <div class="progress-bar--wrapper">
-          @if (StateContainer.LinkUpdatePool.Contains(newLink))
+          @if (StateContainer.IsLinkInUpdatePool(newLink))
           {
             <div id="progressBar" class="progress-bar--container visible"></div>
           }
@@ -78,4 +80,9 @@
 
   [Parameter]
   public EventCallback<Link> OnDeleteLink { get; set; }
+
+  public void Dispose()
+  {
+    StateContainer.OnChange -= StateHasChanged;
+  }
 }
