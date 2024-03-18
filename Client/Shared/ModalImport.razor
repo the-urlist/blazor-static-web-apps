@@ -8,7 +8,7 @@
   <div>
     <p>Import any lists you created under a Twitter login.</p>
     <a class="button mt-4"
-      href="@($"https://theurlist-migrations.azurewebsites.net/.auth/login/twitter?post_login_redirect_url=https://theurlist-migrations.azurewebsites.net/import?clientPrincipal={clientPrincipal}")">Import
+      href="@($"https://theurlist-migrations.azurewebsites.net/.auth/login/twitter?post_login_redirect_url=https://theurlist-migrations.azurewebsites.net/import?clientPrincipal={userData}")">Import
       From Twitter</a>
   </div>
 
@@ -17,11 +17,17 @@
 @code {
   ModalWindow? modal;
 
-  private string? clientPrincipal;
+  private string? userData;
 
   protected override void OnInitialized()
   {
-    clientPrincipal = JsonSerializer.Serialize(StateContainer.User?.ClientPrincipal);
+    var data = new
+    {
+      userDetails = StateContainer.User?.ClientPrincipal.UserDetails,
+      identityProvider = StateContainer.User?.ClientPrincipal.IdentityProvider
+    };
+
+    userData = JsonSerializer.Serialize(data);
   }
 
   public void Show()
