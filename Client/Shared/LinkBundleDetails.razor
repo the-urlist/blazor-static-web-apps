@@ -6,6 +6,8 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
+@implements IDisposable
+
 <div>
     <div id="listDetails" class="addbar flex is-horizontally-centered">
         <div class="container main">
@@ -126,5 +128,10 @@
             // navigate to the public page
             NavigationManager.NavigateTo($"/{linkBundle.VanityUrl}");
         }
+    }
+
+    public void Dispose()
+    {
+        StateContainer.OnChange -= StateHasChanged;
     }
 }
