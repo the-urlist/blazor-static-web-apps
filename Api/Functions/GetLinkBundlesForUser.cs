@@ -19,12 +19,14 @@ namespace Api.Functions
                 var container = cosmosClient.GetContainer("TheUrlist", "linkbundles");
                 var res = req.CreateResponse();
 
-                ClientPrincipal clientPrincipal = ClientPrincipalUtility.GetClientPrincipal(req);
+                // ClientPrincipal clientPrincipal = ClientPrincipalUtility.GetClientPrincipal(req);
 
-                if (clientPrincipal != null)
+                var clientPrincipal = ClaimsPrincipalParser.Parse(req);
+
+                if (clientPrincipal.Identity.IsAuthenticated)
                 {
-                    string username = hasher.HashString(clientPrincipal.UserDetails);
-                    string provider = clientPrincipal.IdentityProvider;
+                    string username = hasher.HashString(clientPrincipal.Identity.Name);
+                    string provider = clientPrincipal.Identity.AuthenticationType;
 
                     var query = new QueryDefinition("SELECT c.id, c.vanityUrl, c.description, c.links FROM c WHERE c.userId = @username AND c.provider = @provider")
                         .WithParameter("@username", username)
