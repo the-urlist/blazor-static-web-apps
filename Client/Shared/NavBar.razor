@@ -1,8 +1,10 @@
 @using BlazorApp.Shared
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 
+@inject IWebAssemblyHostEnvironment Env
 @inject StateContainer StateContainer
 @inject NavigationManager NavigationManager
-@inject HttpClient Http
+@inject CustomHttpClient Http
 
 
 <header id="navbar" class="header">
@@ -133,7 +135,9 @@
   {
     try
     {
-      var result = await Http.GetFromJsonAsync<ClientPrincipalWrapper>(".auth/me");
+      var authUrl = Env.IsDevelopment() ? "api/me" : ".auth/me";
+
+      var result = await Http.GetFromJsonAsync<ClientPrincipalWrapper>(authUrl);
 
       // if the client principal is null, then they are not logged in
       if (result?.ClientPrincipal == null)

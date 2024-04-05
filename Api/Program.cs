@@ -28,7 +28,7 @@ var host = new HostBuilder()
             context.Configuration["HASHER_KEY"],
             context.Configuration["HASHER_SALT"]));
     })
-    .ConfigureFunctionsWorkerDefaults()
+    .ConfigureFunctionsWebApplication()
     .Build();
 
 await host.RunAsync();
