@@ -1,4 +1,3 @@
-using Api.Utility;
 using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
@@ -33,7 +32,7 @@ namespace Api
 
             try
             {
-                ClientPrincipal principal = ClientPrincipalUtility.GetClientPrincipal(req);
+                BlazorApp.Shared.User user = ClientPrincipalParser.Parse(req);
 
                 var container = cosmosClient.GetContainer("TheUrlist", "linkbundles");
 
@@ -45,14 +44,14 @@ namespace Api
 
                 if (result.Count != 0)
                 {
-                    var hashedUsername = hasher.HashString(principal.UserDetails);
-                    if (hashedUsername != result.First().UserId || principal.IdentityProvider != result.First().Provider)
+                    var hashedUsername = hasher.HashString(user.UserName);
+                    if (hashedUsername != result.First().UserId || user.IdentityProvider != result.First().Provider)
                     {
                         return await req.CreateJsonResponse(System.Net.HttpStatusCode.Unauthorized, message: "Unauthorized");
                     }
 
                     linkBundle.UserId = hashedUsername;
-                    linkBundle.Provider = principal.IdentityProvider;
+                    linkBundle.Provider = user.IdentityProvider;
                     var partitionKey = new PartitionKey(vanityUrl);
                     var response = await container.UpsertItemAsync(linkBundle, partitionKey);
                     var responseMessage = req.CreateResponse(HttpStatusCode.OK);

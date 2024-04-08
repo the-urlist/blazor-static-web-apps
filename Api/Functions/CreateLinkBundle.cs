@@ -1,4 +1,3 @@
-using Api.Utility;
 using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
@@ -38,13 +37,13 @@ namespace Api.Functions
                 return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "Invalid vanity url");
             }
 
-            ClientPrincipal clientPrincipal = ClientPrincipalUtility.GetClientPrincipal(req);
+            BlazorApp.Shared.User user = ClientPrincipalParser.Parse(req);
 
-            if (clientPrincipal != null)
+            if (user.IsAuthenticated)
             {
-                string username = clientPrincipal.UserDetails;
+                string username = user.UserName;
                 linkBundle.UserId = hasher.HashString(username);
-                linkBundle.Provider = clientPrincipal.IdentityProvider;
+                linkBundle.Provider = user.IdentityProvider;
             }
 
             try

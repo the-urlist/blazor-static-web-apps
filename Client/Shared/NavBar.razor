@@ -4,7 +4,7 @@
 @inject IWebAssemblyHostEnvironment Env
 @inject StateContainer StateContainer
 @inject NavigationManager NavigationManager
-@inject CustomHttpClient Http
+@inject HttpClient Http
 
 
 <header id="navbar" class="header">
@@ -26,14 +26,14 @@
           </span>
           New
         </a>
-        @if (loggedIn)
+        @if (StateContainer.User.IsAuthenticated)
         {
-          <a class="navbar-item" href="/s/mylists">
-            <span class="icon is-large navbar-icon">
-              <i class="fas fa-lg fa-user-circle"></i>
-            </span>
-            My Lists
-          </a>
+            <a class="navbar-item" href="/s/mylists">
+              <span class="icon is-large navbar-icon">
+                <i class="fas fa-lg fa-user-circle"></i>
+              </span>
+              My Lists
+            </a>
         }
         <a href="https://aka.ms/theurlist" class="navbar-item" target="_new">
           <span class="icon is-large navbar-icon">
@@ -43,39 +43,39 @@
         </a>
       </div>
       <div class="navbar-end">
-        @if (loggedIn)
+        @if (StateContainer.User.IsAuthenticated)
         {
-          <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">
-              <div class="columns is-gapless is-mobile is-vcentered">
-                <div class="column is-narrow">
-                  <span class="icon is-large" title="@StateContainer.User?.ClientPrincipal?.UserDetails">
-                    <i class="@($"is-size-4 fab fa-{StateContainer.User?.ClientPrincipal?.IdentityProvider}")"></i>
-                  </span>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                <div class="columns is-gapless is-mobile is-vcentered">
+                  <div class="column is-narrow">
+                    <span class="icon is-large" title="@StateContainer.User?.UserName">
+                      <i class="@($"is-size-4 fab fa-{StateContainer.User?.IdentityProvider}")"></i>
+                    </span>
+                  </div>
+                  <div class="column">
+                    <span>@StateContainer.User?.UserName</span>
+                  </div>
                 </div>
-                <div class="column">
-                  <span>@StateContainer.User?.ClientPrincipal?.UserDetails</span>
-                </div>
-              </div>
-            </a>
-            <div class="navbar-dropdown">
-              <a class="navbar-item" href="@($"/.auth/logout")">
-                <span class="icon is-medium navbar-icon">
-                  <i class="fas fa-sign-out-alt"></i>
-                </span>
-                Log Out
               </a>
+              <div class="navbar-dropdown">
+                <a class="navbar-item" href="@($"/.auth/logout")">
+                  <span class="icon is-medium navbar-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                  </span>
+                  Log Out
+                </a>
+              </div>
             </div>
-          </div>
         }
         else
         {
-          <a class="navbar-item" @onclick="ToggleModal">
-            <span class="icon is-large navbar-icon">
-              <i class="fas fa-lg fa-sign-in-alt"></i>
-            </span>
-            Login
-          </a>
+            <a class="navbar-item" @onclick="ToggleModal">
+              <span class="icon is-large navbar-icon">
+                <i class="fas fa-lg fa-sign-in-alt"></i>
+              </span>
+              Login
+            </a>
         }
       </div>
     </div>
@@ -88,8 +88,6 @@
 </header>
 
 @code {
-  private bool loggedIn = false;
-
   private bool showMenu = false;
 
   private ModalLogin? modalLogin;
@@ -135,21 +133,18 @@
   {
     try
     {
-      var authUrl = Env.IsDevelopment() ? "api/me" : ".auth/me";
+      var result = await Http.GetStringAsync(".auth/me");
 
-      var result = await Http.GetFromJsonAsync<ClientPrincipalWrapper>(authUrl);
-
-      // if the client principal is null, then they are not logged in
-      if (result?.ClientPrincipal == null)
-      {
-        return;
-      }
-
-      StateContainer.User = new User(result.ClientPrincipal);
-
-      loggedIn = true;
+      StateContainer.User = ClientPrincipalParser.Parse(result, Env.IsDevelopment());
 
       StateHasChanged();
+    }
+    catch (HttpRequestException ex)
+    {
+      if (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+      {
+        Console.WriteLine("User is not authenticated");
+      }
     }
     catch (Exception ex)
     {

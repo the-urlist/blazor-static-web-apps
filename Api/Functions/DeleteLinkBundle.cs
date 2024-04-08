@@ -1,5 +1,4 @@
-﻿using Api.Utility;
-using BlazorApp.Shared;
+﻿using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -18,7 +17,7 @@ namespace Api.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "links/{vanityUrl}")] HttpRequestData req,
             string vanityUrl)
         {
-            ClientPrincipal principal = ClientPrincipalUtility.GetClientPrincipal(req);
+            BlazorApp.Shared.User user = ClientPrincipalParser.Parse(req);
 
             var container = cosmosClient.GetContainer("TheUrlist", "linkbundles");
 
@@ -30,8 +29,8 @@ namespace Api.Functions
 
             if (result.Count != 0)
             {
-                var hashedUsername = hasher.HashString(principal.UserDetails);
-                if (hashedUsername != result.First().UserId || principal.IdentityProvider != result.First().Provider)
+                var hashedUsername = hasher.HashString(user.UserName);
+                if (hashedUsername != result.First().UserId || user.IdentityProvider != result.First().Provider)
                 {
                     return await req.CreateJsonResponse(System.Net.HttpStatusCode.Unauthorized, message: "Unauthorized");
                 }

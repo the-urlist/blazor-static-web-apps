@@ -1,4 +1,3 @@
-using Api.Utility;
 using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
@@ -19,12 +18,12 @@ namespace Api.Functions
                 var container = cosmosClient.GetContainer("TheUrlist", "linkbundles");
                 var res = req.CreateResponse();
 
-                ClientPrincipal clientPrincipal = ClientPrincipalUtility.GetClientPrincipal(req);
+                BlazorApp.Shared.User user = ClientPrincipalParser.Parse(req);
 
-                if (clientPrincipal != null)
+                if (user.IsAuthenticated)
                 {
-                    string username = hasher.HashString(clientPrincipal.UserDetails);
-                    string provider = clientPrincipal.IdentityProvider;
+                    string username = hasher.HashString(user.UserName);
+                    string provider = user.IdentityProvider;
 
                     var query = new QueryDefinition("SELECT c.id, c.vanityUrl, c.description, c.links FROM c WHERE c.userId = @username AND c.provider = @provider")
                         .WithParameter("@username", username)

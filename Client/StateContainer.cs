@@ -62,8 +62,8 @@ public class StateContainer
 		jsRuntime.InvokeVoidAsync("localStorage.setItem", "linkBundle", json).AsTask();
 	}
 
-	private User? user;
-	public User? User
+	private User user = new User();
+	public User User
 	{
 		get => user;
 		set

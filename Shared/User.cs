@@ -1,17 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BlazorApp.Shared;
 
 public class User
 {
-  public User(ClientPrincipal clientPrincipal)
+
+  public User(string userName, string identityProvider)
   {
-    ClientPrincipal = clientPrincipal;
+    UserName = userName;
+    IdentityProvider = identityProvider;
+    IsAuthenticated = true;
   }
 
-  public bool IsLoggedIn => ClientPrincipal != null && !string.IsNullOrEmpty(ClientPrincipal.UserId);
-  public ClientPrincipal ClientPrincipal { get; set; } = new ClientPrincipal();
+  public User()
+  {
+
+  }
+
+  public bool IsAuthenticated { get; set; } = false;
+
+  public string UserName { get; set; }
+
+  public string IdentityProvider { get; set; }
 
   public List<LinkBundle> LinkBundles { get; set; } = new List<LinkBundle>();
 }
