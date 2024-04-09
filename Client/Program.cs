@@ -6,8 +6,11 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["API_Prefix"] ?? builder.HostEnvironment.BaseAddress) });
-// builder.Services.AddScoped(sp => new CustomHttpClient(new HttpClientHandler(), builder.HostEnvironment));
+var environment = builder.HostEnvironment;
+
+var API_Prefix = environment.IsDevelopment() ? builder.Configuration["DEV_API_Prefix"] : builder.Configuration["PROD_API_Prefix"];
+
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(API_Prefix ?? builder.HostEnvironment.BaseAddress) });
 
 builder.Services.AddSingleton<StateContainer>();
 
