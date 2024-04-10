@@ -1,20 +1,3 @@
-#twitterButton {
-  background-color: #1cabe9;
+.login-buttons {
+  border-left: 1px solid #e2e8f0;
 }
-
-#facebookButton {
-  background-color: #3b5998;
-}
-
-#githubButton {
-  background-color: #333333;
-}
-
-#googleButton {
-  background-color: #dd4b39;
-}
-
-.icon {
-  margin-right: 8px;
-}
-

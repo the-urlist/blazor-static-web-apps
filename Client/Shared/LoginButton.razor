@@ -1,0 +1,19 @@
+<a href="@($"{ApiPrefix}/.auth/login/{Provider.ToLower()}?post_login_redirect_uri={CurrentUrl}")"
+  class="is-fullwidth is-inline-block login-button">
+  <i id="twitterIcon" class="@($"fab {Icon}")"></i>
+  <span class="is-size-5 has-text-weight-medium ml-2">@Provider</span>
+</a>
+
+@code {
+  [Parameter]
+  public string Provider { get; set; } = "";
+
+  [Parameter]
+  public string Icon { get; set; } = "";
+
+  [Parameter]
+  public string CurrentUrl { get; set; } = "";
+
+  [CascadingParameter(Name = "API_Prefix")]
+  public string? ApiPrefix { get; set; }
+}
