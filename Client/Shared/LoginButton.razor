@@ -1,4 +1,4 @@
-<a href="@($"{ApiPrefix}/.auth/login/{Provider.ToLower()}?post_login_redirect_uri={CurrentUrl}")"
+<a href="@($"{ApiPrefix}/.auth/login/{Provider.ToLower()}?post_login_redirect_url={CurrentUrl}")"
   class="is-fullwidth is-inline-block login-button">
   <i id="twitterIcon" class="@($"fab {Icon}")"></i>
   <span class="is-size-5 has-text-weight-medium ml-2">@Provider</span>
