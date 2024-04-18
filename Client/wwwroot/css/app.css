@@ -18,15 +18,22 @@
         --main-background: #14161a;
         --drop-shadow: 0 5px 40px 1px #292727;
     }
+    #logo-img {
+        content: url("/images/logo-dark.svg");
+    }
 }
 
-[data-theme=dark],
-.theme-dark {
+[data-theme=dark], .theme-dark {
     --text-color: #fff;
     --home-bottom-background: #353638;
     --main-background: #14161a;
     --drop-shadow: 0 5px 40px 1px #292727;
 }
+
+[data-theme=dark] #logo-img, .theme-dark #logo-img {
+    content: url("/images/logo-dark.svg");
+} 
+
 
 .beta-bump {
     margin-top: 10px;
