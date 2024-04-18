@@ -16,7 +16,7 @@
         --text-color: #fff;
         --home-bottom-background: #353638;
         --main-background: #14161a;
-        --drop-shadow: 0 5px 40px 1px #4c4b4b;
+        --drop-shadow: 0 5px 40px 1px #292727;
     }
 }
 
@@ -26,7 +26,6 @@
     --home-bottom-background: #353638;
     --main-background: #14161a;
     --drop-shadow: 0 5px 40px 1px #292727;
-    /* --drop-shadow: 0 5px 40px 1px #b70101; */
 }
 
 .beta-bump {
