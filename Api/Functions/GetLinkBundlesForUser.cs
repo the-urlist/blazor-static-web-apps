@@ -16,7 +16,7 @@ namespace Api.Functions
         {
             try
             {
-                var container = cosmosClient.GetContainer("TheUrlist", "linkbundles");
+                var container = cosmosClient.GetContainer("the-urlist", "linkbundles");
                 var res = req.CreateResponse();
 
                 ClientPrincipal clientPrincipal = ClientPrincipalUtility.GetClientPrincipal(req);
@@ -25,6 +25,9 @@ namespace Api.Functions
                 {
                     string username = hasher.HashString(clientPrincipal.UserDetails);
                     string provider = clientPrincipal.IdentityProvider;
+
+                    Console.WriteLine(clientPrincipal.UserDetails);
+                    Console.WriteLine(username);
 
                     var query = new QueryDefinition("SELECT c.id, c.vanityUrl, c.description, c.links FROM c WHERE c.userId = @username AND c.provider = @provider")
                         .WithParameter("@username", username)
