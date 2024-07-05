@@ -3,20 +3,26 @@ using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public class GetLinkBundlesForUser(CosmosClient cosmosClient, Hasher hasher)
+    public class GetLinkBundlesForUser(CosmosClient cosmosClient, Hasher hasher, IConfiguration configuration)
     {
         [Function(nameof(GetLinkBundlesForUser))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequestData req)
         {
             try
             {
-                var container = cosmosClient.GetContainer("the-urlist", "linkbundles");
+
+                var databaseName = configuration["COSMOSDB_DATABASE"];
+                var database = cosmosClient.GetDatabase(databaseName);
+
+                var container = database.GetContainer("linkbundles");
+
                 var res = req.CreateResponse();
 
                 ClientPrincipal clientPrincipal = ClientPrincipalUtility.GetClientPrincipal(req);

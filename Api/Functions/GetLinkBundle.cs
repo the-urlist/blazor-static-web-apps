@@ -2,6 +2,7 @@ using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -10,10 +11,9 @@ using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public class ReadLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient)
+    public class ReadLinkBundle(ILoggerFactory loggerFactory, CosmosClient cosmosClient, IConfiguration configuration)
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<ReadLinkBundle>();
-        private readonly CosmosClient _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
 
         [Function(nameof(ReadLinkBundle))]
         public async Task<HttpResponseData> Run(
@@ -24,7 +24,9 @@ namespace Api.Functions
                 return await req.CreateJsonResponse(HttpStatusCode.BadRequest, "vanityUrl is required");
             }
 
-            var database = _cosmosClient.GetDatabase("the-urlist");
+            var databaseName = configuration["COSMOSDB_DATABASE"];
+            var database = cosmosClient.GetDatabase(databaseName);
+
             var container = database.GetContainer("linkbundles");
 
             var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.vanityUrl = @vanityUrl")
