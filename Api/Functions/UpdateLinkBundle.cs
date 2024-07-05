@@ -3,6 +3,7 @@ using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Api
 {
-    public class UpdateLinkBundle(CosmosClient cosmosClient, Hasher hasher)
+    public class UpdateLinkBundle(CosmosClient cosmosClient, Hasher hasher, IConfiguration configuration)
     {
         [Function(nameof(UpdateLinkBundle))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "links/{vanityUrl}")] HttpRequestData req,
@@ -35,7 +36,10 @@ namespace Api
             {
                 ClientPrincipal principal = ClientPrincipalUtility.GetClientPrincipal(req);
 
-                var container = cosmosClient.GetContainer("TheUrlist", "linkbundles");
+                var databaseName = configuration["COSMOSDB_DATABASE"];
+                var database = cosmosClient.GetDatabase(databaseName);
+
+                var container = database.GetContainer("linkbundles");
 
                 // get the document id where vanityUrl == vanityUrl
                 var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.vanityUrl = @vanityUrl")
