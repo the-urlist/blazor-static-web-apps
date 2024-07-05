@@ -31,39 +31,43 @@ namespace Api.Functions
       try
       {
         var databaseName = Environment.GetEnvironmentVariable("CosmosDb__Database");
-
         var container = cosmosClient.GetContainer(databaseName, "migrations");
+
+        var hashedUserName = hasher.HashString(clientPrincipal.UserDetails);
 
         // check to see if a migration already exists for this user with this identity provider that has not been completed
         var query = new QueryDefinition("SELECT * FROM c WHERE c.username = @username AND c.identityProvider = @identityProvider AND c.completed = false")
-          .WithParameter("@username", clientPrincipal.UserDetails)
+          .WithParameter("@username", hashedUserName)
           .WithParameter("@identityProvider", clientPrincipal.IdentityProvider);
 
         var iterator = container.GetItemQueryIterator<Migration>(query);
         var migrations = await iterator.ReadNextAsync();
 
-        var migrationDocument = new Migration();
+        var migrationResponse = new MigrationWrapper();
+        migrationResponse.MigrationSiteURL = Environment.GetEnvironmentVariable("MIGRATION_SITE_URL");
 
         if (migrations.Any<Migration>())
         {
-          migrationDocument = migrations.First<Migration>();
+          migrationResponse.Migration = migrations.First<Migration>();
         }
         else
         {
-          migrationDocument = new Migration
+          var newMigration = new Migration
           {
             Id = Guid.NewGuid().ToString(),
-            Username = clientPrincipal.UserDetails,
+            Username = hashedUserName,
             IdentityProvider = clientPrincipal.IdentityProvider,
             Completed = false
           };
 
-          var response = await container.CreateItemAsync(migrationDocument);
-          migrationDocument = response.Resource;
+          var response = await container.CreateItemAsync(newMigration);
+          newMigration = response.Resource;
+
+          migrationResponse.Migration = newMigration;
         }
 
         var responseMessage = req.CreateResponse(HttpStatusCode.Created);
-        await responseMessage.WriteAsJsonAsync(migrationDocument);
+        await responseMessage.WriteAsJsonAsync(migrationResponse);
 
         return responseMessage;
       }
