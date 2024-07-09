@@ -11,7 +11,7 @@
     --drop-shadow: 0 5px 40px 1px #e8e8e8;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
     :root {
         --text-color: #fff;
         --home-bottom-background: #353638;
@@ -32,7 +32,7 @@
 
 [data-theme=dark] #logo-img, .theme-dark #logo-img {
     content: url("/images/logo-dark.svg");
-} 
+}  */
 
 
 .beta-bump {
