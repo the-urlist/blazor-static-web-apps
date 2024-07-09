@@ -3,6 +3,7 @@ using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public partial class CreateLinkBundle(CosmosClient cosmosClient, Hasher hasher)
+    public partial class CreateLinkBundle(CosmosClient cosmosClient, Hasher hasher, IConfiguration configuration)
     {
         protected const string CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789";
         protected const string VANITY_REGEX = @"^([\w\d-])+(/([\w\d-])+)*$";
@@ -49,7 +50,11 @@ namespace Api.Functions
 
             try
             {
-                var container = cosmosClient.GetContainer("TheUrlist", "linkbundles");
+                var databaseName = configuration["COSMOSDB_DATABASE"];
+                var containerName = configuration["COSMOSDB_CONTAINER"];
+
+                var database = cosmosClient.GetDatabase(databaseName);
+                var container = database.GetContainer(containerName);
 
                 string vanityUrl = linkBundle.VanityUrl;
                 var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.vanityUrl = @vanityUrl").WithParameter("@vanityUrl", vanityUrl);

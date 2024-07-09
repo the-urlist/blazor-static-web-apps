@@ -106,14 +106,7 @@ public class StateContainer
 		var itemToMove = links[moveFromIndex];
 		links.RemoveAt(moveFromIndex);
 
-		if (moveToIndex < links.Count)
-		{
-			links.Insert(moveToIndex, itemToMove);
-		}
-		else
-		{
-			links.Add(itemToMove);
-		}
+		links.Insert(moveToIndex < links.Count ? moveToIndex : links.Count, itemToMove);
 
 		LinkBundleHasChanged();
 	}

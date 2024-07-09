@@ -3,32 +3,41 @@ using BlazorApp.Shared;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public class GetLinkBundlesForUser(CosmosClient cosmosClient, Hasher hasher)
+    public class GetLinkBundlesForUser(CosmosClient cosmosClient, Hasher hasher, IConfiguration configuration)
     {
         [Function(nameof(GetLinkBundlesForUser))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequestData req)
         {
             try
             {
-                var container = cosmosClient.GetContainer("TheUrlist", "linkbundles");
+
+                var databaseName = configuration["COSMOSDB_DATABASE"];
+                var containerName = configuration["COSMOSDB_CONTAINER"];
+
+                var database = cosmosClient.GetDatabase(databaseName);
+                var container = database.GetContainer(containerName);
+
                 var res = req.CreateResponse();
 
                 ClientPrincipal clientPrincipal = ClientPrincipalUtility.GetClientPrincipal(req);
 
                 if (clientPrincipal != null)
                 {
-                    string username = hasher.HashString(clientPrincipal.UserDetails);
+                    string userDetails = clientPrincipal.UserDetails;
+                    string username = hasher.HashString(userDetails);
                     string provider = clientPrincipal.IdentityProvider;
 
                     var query = new QueryDefinition("SELECT c.id, c.vanityUrl, c.description, c.links FROM c WHERE c.userId = @username AND c.provider = @provider")
                         .WithParameter("@username", username)
-                        .WithParameter("@provider", provider);
+                        .WithParameter("@provider", provider)
+                        .WithParameter("@userDetails", userDetails);
 
                     var response = await container.GetItemQueryIterator<LinkBundle>(query).ReadNextAsync();
 

@@ -60,10 +60,13 @@
     </div>
   </div>
 </div>
+<ModalImport @ref="modalImport"></ModalImport>
 
 @code {
 
   private bool LoadingUsersLists { get; set; } = false;
+
+  private ModalImport? modalImport;
 
   protected override async Task OnInitializedAsync()
   {
@@ -104,5 +107,10 @@
   {
     StateContainer.LinkBundle = linkBundle;
     NavigationManager.NavigateTo("/s/edit");
+  }
+
+  private void ShowImportModal()
+  {
+    modalImport?.Show();
   }
 }

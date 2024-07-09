@@ -21,8 +21,8 @@ var host = new HostBuilder()
     .ConfigureServices((context, services) =>
     {
         services.AddSingleton<CosmosClient>(sp => new CosmosClient(
-            context.Configuration["CosmosDb:Endpoint"],
-            context.Configuration["CosmosDb:Key"],
+            context.Configuration["COSMOSDB_ENDPOINT"],
+            context.Configuration["COSMOSDB_KEY"],
             cosmosClientOptions));
         services.AddSingleton<Hasher>(services => new Hasher(
             context.Configuration["HASHER_KEY"],
