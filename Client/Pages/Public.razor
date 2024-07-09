@@ -8,22 +8,30 @@
 @inject NavigationManager NavigationManager
 
 <div class="container">
-  @if (LoadingList)
-  {
-    <div class="has-text-centered">
-      <h2 class="is-size-3 is-heading has-text-primary has-text-weight-medium">
-        Loading
-        <span class="dots">
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-        </span>
-      </h2>
-    </div>
-  }
-  else
-  {
-    <div class="section">
+
+  <div class="section">
+    @if (LoadingList)
+    {
+      <div>
+        <h2 class="is-size-3 is-heading has-text-weight-medium has-text-primary">
+          Loading @linkBundle.VanityUrl
+        </h2>
+        <br>
+        @for (var i = 0; i < 5; i++)
+        {
+          <div class="link-outer">
+            <div class="link-wrapper">
+              <div class="columns is-vcentered is-mobile">
+                <div class="link skeleton-block">
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+    else
+    {
       @if (linkBundle.Links.Count > 0)
       {
         <div>
@@ -35,26 +43,26 @@
               <div id="share" class="buttons has-addons">
                 <a class="button" target="_blank"
                   :href="
-            `https://twitter.com/intent/tweet?text=${
-              currentList.description
-            } theurlist.com/${currentList.vanityUrl}`
-                                                                                                                                                        ">
+              `https://twitter.com/intent/tweet?text=${
+                currentList.description
+              } theurlist.com/${currentList.vanityUrl}`
+                                                                                                                                                                                                                                                  ">
                   <span class="icon"><i class="fab fa-twitter"></i></span>
                 </a>
                 <a class="button" target="_blank"
                   :href="
-            `https://www.facebook.com/sharer/sharer.php?u=theurlist.com/${
-              currentList.vanityUrl
-            }`
-                                                                                                                                                        ">
+              `https://www.facebook.com/sharer/sharer.php?u=theurlist.com/${
+                currentList.vanityUrl
+              }`
+                                                                                                                                                                                                                                                  ">
                   <span class="icon"><i class="fab fa-facebook-f"></i></span>
                 </a>
                 <a class="button" target="_blank"
                   :href="
-            `https://www.linkedin.com/shareArticle?mini=true?summary=${
-              currentList.description
-            }&url=https://theurlist.com?${currentList.vanityUrl}`
-                                                                                                                                                        ">
+              `https://www.linkedin.com/shareArticle?mini=true?summary=${
+                currentList.description
+              }&url=https://theurlist.com?${currentList.vanityUrl}`
+                                                                                                                                                                                                                                                  ">
                   <span class="icon"><i class="fab fa-linkedin-in"></i></span>
                 </a>
               </div>
@@ -98,8 +106,8 @@
           </h3>
         </div>
       }
-    </div>
-  }
+    }
+  </div>
 </div>
 
 @code {
