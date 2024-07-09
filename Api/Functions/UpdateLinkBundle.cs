@@ -37,9 +37,10 @@ namespace Api
                 ClientPrincipal principal = ClientPrincipalUtility.GetClientPrincipal(req);
 
                 var databaseName = configuration["COSMOSDB_DATABASE"];
-                var database = cosmosClient.GetDatabase(databaseName);
+                var containerName = configuration["COSMOSDB_CONTAINER"];
 
-                var container = database.GetContainer("linkbundles");
+                var database = cosmosClient.GetDatabase(databaseName);
+                var container = database.GetContainer(containerName);
 
                 // get the document id where vanityUrl == vanityUrl
                 var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.vanityUrl = @vanityUrl")

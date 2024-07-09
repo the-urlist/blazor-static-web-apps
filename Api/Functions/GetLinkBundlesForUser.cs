@@ -19,9 +19,10 @@ namespace Api.Functions
             {
 
                 var databaseName = configuration["COSMOSDB_DATABASE"];
-                var database = cosmosClient.GetDatabase(databaseName);
+                var containerName = configuration["COSMOSDB_CONTAINER"];
 
-                var container = database.GetContainer("linkbundles");
+                var database = cosmosClient.GetDatabase(databaseName);
+                var container = database.GetContainer(containerName);
 
                 var res = req.CreateResponse();
 
@@ -29,15 +30,14 @@ namespace Api.Functions
 
                 if (clientPrincipal != null)
                 {
-                    string username = hasher.HashString(clientPrincipal.UserDetails);
+                    string userDetails = clientPrincipal.UserDetails;
+                    string username = hasher.HashString(userDetails);
                     string provider = clientPrincipal.IdentityProvider;
-
-                    Console.WriteLine(clientPrincipal.UserDetails);
-                    Console.WriteLine(username);
 
                     var query = new QueryDefinition("SELECT c.id, c.vanityUrl, c.description, c.links FROM c WHERE c.userId = @username AND c.provider = @provider")
                         .WithParameter("@username", username)
-                        .WithParameter("@provider", provider);
+                        .WithParameter("@provider", provider)
+                        .WithParameter("@userDetails", userDetails);
 
                     var response = await container.GetItemQueryIterator<LinkBundle>(query).ReadNextAsync();
 

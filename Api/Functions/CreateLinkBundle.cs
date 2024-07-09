@@ -51,9 +51,10 @@ namespace Api.Functions
             try
             {
                 var databaseName = configuration["COSMOSDB_DATABASE"];
-                var database = cosmosClient.GetDatabase(databaseName);
+                var containerName = configuration["COSMOSDB_CONTAINER"];
 
-                var container = database.GetContainer("linkbundles");
+                var database = cosmosClient.GetDatabase(databaseName);
+                var container = database.GetContainer(containerName);
 
                 string vanityUrl = linkBundle.VanityUrl;
                 var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.vanityUrl = @vanityUrl").WithParameter("@vanityUrl", vanityUrl);
