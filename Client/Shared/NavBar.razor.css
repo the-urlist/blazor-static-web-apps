@@ -23,3 +23,12 @@
     background-color: inherit;
     color: inherit;
 }
+
+#profileImage {
+    margin-left: 5px;
+    margin-right: 10px;
+    > img {
+      width: 28px;
+      height: 28px;
+    }
+  }

@@ -29,12 +29,13 @@ public class User
       UserImage = clientPrincipal.Claims.Find(c => c.Type == "urn:github:avatar_url")?.Value;
     }
 
-    // // facebook
-    // if (clientPrincipal.IdentityProvider == "facebook")
-    // {
-    //   UserName = identity.FindFirst("name")?.Value;
-    //   UserImage = identity.FindFirst("picture")?.Value;
-    // }
+    // github
+    if (clientPrincipal.IdentityProvider == "twitter")
+    {
+      Console.WriteLine(clientPrincipal.Claims.Count);
+      UserName = clientPrincipal.Claims.Find(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value;
+      UserImage = clientPrincipal.Claims.Find(c => c.Type == "urn:twitter:profile_image_url_https")?.Value;
+    }
   }
 
   public string UserName { get; set; }
