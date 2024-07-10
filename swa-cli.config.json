@@ -1,11 +1,11 @@
 {
   "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
   "configurations": {
-    "blazor-swa": {
+    "app": {
+      "appDevserverUrl": "http://localhost:5000",
       "appLocation": "Client",
       "apiLocation": "Api",
-      "appDevserverUrl": "http://localhost:5000",
-      "apiDevserverUrl": "http://localhost:7071"
+      "run": "dotnet watch --no-launch-profile"
     }
   }
 }
