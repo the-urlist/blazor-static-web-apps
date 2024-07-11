@@ -5,6 +5,7 @@
 #navbar {
     top: 0;
     width: 100%;
+    background: var(--main-background);
     box-shadow: var(--drop-shadow);
     padding-bottom: 20px;
 }

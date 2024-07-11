@@ -8,15 +8,15 @@
     --text-color: #222c38;
     --home-bottom-background: #f9fafc;
     --main-background: #fff;
-    --drop-shadow: 0 5px 40px 1px #e8e8e8;
+    --drop-shadow: 0 50px 40px -40px #e8e8e8;
 }
 
-/* @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
     :root {
         --text-color: #fff;
         --home-bottom-background: #353638;
         --main-background: #14161a;
-        --drop-shadow: 0 5px 40px 1px #292727;
+        --drop-shadow: 0 50px 40px -40px #292727;
     }
     #logo-img {
         content: url("/images/logo-dark.svg");
@@ -32,7 +32,7 @@
 
 [data-theme=dark] #logo-img, .theme-dark #logo-img {
     content: url("/images/logo-dark.svg");
-}  */
+} 
 
 
 .beta-bump {
@@ -43,6 +43,7 @@ html,
 body {
     text-rendering: auto;
     text-size-adjust: 100%;
+    color: var(--bulma-card-color);
 }
 
 body {
@@ -112,14 +113,6 @@ a {
 
 .section {
     padding-top: 0px;
-}
-
-.header {
-    top: 0;
-    width: 100%;
-    background: var(--main-background);
-    -webkit-box-shadow: var(--drop-shadow);
-    box-shadow: var(--drop-shadow);
 }
 
 .card {
@@ -207,6 +200,8 @@ a {
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
+    background-color: var(--main-background);
+    color: var(--text-color);
 }
 
 .link .link-url:disabled {
@@ -234,29 +229,6 @@ a {
 
 .beta-bump {
     margin-top: 20px;
-}
-
-#navbar {
-    top: 0;
-    width: 100%;
-    background: #fff;
-    box-shadow: 0 5px 40px 1px #e8e8e8;
-    padding-bottom: 20px;
-}
-
-#navbar a.navbar-item {
-    color: #71777e;
-}
-
-#navbar a.navbar-item img {
-    max-height: inherit;
-}
-
-#navbar a.navbar-item:hover,
-#navbar a.navbar-item:focus,
-#navbar a.navbar-item:focus-within {
-    background-color: inherit;
-    color: inherit;
 }
 
 @media only screen and (max-width: 1090px) {
