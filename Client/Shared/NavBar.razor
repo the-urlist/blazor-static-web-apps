@@ -41,6 +41,39 @@
         </a>
       </div>
       <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link is-arrowless">
+            <span class="icon is-medium navbar-icon">
+              <i class="fas fa-sun"></i>
+            </span>
+          </a>
+          <div class="navbar-dropdown p-1">
+            <div class="navbar-item">
+              <button class="button">
+                <span class="icon is-medium navbar-icon">
+                  <i class="fas fa-sun"></i>
+                </span>
+                <span class="m-1">Light</span>
+              </button>
+            </div>
+            <div class="navbar-item">
+              <button class="button">
+                <span class="icon is-medium navbar-icon">
+                  <i class="fas fa-moon"></i>
+                </span>
+                <span class="m-1">Dark</span>
+              </button>
+            </div>
+            <div class="navbar-item">
+              <button class="button">
+                <span class="icon is-medium navbar-icon">
+                  <i class="fas fa-lg fa-adjust"></i>
+                </span>
+                <span class="m-1">System</span>
+              </button>
+            </div>
+          </div>
+        </div>
         @if (loggedIn)
         {
           <div class="navbar-item has-dropdown is-hoverable">
