@@ -57,7 +57,15 @@ body {
     font-size: 18px;
 }
 
-# .input,
+#themeSelector button {
+    text-align: left;
+}
+
+.is-fullwidth {
+    width: 100%;
+}
+
+.input,
 .textarea {
     outline: none;
     padding: 0px 10px;

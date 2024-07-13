@@ -1,0 +1,106 @@
+﻿@using BlazorApp.Shared
+
+@inject StateContainer StateContainer
+@inject IJSRuntime jsRuntime
+
+<div class="navbar-item has-dropdown is-hoverable">
+  <a class="navbar-link is-arrowless">
+    <span class="icon is-large navbar-icon">
+      @switch (preferredTheme)
+      {
+        case "light":
+          <i class="fas fa-lg fa-sun"></i>
+          break;
+        case "dark":
+          <i class="fas fa-lg fa-moon"></i>
+          break;
+        default:
+          <i class="fas fa-lg fa-desktop"></i>
+          break;
+      }
+    </span>
+  </a>
+  <div id="themeSelector" class="navbar-dropdown">
+    <a class="navbar-item" @onclick="@(() => SetTheme("light"))">
+      <div class="is-flex is-justify-content-space-between is-fullwidth">
+        <span>
+          <span class="icon is-small mr-1">
+            <i class="fas fa-sun"></i>
+          </span>
+          <span>Light</span>
+        </span>
+        @if (preferredTheme == "light")
+        {
+          <span class="icon">
+            <i class="fas fa-check"></i>
+          </span>
+        }
+      </div>
+    </a>
+
+    <a class="navbar-item" @onclick="@(() => SetTheme("dark"))">
+      <div class="is-flex is-justify-content-space-between is-fullwidth">
+        <span>
+          <span class="icon is-small mr-1">
+            <i class="fas fa-moon"></i>
+          </span>
+          <span>Dark</span>
+        </span>
+        @if (preferredTheme == "dark")
+        {
+          <span class="icon">
+            <i class="fas fa-check"></i>
+          </span>
+        }
+      </div>
+    </a>
+
+    <a class="navbar-item" @onclick="@(() => SetTheme("system"))">
+      <div class="is-flex is-justify-content-space-between is-fullwidth">
+        <span>
+          <span class="icon mr-1">
+            <i class="fas fa-desktop"></i>
+          </span>
+          <span>System</span>
+        </span>
+        @if (preferredTheme == "system")
+        {
+          <span class="icon is-small">
+            <i class="fas fa-check"></i>
+          </span>
+        }
+      </div>
+    </a>
+  </div>
+</div>
+
+@code {
+
+  private string preferredTheme;
+
+  protected override async Task OnInitializedAsync()
+  {
+    // get the preferred theme from local storage
+    preferredTheme = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "preferredTheme");
+
+    // if the preferred theme is not set, default to system
+    if (string.IsNullOrWhiteSpace(preferredTheme))
+    {
+      preferredTheme = "system";
+    }
+
+    // set the value of the data-theme property on the html element
+    jsRuntime.InvokeVoidAsync("document.documentElement.setAttribute", "data-theme", preferredTheme);
+  }
+
+  public void SetTheme(string theme)
+  {
+    preferredTheme = theme;
+
+    // set the value of the data-theme property on the html element
+    jsRuntime.InvokeVoidAsync("document.documentElement.setAttribute", "data-theme", theme);
+
+    // save the preferred theme to local storage
+    jsRuntime.InvokeVoidAsync("localStorage.setItem", "preferredTheme", theme);
+  }
+}

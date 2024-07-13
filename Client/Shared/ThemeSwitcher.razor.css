@@ -1,0 +1,6 @@
+@media screen and (min-width: 1024px) {
+  .navbar-dropdown a.navbar-item {
+      padding-inline-end: 1rem;
+      width: 150px;
+  }
+}
