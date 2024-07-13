@@ -80,6 +80,9 @@
 
   protected override async Task OnInitializedAsync()
   {
+    // the preferred theme is also loaded from localStorage in the
+    // index.html file via JavaScript to prevent a flash of the default theme
+
     // get the preferred theme from local storage
     preferredTheme = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "preferredTheme");
 
