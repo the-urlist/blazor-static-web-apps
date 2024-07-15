@@ -24,7 +24,7 @@
     <a class="navbar-item" @onclick="@(() => SetTheme("light"))">
       <div class="is-flex is-justify-content-space-between is-fullwidth">
         <span>
-          <span class="icon is-small mr-1">
+          <span class="icon mr-1">
             <i class="fas fa-sun"></i>
           </span>
           <span>Light</span>
@@ -41,7 +41,7 @@
     <a class="navbar-item" @onclick="@(() => SetTheme("dark"))">
       <div class="is-flex is-justify-content-space-between is-fullwidth">
         <span>
-          <span class="icon is-small mr-1">
+          <span class="icon mr-1">
             <i class="fas fa-moon"></i>
           </span>
           <span>Dark</span>
@@ -65,7 +65,7 @@
         </span>
         @if (preferredTheme == "system")
         {
-          <span class="icon is-small">
+          <span class="icon">
             <i class="fas fa-check"></i>
           </span>
         }
