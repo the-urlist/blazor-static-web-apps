@@ -38,22 +38,34 @@
       </div>
     </a>
 
-    <a class="navbar-item" @onclick="@(() => SetTheme("dark"))">
-      <div class="is-flex is-justify-content-space-between is-fullwidth">
-        <span>
-          <span class="icon mr-1">
-            <i class="fas fa-moon"></i>
-          </span>
-          <span>Dark</span>
-        </span>
-        @if (preferredTheme == "dark")
-        {
-          <span class="icon">
-            <i class="fas fa-check"></i>
-          </span>
-        }
+    <div>
+      <div>
+        <div>
+          <ul>
+            <li></li>
+            <li></li>
+            <li>
+              <a class="navbar-item" @onclick="@(() => SetTheme("dark"))">
+                <div class="is-flex is-justify-content-space-between is-fullwidth">
+                  <span>
+                    <span class="icon mr-1">
+                      <i class="fas fa-moon"></i>
+                    </span>
+                    <span>Dark</span>
+                  </span>
+                  @if (preferredTheme == "dark")
+                  {
+                    <span class="icon">
+                      <i class="fas fa-check"></i>
+                    </span>
+                  }
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </a>
+    </div>
 
     <a class="navbar-item" @onclick="@(() => SetTheme("system"))">
       <div class="is-flex is-justify-content-space-between is-fullwidth">
@@ -76,7 +88,7 @@
 
 @code {
 
-  private string preferredTheme;
+  private string preferredTheme = "system";
 
   protected override async Task OnInitializedAsync()
   {
@@ -93,7 +105,7 @@
     }
 
     // set the value of the data-theme property on the html element
-    jsRuntime.InvokeVoidAsync("document.documentElement.setAttribute", "data-theme", preferredTheme);
+    await jsRuntime.InvokeVoidAsync("document.documentElement.setAttribute", "data-theme", preferredTheme);
   }
 
   public void SetTheme(string theme)
