@@ -50,7 +50,7 @@
             url = "http://" + url;
         }
 
-        return Uri.TryCreate(url, UriKind.Absolute, out Uri uriResult)
+        return Uri.TryCreate(url, UriKind.Absolute, out Uri? uriResult)
           && (uriResult.Scheme == Uri.UriSchemeHttp
           || uriResult.Scheme == Uri.UriSchemeHttps) && uriResult.Host.Replace("www.", "").Split('.').Count() > 1 && uriResult.HostNameType == UriHostNameType.Dns && uriResult.Host.Length > uriResult.Host.LastIndexOf(".") + 1;
     }
@@ -75,7 +75,9 @@
         }
         catch (Exception e)
         {
-            // the request to get opengraph info failed, so log and swallow
+            // log the error
+            Console.WriteLine($"Unable to get OpenGraph info for {link}.\n{e.Message}");
+    
             StateContainer.RemoveLinkFromUpdatePool(link);
         }
         finally

@@ -41,6 +41,9 @@
         </a>
       </div>
       <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <ThemeSwitcher></ThemeSwitcher>
+        </div>
         @if (loggedIn)
         {
           <div class="navbar-item has-dropdown is-hoverable">
@@ -88,9 +91,7 @@
 
 @code {
   private bool loggedIn = false;
-
   private bool showMenu = false;
-
   private ModalLogin? modalLogin;
   private ModalConfirm? modalConfirm;
 

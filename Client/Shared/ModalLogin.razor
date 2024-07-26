@@ -35,22 +35,12 @@
     </span>
   </a>
   <br />
-  @* <details>
-  <summary id="twitterButton">Where is Twitter Login?</summary>
-  <p class="is-size-6">
-  We had to remove Twitter login due to changes in the X API. If you created any lists under a Twitter login, please
-  contact us at <a href="mailto:support@theurlist.com">support@theurlist.com</a> and we'll hook you up.
-  </p>
-  </details> *@
-
 </ModalWindow>
 
 @code {
   ModalWindow? modal;
 
   private string? currentUrl;
-
-  private bool showTwitterMigrationMessage = false;
 
   public void Show()
   {

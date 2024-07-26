@@ -24,7 +24,7 @@
   public RenderFragment<T>? SortableItemTemplate { get; set; }
 
   [Parameter, EditorRequired]
-  public List<T> Items { get; set; }
+  public List<T> Items { get; set; } = [];
 
   [Parameter]
   public EventCallback<(int oldIndex, int newIndex)> OnUpdate { get; set; }
