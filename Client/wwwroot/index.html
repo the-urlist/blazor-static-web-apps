@@ -35,8 +35,11 @@
     var preferredTheme = localStorage.getItem('preferredTheme');
     
     // set the data-theme property of the html element to the preferences.PreferredTheme
-    document.documentElement.setAttribute('data-theme', preferredTheme.toLowerCase() || 'system');
-
+    if (preferredTheme) {
+        document.documentElement.setAttribute('data-theme', preferredTheme.toLowerCase());
+    } else {
+        document.documentElement.setAttribute('data-theme', 'system');
+    }
   </script>
   <script src="_framework/blazor.webassembly.js"></script>
 </body>
