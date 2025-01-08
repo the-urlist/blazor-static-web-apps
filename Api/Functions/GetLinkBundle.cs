@@ -46,7 +46,7 @@ namespace Api.Functions
             foreach (var link in linkBundle.Links)
             {
                 link.Clicks++;
-                link.CreatedDate = DateTime.UtcNow;
+                // link.CreatedDate = DateTime.UtcNow;
             }
 
             var response = req.CreateResponse(HttpStatusCode.OK);
