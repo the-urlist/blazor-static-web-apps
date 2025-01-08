@@ -40,6 +40,16 @@
                     </button>
                 </div>
             </div>
+            <div class="columns">
+                <div class="column">
+                    <label class="control-label" for="createdDate">Created Date</label>
+                    <input id="createdDate" value="@StateContainer.LinkBundle.CreatedDate.ToString("g")" class="input is-large" disabled />
+                </div>
+                <div class="column">
+                    <label class="control-label" for="referrerData">Referrer Data</label>
+                    <textarea rows="2" class="textarea has-fixed-size" id="referrerData" @bind="StateContainer.LinkBundle.ReferrerData" disabled></textarea>
+                </div>
+            </div>
         </div>
     </div>
 </div>

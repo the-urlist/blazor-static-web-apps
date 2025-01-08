@@ -48,6 +48,15 @@ namespace Api.Functions
                 linkBundle.Provider = clientPrincipal.IdentityProvider;
             }
 
+            // Set the DateTime property of the LinkBundle to the current date and time
+            linkBundle.CreatedDate = DateTime.UtcNow;
+
+            // Set the referrer data of the LinkBundle to the referrer data from the request headers
+            if (req.Headers.TryGetValues("Referer", out var referrerValues))
+            {
+                linkBundle.ReferrerData = referrerValues.FirstOrDefault();
+            }
+
             try
             {
                 var databaseName = configuration["COSMOSDB_DATABASE"];

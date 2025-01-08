@@ -15,5 +15,9 @@ namespace BlazorApp.Shared
         public string Description { get; set; }
         [JsonPropertyName("image")]
         public string Image { get; set; }
+        [JsonPropertyName("clicks")]
+        public int Clicks { get; set; }
+        [JsonPropertyName("createdDate")]
+        public DateTime CreatedDate { get; set; }
     }
 }

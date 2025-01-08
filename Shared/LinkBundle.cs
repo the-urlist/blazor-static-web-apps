@@ -19,5 +19,9 @@ namespace BlazorApp.Shared
         public string Provider { get; set; }
         [JsonPropertyName("links")]
         public List<Link> Links { get; set; } = new List<Link>();
+        [JsonPropertyName("createdDate")]
+        public DateTime CreatedDate { get; set; }
+        [JsonPropertyName("referrerData")]
+        public string ReferrerData { get; set; }
     }
 }
