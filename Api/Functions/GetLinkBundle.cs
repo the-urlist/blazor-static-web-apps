@@ -40,8 +40,17 @@ namespace Api.Functions
                 return await req.CreateJsonResponse(HttpStatusCode.NotFound, "No LinkBundle found for this vanity url");
             }
 
+            var linkBundle = result.First();
+
+            // Increment the Clicks property of each Link
+            foreach (var link in linkBundle.Links)
+            {
+                link.Clicks++;
+                // link.CreatedDate = DateTime.UtcNow;
+            }
+
             var response = req.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(result.First());
+            await response.WriteAsJsonAsync(linkBundle);
             return response;
         }
     }
