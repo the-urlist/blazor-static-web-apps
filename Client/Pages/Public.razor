@@ -78,6 +78,15 @@
               </div>
             </div>
           </div>
+          @if (IsOwner)
+          {
+            <div class="buttons is-right">
+              <button class="button is-primary" @onclick="NavigateToEdit">
+                <span class="icon"><i class="fas fa-edit"></i></span>
+                <span>Edit</span>
+              </button>
+            </div>
+          }
           <div class="has-text-centered @(ShowQr ? "" : "is-hidden")">
             <QrCodeItem Url="@($"https://theurlist.com/{vanityUrl}")"></QrCodeItem>
           </div>
@@ -116,6 +125,7 @@
 
   private bool LoadingList { get; set; } = false;
   private bool ShowQr { get; set; } = false;
+  private bool IsOwner { get; set; } = false;
 
   private LinkBundle linkBundle { get; set; } = new LinkBundle();
   protected override async Task OnInitializedAsync()
@@ -126,6 +136,11 @@
 
       var response = await Http.GetFromJsonAsync<LinkBundle>($"api/links/{vanityUrl}");
       linkBundle = response ?? new LinkBundle();
+
+      if (StateContainer.User?.ClientPrincipal?.UserId == linkBundle.UserId)
+      {
+        IsOwner = true;
+      }
     }
     catch (Exception ex)
     {
@@ -145,5 +160,11 @@
     StateContainer.LinkBundle = new LinkBundle();
     StateContainer.LinkBundle.VanityUrl = vanityUrl;
     NavigationManager.NavigateTo($"/s/new/");
+  }
+
+  private void NavigateToEdit()
+  {
+    StateContainer.LinkBundle = linkBundle;
+    NavigationManager.NavigateTo("/s/edit");
   }
 }
