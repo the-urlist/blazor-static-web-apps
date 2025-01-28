@@ -34,10 +34,18 @@
                 </div>
                 <div class="column is-narrow">
                     <label class="control-label is-hidden-mobile" for>&nbsp;</label>
+                    @if (StateContainer.User != null) {
                     <button type="submit" id="publishButton" disabled="@(!PublishEnabled(listIsValid))"
                             class="button is-primary is-large has-text-white has-text-weight-bold" @onclick="PublishLinkBundle">
                         Publish
                     </button>
+                    }
+                    else {
+                      <button type="submit" id="publishButton" disabled="disabled"
+                            class="button is-primary is-large has-text-white has-text-weight-bold">
+                        Login to Publish
+                      </button>
+                    }
                 </div>
             </div>
         </div>
