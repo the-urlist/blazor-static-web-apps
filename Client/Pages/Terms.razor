@@ -1,0 +1,471 @@
+@page "/s/terms"
+
+<style>
+  [data-custom-class='body'],
+  [data-custom-class='body'] * {
+    background: transparent !important;
+  }
+
+  [data-custom-class='title'],
+  [data-custom-class='title'] * {
+    font-family: Arial !important;
+    font-size: 26px !important;
+    color: #000000 !important;
+  }
+
+  [data-custom-class='subtitle'],
+  [data-custom-class='subtitle'] * {
+    font-family: Arial !important;
+    color: #595959 !important;
+    font-size: 14px !important;
+  }
+
+  [data-custom-class='heading_1'],
+  [data-custom-class='heading_1'] * {
+    font-family: Arial !important;
+    font-size: 19px !important;
+    color: #000000 !important;
+  }
+
+  [data-custom-class='heading_2'],
+  [data-custom-class='heading_2'] * {
+    font-family: Arial !important;
+    font-size: 17px !important;
+    color: #000000 !important;
+  }
+
+  [data-custom-class='body_text'],
+  [data-custom-class='body_text'] * {
+    color: #595959 !important;
+    font-size: 14px !important;
+    font-family: Arial !important;
+  }
+
+  [data-custom-class='link'],
+  [data-custom-class='link'] * {
+    color: #3030F1 !important;
+    font-size: 14px !important;
+    font-family: Arial !important;
+    word-break: break-word !important;
+  }
+</style>
+<span
+  style="display: block;margin: 0 auto 3.125rem;width: 11.125rem;height: 2.375rem;background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzgiIGhlaWdodD0iMzgiIHZpZXdCb3g9IjAgMCAxNzggMzgiPgogICAgPGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8cGF0aCBmaWxsPSIjRDFEMUQxIiBkPSJNNC4yODMgMjQuMTA3Yy0uNzA1IDAtMS4yNTgtLjI1Ni0xLjY2LS43NjhoLS4wODVjLjA1Ny41MDIuMDg2Ljc5Mi4wODYuODd2Mi40MzRILjk4NXYtOC42NDhoMS4zMzJsLjIzMS43NzloLjA3NmMuMzgzLS41OTQuOTUtLjg5MiAxLjcwMi0uODkyLjcxIDAgMS4yNjQuMjc0IDEuNjY1LjgyMi40MDEuNTQ4LjYwMiAxLjMwOS42MDIgMi4yODMgMCAuNjQtLjA5NCAxLjE5OC0uMjgyIDEuNjctLjE4OC40NzMtLjQ1Ni44MzMtLjgwMyAxLjA4LS4zNDcuMjQ3LS43NTYuMzctMS4yMjUuMzd6TTMuOCAxOS4xOTNjLS40MDUgMC0uNy4xMjQtLjg4Ni4zNzMtLjE4Ny4yNDktLjI4My42Ni0uMjkgMS4yMzN2LjE3N2MwIC42NDUuMDk1IDEuMTA3LjI4NyAxLjM4Ni4xOTIuMjguNDk1LjQxOS45MS40MTkuNzM0IDAgMS4xMDEtLjYwNSAxLjEwMS0xLjgxNiAwLS41OS0uMDktMS4wMzQtLjI3LTEuMzI5LS4xODItLjI5NS0uNDY1LS40NDMtLjg1Mi0uNDQzem01LjU3IDEuNzk0YzAgLjU5NC4wOTggMS4wNDQuMjkzIDEuMzQ4LjE5Ni4zMDQuNTEzLjQ1Ny45NTQuNDU3LjQzNyAwIC43NS0uMTUyLjk0Mi0uNDU0LjE5Mi0uMzAzLjI4OC0uNzUzLjI4OC0xLjM1MSAwLS41OTUtLjA5Ny0xLjA0LS4yOS0xLjMzOC0uMTk0LS4yOTctLjUxLS40NDUtLjk1LS40NDUtLjQzOCAwLS43NTMuMTQ3LS45NDYuNDQzLS4xOTQuMjk1LS4yOS43NDItLjI5IDEuMzR6bTQuMTUzIDBjMCAuOTc3LS4yNTggMS43NDItLjc3NCAyLjI5My0uNTE1LjU1Mi0xLjIzMy44MjctMi4xNTQuODI3LS41NzYgMC0xLjA4NS0uMTI2LTEuNTI1LS4zNzhhMi41MiAyLjUyIDAgMCAxLTEuMDE1LTEuMDg4Yy0uMjM3LS40NzMtLjM1NS0xLjAyNC0uMzU1LTEuNjU0IDAtLjk4MS4yNTYtMS43NDQuNzY4LTIuMjg4LjUxMi0uNTQ1IDEuMjMyLS44MTcgMi4xNi0uODE3LjU3NiAwIDEuMDg1LjEyNiAxLjUyNS4zNzYuNDQuMjUxLjc3OS42MSAxLjAxNSAxLjA4LjIzNi40NjkuMzU1IDEuMDE5LjM1NSAxLjY0OXpNMTkuNzEgMjRsLS40NjItMi4xLS42MjMtMi42NTNoLS4wMzdMMTcuNDkzIDI0SDE1LjczbC0xLjcwOC02LjAwNWgxLjYzM2wuNjkzIDIuNjU5Yy4xMS40NzYuMjI0IDEuMTMzLjMzOCAxLjk3MWguMDMyYy4wMTUtLjI3Mi4wNzctLjcwNC4xODgtMS4yOTRsLjA4Ni0uNDU3Ljc0Mi0yLjg3OWgxLjgwNGwuNzA0IDIuODc5Yy4wMTQuMDc5LjAzNy4xOTUuMDY3LjM1YTIwLjk5OCAyMC45OTggMCAwIDEgLjE2NyAxLjAwMmMuMDIzLjE2NS4wMzYuMjk5LjA0LjM5OWguMDMyYy4wMzItLjI1OC4wOS0uNjExLjE3Mi0xLjA2LjA4Mi0uNDUuMTQxLS43NTQuMTc3LS45MTFsLjcyLTIuNjU5aDEuNjA2TDIxLjQ5NCAyNGgtMS43ODN6bTcuMDg2LTQuOTUyYy0uMzQ4IDAtLjYyLjExLS44MTcuMzMtLjE5Ny4yMi0uMzEuNTMzLS4zMzguOTM3aDIuMjk5Yy0uMDA4LS40MDQtLjExMy0uNzE3LS4zMTctLjkzNy0uMjA0LS4yMi0uNDgtLjMzLS44MjctLjMzem0uMjMgNS4wNmMtLjk2NiAwLTEuNzIyLS4yNjctMi4yNjYtLjgtLjU0NC0uNTM0LS44MTYtMS4yOS0uODE2LTIuMjY3IDAtMS4wMDcuMjUxLTEuNzg1Ljc1NC0yLjMzNC41MDMtLjU1IDEuMTk5LS44MjUgMi4wODctLjgyNS44NDggMCAxLjUxLjI0MiAxLjk4Mi43MjUuNDcyLjQ4NC43MDkgMS4xNTIuNzA5IDIuMDA0di43OTVoLTMuODczYy4wMTguNDY1LjE1Ni44MjkuNDE0IDEuMDkuMjU4LjI2MS42Mi4zOTIgMS4wODUuMzkyLjM2MSAwIC43MDMtLjAzNyAxLjAyNi0uMTEzYTUuMTMzIDUuMTMzIDAgMCAwIDEuMDEtLjM2djEuMjY4Yy0uMjg3LjE0My0uNTkzLjI1LS45Mi4zMmE1Ljc5IDUuNzkgMCAwIDEtMS4xOTEuMTA0em03LjI1My02LjIyNmMuMjIyIDAgLjQwNi4wMTYuNTUzLjA0OWwtLjEyNCAxLjUzNmExLjg3NyAxLjg3NyAwIDAgMC0uNDgzLS4wNTRjLS41MjMgMC0uOTMuMTM0LTEuMjIyLjQwMy0uMjkyLjI2OC0uNDM4LjY0NC0uNDM4IDEuMTI4VjI0aC0xLjYzOHYtNi4wMDVoMS4yNGwuMjQyIDEuMDFoLjA4Yy4xODctLjMzNy40MzktLjYwOC43NTYtLjgxNGExLjg2IDEuODYgMCAwIDEgMS4wMzQtLjMwOXptNC4wMjkgMS4xNjZjLS4zNDcgMC0uNjIuMTEtLjgxNy4zMy0uMTk3LjIyLS4zMS41MzMtLjMzOC45MzdoMi4yOTljLS4wMDctLjQwNC0uMTEzLS43MTctLjMxNy0uOTM3LS4yMDQtLjIyLS40OC0uMzMtLjgyNy0uMzN6bS4yMyA1LjA2Yy0uOTY2IDAtMS43MjItLjI2Ny0yLjI2Ni0uOC0uNTQ0LS41MzQtLjgxNi0xLjI5LS44MTYtMi4yNjcgMC0xLjAwNy4yNTEtMS43ODUuNzU0LTIuMzM0LjUwNC0uNTUgMS4yLS44MjUgMi4wODctLjgyNS44NDkgMCAxLjUxLjI0MiAxLjk4Mi43MjUuNDczLjQ4NC43MDkgMS4xNTIuNzA5IDIuMDA0di43OTVoLTMuODczYy4wMTguNDY1LjE1Ni44MjkuNDE0IDEuMDkuMjU4LjI2MS42Mi4zOTIgMS4wODUuMzkyLjM2MiAwIC43MDQtLjAzNyAxLjAyNi0uMTEzYTUuMTMzIDUuMTMzIDAgMCAwIDEuMDEtLjM2djEuMjY4Yy0uMjg3LjE0My0uNTkzLjI1LS45MTkuMzJhNS43OSA1Ljc5IDAgMCAxLTEuMTkyLjEwNHptNS44MDMgMGMtLjcwNiAwLTEuMjYtLjI3NS0xLjY2My0uODIyLS40MDMtLjU0OC0uNjA0LTEuMzA3LS42MDQtMi4yNzggMC0uOTg0LjIwNS0xLjc1Mi42MTUtMi4zMDEuNDEtLjU1Ljk3NS0uODI1IDEuNjk1LS44MjUuNzU1IDAgMS4zMzIuMjk0IDEuNzI5Ljg4MWguMDU0YTYuNjk3IDYuNjk3IDAgMCAxLS4xMjQtMS4xOTh2LTEuOTIyaDEuNjQ0VjI0SDQ2LjQzbC0uMzE3LS43NzloLS4wN2MtLjM3Mi41OTEtLjk0Ljg4Ni0xLjcwMi44ODZ6bS41NzQtMS4zMDZjLjQyIDAgLjcyNi0uMTIxLjkyMS0uMzY1LjE5Ni0uMjQzLjMwMi0uNjU3LjMyLTEuMjR2LS4xNzhjMC0uNjQ0LS4xLTEuMTA2LS4yOTgtMS4zODYtLjE5OS0uMjc5LS41MjItLjQxOS0uOTctLjQxOWEuOTYyLjk2MiAwIDAgMC0uODUuNDY1Yy0uMjAzLjMxLS4zMDQuNzYtLjMwNCAxLjM1IDAgLjU5Mi4xMDIgMS4wMzUuMzA2IDEuMzMuMjA0LjI5Ni40OTYuNDQzLjg3NS40NDN6bTEwLjkyMi00LjkyYy43MDkgMCAxLjI2NC4yNzcgMS42NjUuODMuNC41NTMuNjAxIDEuMzEyLjYwMSAyLjI3NSAwIC45OTItLjIwNiAxLjc2LS42MiAyLjMwNC0uNDE0LjU0NC0uOTc3LjgxNi0xLjY5LjgxNi0uNzA1IDAtMS4yNTgtLjI1Ni0xLjY1OS0uNzY4aC0uMTEzbC0uMjc0LjY2MWgtMS4yNTF2LTguMzU3aDEuNjM4djEuOTQ0YzAgLjI0Ny0uMDIxLjY0My0uMDY0IDEuMTg3aC4wNjRjLjM4My0uNTk0Ljk1LS44OTIgMS43MDMtLjg5MnptLS41MjcgMS4zMWMtLjQwNCAwLS43LjEyNS0uODg2LjM3NC0uMTg2LjI0OS0uMjgzLjY2LS4yOSAxLjIzM3YuMTc3YzAgLjY0NS4wOTYgMS4xMDcuMjg3IDEuMzg2LjE5Mi4yOC40OTUuNDE5LjkxLjQxOS4zMzcgMCAuNjA1LS4xNTUuODA0LS40NjUuMTk5LS4zMS4yOTgtLjc2LjI5OC0xLjM1IDAtLjU5MS0uMS0xLjAzNS0uMy0xLjMzYS45NDMuOTQzIDAgMCAwLS44MjMtLjQ0M3ptMy4xODYtMS4xOTdoMS43OTRsMS4xMzQgMy4zNzljLjA5Ni4yOTMuMTYzLjY0LjE5OCAxLjA0MmguMDMzYy4wMzktLjM3LjExNi0uNzE3LjIzLTEuMDQybDEuMTEyLTMuMzc5aDEuNzU3bC0yLjU0IDYuNzczYy0uMjM0LjYyNy0uNTY2IDEuMDk2LS45OTcgMS40MDctLjQzMi4zMTItLjkzNi40NjgtMS41MTIuNDY4LS4yODMgMC0uNTYtLjAzLS44MzMtLjA5MnYtMS4zYTIuOCAyLjggMCAwIDAgLjY0NS4wN2MuMjkgMCAuNTQzLS4wODguNzYtLjI2Ni4yMTctLjE3Ny4zODYtLjQ0NC41MDgtLjgwM2wuMDk2LS4yOTUtMi4zODUtNS45NjJ6Ii8+CiAgICAgICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzMpIj4KICAgICAgICAgICAgPGNpcmNsZSBjeD0iMTkiIGN5PSIxOSIgcj0iMTkiIGZpbGw9IiNFMEUwRTAiLz4KICAgICAgICAgICAgPHBhdGggZmlsbD0iI0ZGRiIgZD0iTTIyLjQ3NCAxNS40NDNoNS4xNjJMMTIuNDM2IDMwLjRWMTAuMzYzaDE1LjJsLTUuMTYyIDUuMDh6Ii8+CiAgICAgICAgPC9nPgogICAgICAgIDxwYXRoIGZpbGw9IiNEMkQyRDIiIGQ9Ik0xMjEuNTQ0IDE0LjU2di0xLjcyOGg4LjI3MnYxLjcyOGgtMy4wMjRWMjRoLTIuMjR2LTkuNDRoLTMuMDA4em0xMy43NDQgOS41NjhjLTEuMjkgMC0yLjM0MS0uNDE5LTMuMTUyLTEuMjU2LS44MS0uODM3LTEuMjE2LTEuOTQ0LTEuMjE2LTMuMzJzLjQwOC0yLjQ3NyAxLjIyNC0zLjMwNGMuODE2LS44MjcgMS44NzItMS4yNCAzLjE2OC0xLjI0czIuMzYuNDAzIDMuMTkyIDEuMjA4Yy44MzIuODA1IDEuMjQ4IDEuODggMS4yNDggMy4yMjQgMCAuMzEtLjAyMS41OTctLjA2NC44NjRoLTYuNDY0Yy4wNTMuNTc2LjI2NyAxLjA0LjY0IDEuMzkyLjM3My4zNTIuODQ4LjUyOCAxLjQyNC41MjguNzc5IDAgMS4zNTUtLjMyIDEuNzI4LS45NmgyLjQzMmEzLjg5MSAzLjg5MSAwIDAgMS0xLjQ4OCAyLjA2NGMtLjczNi41MzMtMS42MjcuOC0yLjY3Mi44em0xLjQ4LTYuNjg4Yy0uNC0uMzUyLS44ODMtLjUyOC0xLjQ0OC0uNTI4cy0xLjAzNy4xNzYtMS40MTYuNTI4Yy0uMzc5LjM1Mi0uNjA1LjgyMS0uNjggMS40MDhoNC4xOTJjLS4wMzItLjU4Ny0uMjQ4LTEuMDU2LS42NDgtMS40MDh6bTcuMDE2LTIuMzA0djEuNTY4Yy41OTctMS4xMyAxLjQ2MS0xLjY5NiAyLjU5Mi0xLjY5NnYyLjMwNGgtLjU2Yy0uNjcyIDAtMS4xNzkuMTY4LTEuNTIuNTA0LS4zNDEuMzM2LS41MTIuOTE1LS41MTIgMS43MzZWMjRoLTIuMjU2di04Ljg2NGgyLjI1NnptNi40NDggMHYxLjMyOGMuNTY1LS45NyAxLjQ4My0xLjQ1NiAyLjc1Mi0xLjQ1Ni42NzIgMCAxLjI3Mi4xNTUgMS44LjQ2NC41MjguMzEuOTM2Ljc1MiAxLjIyNCAxLjMyOC4zMS0uNTU1LjczMy0uOTkyIDEuMjcyLTEuMzEyYTMuNDg4IDMuNDg4IDAgMCAxIDEuODE2LS40OGMxLjA1NiAwIDEuOTA3LjMzIDIuNTUyLjk5Mi42NDUuNjYxLjk2OCAxLjU5Ljk2OCAyLjc4NFYyNGgtMi4yNHYtNC44OTZjMC0uNjkzLS4xNzYtMS4yMjQtLjUyOC0xLjU5Mi0uMzUyLS4zNjgtLjgzMi0uNTUyLTEuNDQtLjU1MnMtMS4wOS4xODQtMS40NDguNTUyYy0uMzU3LjM2OC0uNTM2Ljg5OS0uNTM2IDEuNTkyVjI0aC0yLjI0di00Ljg5NmMwLS42OTMtLjE3Ni0xLjIyNC0uNTI4LTEuNTkyLS4zNTItLjM2OC0uODMyLS41NTItMS40NC0uNTUycy0xLjA5LjE4NC0xLjQ0OC41NTJjLS4zNTcuMzY4LS41MzYuODk5LS41MzYgMS41OTJWMjRoLTIuMjU2di04Ljg2NGgyLjI1NnpNMTY0LjkzNiAyNFYxMi4xNmgyLjI1NlYyNGgtMi4yNTZ6bTcuMDQtLjE2bC0zLjQ3Mi04LjcwNGgyLjUyOGwyLjI1NiA2LjMwNCAyLjM4NC02LjMwNGgyLjM1MmwtNS41MzYgMTMuMDU2aC0yLjM1MmwxLjg0LTQuMzUyeiIvPgogICAgPC9nPgo8L3N2Zz4K) center no-repeat;"></span>
+<div id="m-6">
+  <div class="content">
+    <div data-custom-class="body">
+      <div data-custom-class="title" style="line-height: 1.5;"><strong><span style="font-size: 26px;">
+            <bdt class="block-component"></bdt>
+            <bdt class="question">
+              <h1>ACCEPTABLE USE POLICY</h1>
+            </bdt>
+            <bdt class="statement-end-if-in-editor"></bdt>
+          </span></strong></div>
+      <div data-custom-class="subtitle" style="line-height: 1.5;"><strong>Last updated</strong>
+        <bdt class="question"><strong>September 01, 2019</strong></bdt>
+      </div>
+      <div style="line-height: 1.2;"><br></div>
+      <div style="line-height: 1.5;"><br></div>
+      <div style="line-height: 1.5;"><br></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">This <bdt class="block-component"></bdt>
+        <bdt class="question">Acceptable Use Policy</bdt>
+        <bdt class="statement-end-if-in-editor"></bdt> (<bdt class="block-component"></bdt>"<strong>Policy</strong>"<bdt
+          class="statement-end-if-in-editor"></bdt>) is part of our <bdt class="question">__________</bdt> (<bdt
+          class="block-component"></bdt>"<strong>Legal Terms</strong>"<bdt class="statement-end-if-in-editor"></bdt>)
+        and
+        should therefore be read alongside our main Legal Terms: <span style="color: rgb(0, 58, 250);">
+          <bdt class="question">__________</bdt>
+        </span>. <bdt class="block-component"></bdt>If you do not agree with these Legal Terms, please refrain from
+        using
+        our Services. Your continued use of our Services implies acceptance of these Legal Terms.
+      </div>
+      <div style="line-height: 1;"><br></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">Please carefully review this Policy which applies to
+        any
+        and all:</div>
+      <div style="line-height: 1;"><br></div>
+      <div data-custom-class="body_text" style="line-height: 1.5; margin-left: 20px;">(a) uses of our Services (as
+        defined
+        in <bdt class="block-component"></bdt>"Legal Terms"<bdt class="statement-end-if-in-editor"></bdt>)</div>
+      <div data-custom-class="body_text" style="line-height: 1.5; margin-left: 20px;">(b) forms, materials, consent
+        tools,
+        comments, post, and all other content available on the Services (<bdt class="block-component"></bdt>
+        "<strong>Content</strong>"<bdt class="statement-end-if-in-editor"></bdt>) <bdt class="block-component"></bdt>
+      </div>
+      <div data-custom-class="body_text" style="line-height: 1.5; margin-left: 20px;">(c) material which you contribute
+        to
+        the Services including any upload, post, review, disclosure, ratings, comments, chat etc.<bdt
+          class="block-component"></bdt> in any forum, chatrooms, reviews, and to any interactive services associated
+        with
+        it<bdt class="statement-end-if-in-editor"></bdt> (<bdt class="block-component"></bdt>
+        "<strong>Contribution</strong>"
+        <bdt class="statement-end-if-in-editor"></bdt>)<bdt class="block-component"></bdt>
+      </div>
+      <div style="line-height: 1.5;"><br></div>
+      <div data-custom-class="heading_1" style="line-height: 1.5;"><strong><span style="font-size: 19px;">
+            <h2>WHO WE ARE</h2>
+          </span></strong></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">We are <bdt class="question">The Urlist</bdt>
+        <bdt class="block-component"></bdt> (<bdt class="block-component"></bdt>"<strong>Company</strong>,"
+        "<strong>we</strong>," "<strong>us</strong>," or "<strong>our</strong>"<bdt class="statement-end-if-in-editor">
+        </bdt>) a company registered in <bdt class="block-component"></bdt>
+        <bdt class="block-component"></bdt>
+        <bdt class="question">Tennessee</bdt>, <bdt class="question">United States</bdt>
+        <bdt class="statement-end-if-in-editor"></bdt>
+        <bdt class="block-component"></bdt> at <bdt class="question">__________</bdt>
+        <bdt class="block-component"></bdt>, <bdt class="question">Franklin</bdt>
+        <bdt class="block-component"></bdt>
+        <bdt class="block-component"></bdt>, <bdt class="question">TN</bdt>
+        <bdt class="statement-end-if-in-editor"></bdt>
+        <bdt class="block-component"></bdt>
+        <bdt class="block-component"></bdt>
+        <bdt class="question">37064</bdt>
+        <bdt class="statement-end-if-in-editor"></bdt>. We operate <bdt class="block-component"></bdt>the website <span
+          style="color: rgb(0, 58, 250);">
+          <bdt class="question"><a href="https://theurlist.com" target="_blank"
+              data-custom-class="link">https://theurlist.com</a></bdt>
+        </span> (the <bdt class="block-component"></bdt>"<strong>Site</strong>"<bdt class="statement-end-if-in-editor">
+        </bdt>)<bdt class="statement-end-if-in-editor"></bdt>
+        <bdt class="block-component"></bdt>
+        <bdt class="block-component"></bdt>, as well as any other related products and services that refer or link to
+        this
+        Policy (collectively, the <bdt class="block-component"></bdt>"<strong>Services</strong>"<bdt
+          class="statement-end-if-in-editor"></bdt>).
+      </div>
+      <div style="line-height: 1.5;"><br></div>
+      <div data-custom-class="heading_1" style="line-height: 1.5;"><strong><span style="font-size: 19px;">
+            <h2>USE OF THE SERVICES</h2>
+          </span></strong></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">When you use the Services, you warrant that you will
+        comply with this Policy and with all applicable laws.</div>
+      <div style="line-height: 1;"><br></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">You also acknowledge that you may not:</div>
+      <ul>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Systematically retrieve data or other content from
+          the
+          Services to create or compile, directly or indirectly, a collection, compilation, database, or directory
+          without
+          written permission from us.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Make any <bdt class="block-component"></bdt>
+          unauthorized
+          <bdt class="statement-end-if-in-editor"></bdt> use of the Services, including collecting usernames and/or
+          email
+          addresses of users by electronic or other means for the purpose of sending unsolicited email, or creating user
+          accounts by automated means or under false <bdt class="block-component"></bdt>pretenses<bdt
+            class="statement-end-if-in-editor"></bdt>.
+        </li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Circumvent, disable, or otherwise interfere with
+          security-related features of the Services, including features that prevent or restrict the use or copying of
+          any
+          Content or enforce limitations on the use of the Services and/or the Content contained therein.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Engage in <bdt class="block-component"></bdt>
+          unauthorized<bdt class="statement-end-if-in-editor"></bdt> framing of or linking to the Services.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Trick, defraud, or mislead us and other users,
+          especially in any attempt to learn sensitive account information such as user passwords.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Make improper use of our Services, including our
+          support
+          services or submit false reports of abuse or misconduct.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Engage in any automated use of the Services, such as
+          using scripts to send comments or messages, or using any data mining, robots, or similar data gathering and
+          extraction tools.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Interfere with, disrupt, or create an undue burden
+          on
+          the Services or the networks or the Services connected.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Attempt to impersonate another user or person or use
+          the
+          username of another user.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Use any information obtained from the Services in
+          order
+          to harass, abuse, or harm another person.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Use the Services as part of any effort to compete
+          with
+          us or otherwise use the Services and/or the Content for any revenue-generating <bdt class="block-component">
+          </bdt>
+          endeavor<bdt class="statement-end-if-in-editor"></bdt> or commercial enterprise.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Decipher, decompile, disassemble, or reverse
+          engineer
+          any of the software comprising or in any way making up a part of the Services, except as expressly permitted
+          by
+          applicable law.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Attempt to bypass any measures of the Services
+          designed
+          to prevent or restrict access to the Services, or any portion of the Services.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Harass, annoy, intimidate, or threaten any of our
+          employees or agents engaged in providing any portion of the Services to you.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Delete the copyright or other proprietary rights
+          notice
+          from any Content.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Copy or adapt the Services’ software, including but
+          not
+          limited to Flash, PHP, HTML, JavaScript, or other code.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Upload or transmit (or attempt to upload or to
+          transmit)
+          viruses, Trojan horses, or other material, including excessive use of capital letters and spamming (continuous
+          posting of repetitive text), that interferes with any party’s uninterrupted use and enjoyment of the Services
+          or
+          modifies, impairs, disrupts, alters, or interferes with the use, features, functions, operation, or
+          maintenance
+          of
+          the Services.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Upload or transmit (or attempt to upload or to
+          transmit)
+          any material that acts as a passive or active information collection or transmission mechanism, including
+          without
+          limitation, clear graphics interchange formats (<bdt class="block-component"></bdt>"gifs"<bdt
+            class="statement-end-if-in-editor"></bdt>), 1×1 pixels, web bugs, cookies, or other similar devices
+          (sometimes
+          referred to as <bdt class="block-component"></bdt>"spyware" or "passive collection mechanisms" or "pcms"<bdt
+            class="statement-end-if-in-editor"></bdt>).</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Except as may be the result of standard search
+          engine
+          or
+          Internet browser usage, use, launch, develop, or distribute any automated system, including without
+          limitation,
+          any spider, robot, cheat utility, scraper, or offline reader that accesses the Services, or using or launching
+          any
+          <bdt class="block-component"></bdt>unauthorized<bdt class="statement-end-if-in-editor"></bdt> script or other
+          software.
+        </li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Disparage, tarnish, or otherwise harm, in our
+          opinion,
+          us and/or the Services.</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">Use the Services in a manner inconsistent with any
+          applicable laws or regulations.<bdt class="forloop-component"></bdt>
+        </li>
+      </ul>
+      <div style="line-height: 1.5;">
+        <bdt class="block-component"></bdt>
+        <bdt class="block-component"></bdt>
+        <bdt class="block-component"></bdt>
+        <bdt class="block-component"></bdt>
+        <bdt class="statement-end-if-in-editor">
+          <bdt class="block-component"></bdt>
+        </bdt>
+      </div>
+      <div style="line-height: 1.5;"><br></div>
+      <div data-custom-class="heading_1" style="line-height: 1.5;"><strong><span style="font-size: 19px;">
+            <h2>CONTRIBUTIONS</h2>
+          </span></strong></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">In this Policy, the term <bdt
+          class="block-component">
+        </bdt>"Contributions"<bdt class="statement-end-if-in-editor"></bdt> means:</div>
+      <ul>
+        <li data-custom-class="body_text" style="line-height: 1.5;">any data, information, software, text, code, music,
+          scripts, sound, graphics, photos, videos, tags, messages, interactive features, or other materials that you
+          post,
+          share, upload, submit, or otherwise provide in any manner on or through to the Services; or</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">any other content, materials, or data you provide to
+          <bdt class="question">The Urlist</bdt> or use with the Services.
+        </li>
+      </ul>
+      <div data-custom-class="body_text" style="line-height: 1.5;">Some areas of the Services may allow users to upload,
+        transmit, or post Contributions. We may but are under no obligation to review or moderate the Contributions made
+        on
+        the Services, and we expressly exclude our liability for any loss or damage resulting from any of our users'
+        breach
+        of this Policy. Please report any Contribution that you believe breaches this Policy; however, we will
+        determine,
+        in
+        our sole discretion, whether a Contribution is indeed in breach of this Policy.</div>
+      <div style="line-height: 1.5;"><br></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">You warrant that:</div>
+      <ul>
+        <li data-custom-class="body_text" style="line-height: 1.5;">you are the creator and owner of or have the
+          necessary
+          <bdt class="block-component"></bdt>licenses<bdt class="statement-end-if-in-editor"></bdt>, rights, consents,
+          releases, and permissions to use and to <bdt class="block-component"></bdt>authorize<bdt
+            class="statement-end-if-in-editor"></bdt> us, the Services, and other users of the Services to use your
+          Contributions in any manner contemplated by the Services and this Policy;
+        </li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">all your Contributions comply with applicable laws
+          and
+          are original and true (if they represent your opinion or facts);</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">the creation, distribution, transmission, public
+          display, or performance, and the accessing, downloading, or copying of your Contributions do not and will not
+          infringe the proprietary rights, including but not limited to the copyright, patent, trademark, trade secret,
+          or
+          moral rights of any third party; and</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">you have the verifiable consent, release, and/or
+          permission of each and every identifiable individual person in your Contributions to use the name or likeness
+          of
+          each and every such identifiable individual person to enable inclusion and use of your Contributions in any
+          manner
+          contemplated by the Services and this Policy.</li>
+      </ul>
+      <div data-custom-class="body_text" style="line-height: 1.5;">You also agree that you will not post, transmit, or
+        upload any (or any part of a) Contribution that:</div>
+      <ul>
+        <li data-custom-class="body_text" style="line-height: 1.5;">is in breach of applicable laws, regulation, court
+          order, contractual obligation, this Policy, our Legal Terms, a legal duty, or that promotes or facilitates
+          fraud
+          or illegal activities;</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">is defamatory, obscene, offensive, hateful,
+          insulting,
+          intimidating, bullying, abusive, or threatening, to any person or group;</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">is false, inaccurate, or misleading;</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">includes child sexual abuse material, or violates
+          any
+          applicable law concerning child pornography or otherwise intended to protect minors;</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">contains any material that solicits personal
+          information
+          from anyone under the age of 18 or exploits people under the age of 18 in a sexual or violent manner;</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">promotes violence, advocates the violent overthrow
+          of
+          any government, or incites, encourages, or threatens physical harm against another;</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">is obscene, lewd, lascivious, filthy, violent,
+          harassing, <bdt class="block-component"></bdt>libelous<bdt class="statement-end-if-in-editor"></bdt>,
+          slanderous,
+          contains sexually explicit material, or is otherwise objectionable (as determined by us);</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">is discriminatory based on race, sex, religion,
+          nationality, disability, sexual orientation, or age;</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">bullies, intimidates, humiliates, or insults any
+          person;
+        </li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">promotes, facilitates, or assists anyone in
+          promoting
+          and facilitating acts of terrorism;</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">infringes, or assists anyone in infringing, a third
+          party's intellectual property rights or publicity or privacy rights;</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">is deceitful, misrepresents your identity or
+          affiliation
+          with any person and/or misleads anyone as to your relationship with us or implies that the Contribution was
+          made
+          by someone else than you;</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">contains unsolicited or <bdt
+            class="block-component">
+          </bdt>unauthorized<bdt class="statement-end-if-in-editor"></bdt> advertising, promotional materials, pyramid
+          schemes, chain letters, spam, mass mailings, or other forms of solicitation that has been <bdt
+            class="block-component"></bdt>"paid for,"<bdt class="statement-end-if-in-editor"></bdt> whether with
+          monetary
+          compensation or in kind; or</li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">misrepresents your identity or who the Contribution
+          is
+          from.</li>
+      </ul>
+      <div style="line-height: 1.5;">
+        <bdt class="block-component"></bdt>
+      </div>
+      <div style="line-height: 1.5;">
+        <bdt class="block-component">
+          <bdt class="block-component"></bdt>
+        </bdt>
+      </div>
+      <div style="line-height: 1.5;"><br></div>
+      <div data-custom-class="heading_1" style="line-height: 1.5;"><strong><span style="font-size: 19px;">
+            <h2>REPORTING A BREACH OF THIS POLICY</h2>
+          </span></strong></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">We may but are under no obligation to review or
+        moderate
+        the Contributions made on the Services and we expressly exclude our liability for any loss or damage resulting
+        from
+        any of our users' breach of this Policy.</div>
+      <div style="line-height: 1;"><br></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">If you consider that any Service, Content, or
+        Contribution:</div>
+      <ul>
+        <li data-custom-class="body_text" style="line-height: 1.5;">breach this Policy, please <bdt
+            class="block-component">
+          </bdt>
+          <bdt class="block-component"></bdt>email us at <bdt class="question">support@theurlist.com</bdt>, <bdt
+            class="statement-end-if-in-editor"></bdt>
+          <bdt class="block-component"></bdt>or refer to the contact details at the bottom of this document to let us
+          know
+          which Service, Content, or Contribution is in breach of this Policy and why
+        </li>
+        <li data-custom-class="body_text" style="line-height: 1.5;">infringe any third-party intellectual property
+          rights,
+          please <bdt class="block-component"></bdt>email us at <bdt class="question">support@theurlist.com</bdt>
+          <bdt class="else-block"></bdt>
+          <bdt class="block-component"></bdt>
+        </li>
+      </ul>
+      <div data-custom-class="body_text" style="line-height: 1.5;">We will reasonably determine whether a Service,
+        Content,
+        or Contribution breaches this Policy.</div>
+      <div style="line-height: 1.5;"></div>
+      <div style="line-height: 1.5;"><br></div>
+      <div data-custom-class="heading_1" style="line-height: 1.5;"><strong><span style="font-size: 19px;">
+            <h2>CONSEQUENCES OF BREACHING THIS POLICY</h2>
+          </span></strong></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">The consequences for violating our Policy will vary
+        depending on the severity of the breach and the user's history on the Services, by way of example:</div>
+      <div style="line-height: 1;"><br></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">We may, in some cases, give you a warning<bdt
+          class="block-component"></bdt> and/or remove the infringing Contribution<bdt
+          class="statement-end-if-in-editor">
+        </bdt>, however, if your breach is serious or if you continue to breach our Legal Terms and this Policy, we have
+        the
+        right to suspend or terminate your access to and use of our Services and, if applicable, disable your account.
+        We
+        may also notify law enforcement or issue legal proceedings against you when we believe that there is a genuine
+        risk
+        to an individual or a threat to public safety.</div>
+      <div style="line-height: 1;"><br></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">We exclude our liability for all action we may take
+        in
+        response to any of your breaches of this Policy.</div>
+      <div style="line-height: 1.5;">
+        <bdt class="block-component">
+          <bdt class="block-component"></bdt>
+        </bdt>
+      </div>
+      <div style="line-height: 1.5;"><br></div>
+      <div data-custom-class="heading_1" style="line-height: 1.5;"><strong><span style="font-size: 19px;">
+            <h2>DISCLAIMER</h2>
+          </span></strong></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">
+        <bdt class="question">The Urlist</bdt> is under no obligation to monitor users’ activities, and we disclaim any
+        responsibility for any user’s misuse of the Services. <bdt class="question">The Urlist</bdt> has no
+        responsibility
+        for any user or other Content or Contribution created, maintained, stored, transmitted, or accessible on or
+        through
+        the Services, and is not obligated to monitor or exercise any editorial control over such material. If <bdt
+          class="question">The Urlist</bdt> becomes aware that any such Content or Contribution violates this Policy,
+        <bdt class="question">The Urlist</bdt> may, in addition to removing such Content or Contribution and blocking
+        your
+        account, report such breach to the police or appropriate regulatory authority. Unless otherwise stated in this
+        Policy, <bdt class="question">The Urlist</bdt> disclaims any obligation to any person who has not entered into
+        an
+        agreement with <bdt class="question">The Urlist</bdt> for the use of the Services.
+      </div>
+      <div style="line-height: 1.5;"></div>
+      <div style="line-height: 1.5;"><br></div>
+      <div data-custom-class="heading_1" style="line-height: 1.5;"><strong><span style="font-size: 19px;">
+            <h2>HOW CAN YOU CONTACT US ABOUT THIS POLICY?</h2>
+          </span></strong></div>
+      <div data-custom-class="body_text" style="line-height: 1.5;">If you have any further questions or comments<bdt
+          class="block-component"></bdt> or wish to report any problematic Content or Contribution<bdt
+          class="statement-end-if-in-editor"></bdt>, you may contact us by:</div>
+      <div style="line-height: 1;"><br></div>
+      <div style="line-height: 1.5;">
+        <bdt class="block-component">
+          <span data-custom-class="body_text"></span>
+        </bdt>
+        <bdt class="block-component"></bdt>
+      </div>
+      <div style="line-height: 1.5;"><span data-custom-class="body_text">Email: <bdt class="question">
+            support@theurlist.com
+          </bdt></span>
+        <bdt class="statement-end-if-in-editor"></bdt>
+        <bdt class="block-component"></bdt>
+      </div>
+      <style>
+        ul {
+          list-style-type: square;
+        }
+
+        ul>li>ul {
+          list-style-type: circle;
+        }
+
+        ul>li>ul>li>ul {
+          list-style-type: square;
+        }
+
+        ol li {
+          font-family: Arial;
+        }
+      </style>
+    </div>
+  </div>
+  </div<
