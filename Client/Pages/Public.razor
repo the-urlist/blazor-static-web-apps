@@ -42,7 +42,7 @@
             <div class="column is-half">
               <div id="share" class="buttons has-addons">
                 <a class="button" target="_blank"
-                  :href="
+              :href="
               `https://twitter.com/intent/tweet?text=${
                 currentList.description
               } theurlist.com/${currentList.vanityUrl}`
@@ -50,7 +50,7 @@
                   <span class="icon"><i class="fab fa-twitter"></i></span>
                 </a>
                 <a class="button" target="_blank"
-                  :href="
+              :href="
               `https://www.facebook.com/sharer/sharer.php?u=theurlist.com/${
                 currentList.vanityUrl
               }`
@@ -58,7 +58,7 @@
                   <span class="icon"><i class="fab fa-facebook-f"></i></span>
                 </a>
                 <a class="button" target="_blank"
-                  :href="
+              :href="
               `https://www.linkedin.com/shareArticle?mini=true?summary=${
                 currentList.description
               }&url=https://theurlist.com?${currentList.vanityUrl}`
@@ -89,6 +89,8 @@
                 <LinkBundleItem link="link"></LinkBundleItem>
               }
             </div>
+            <a href="mailto:support@theurlist.com?subject=LinkBundle Flagged&body=https://theurlist.com/@vanityUrl">Report
+              this list</a>
           </div>
         </div>
       }
