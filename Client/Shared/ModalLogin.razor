@@ -1,7 +1,10 @@
 ﻿@inject NavigationManager NavigationManager
 
 <ModalWindow @ref="modal">
-  <div class="columns is-gapless is-vcentered is-relative is-mobile">
+  <label>Login is temporarily disabled. We'll be right back!</div>
+
+  @* Uncomment to enable login UI *@
+  @* <div class="columns is-gapless is-vcentered is-relative is-mobile">
     <div class="column">
       <h1 class="is-size-4 has-text-weight-medium is-pulled-right">
         Sign in to
@@ -34,7 +37,7 @@
       <span class="is-size-5 has-text-weight-medium">with Google</span>
     </span>
   </a>
-  <br />
+  <br /> *@
 </ModalWindow>
 
 @code {
