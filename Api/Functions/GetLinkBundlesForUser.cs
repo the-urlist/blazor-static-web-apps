@@ -10,18 +10,28 @@ using System.Threading.Tasks;
 
 namespace Api.Functions
 {
-    public class GetLinkBundlesForUser(CosmosClient cosmosClient, Hasher hasher, IConfiguration configuration)
+    public class GetLinkBundlesForUser
     {
+        private readonly CosmosClient _cosmosClient;
+        private readonly Hasher _hasher;
+        private readonly IConfiguration _configuration;
+
+        public GetLinkBundlesForUser(CosmosClient cosmosClient, Hasher hasher, IConfiguration configuration)
+        {
+            _cosmosClient = cosmosClient;
+            _hasher = hasher;
+            _configuration = configuration;
+        }
+
         [Function(nameof(GetLinkBundlesForUser))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequestData req)
         {
             try
             {
+                var databaseName = _configuration["COSMOSDB_DATABASE"];
+                var containerName = _configuration["COSMOSDB_CONTAINER"];
 
-                var databaseName = configuration["COSMOSDB_DATABASE"];
-                var containerName = configuration["COSMOSDB_CONTAINER"];
-
-                var database = cosmosClient.GetDatabase(databaseName);
+                var database = _cosmosClient.GetDatabase(databaseName);
                 var container = database.GetContainer(containerName);
 
                 var res = req.CreateResponse();
@@ -31,7 +41,7 @@ namespace Api.Functions
                 if (clientPrincipal != null)
                 {
                     string userDetails = clientPrincipal.UserDetails;
-                    string username = hasher.HashString(userDetails);
+                    string username = _hasher.HashString(userDetails);
                     string provider = clientPrincipal.IdentityProvider;
 
                     var query = new QueryDefinition("SELECT c.id, c.vanityUrl, c.description, c.links FROM c WHERE c.userId = @username AND c.provider = @provider")
@@ -52,17 +62,11 @@ namespace Api.Functions
                 }
 
                 // return 401 if no client principal
-                await res.WriteAsJsonAsync(new { error = "Unauthorized" }, HttpStatusCode.Unauthorized);
-
-                return res;
-
+                return await req.CreateJsonResponse(HttpStatusCode.Unauthorized, "Unauthorized");
             }
             catch (Exception ex)
             {
-                var res = req.CreateResponse();
-                await res.WriteAsJsonAsync(new { error = ex.Message }, HttpStatusCode.InternalServerError);
-
-                return res;
+                return await req.CreateJsonResponse(HttpStatusCode.InternalServerError, $"Internal Server Error: {ex.Message}");
             }
         }
     }
